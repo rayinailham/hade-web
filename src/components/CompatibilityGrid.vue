@@ -169,12 +169,30 @@ const rows = [
 }
 
 @media (max-width: 760px) {
-  .row, .row-head {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    padding: 1.25rem 0;
+  .table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    border-top: 0;
   }
+
   .row-head { display: none; }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+    padding: 1rem 1rem;
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.5);
+    align-items: flex-start;
+  }
+
+  .row:not(.row-head):hover {
+    background: rgba(255, 255, 255, 0.8);
+    padding-left: 1rem;
+  }
+
   .end { text-align: left; }
   .tag { align-self: flex-start; }
 }
@@ -199,35 +217,42 @@ const rows = [
     line-height: 1.5;
   }
 
+  .table {
+    gap: 0.55rem;
+  }
+
   .row {
-    padding: 1rem 0;
+    padding: 0.85rem 0.85rem;
     gap: 0.4rem;
+    border-radius: 12px;
   }
 
   .cell-lens {
-    font-size: 13.5px;
-    gap: 0.65rem;
+    font-size: 12.5px;
+    gap: 0.5rem;
+    letter-spacing: -0.015em;
   }
 
   .badge {
-    width: 26px;
-    height: 26px;
-    font-size: 11px;
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
   }
 
   .mount {
-    font-size: 11px;
+    font-size: 10px;
     letter-spacing: 0.04em;
   }
 
   .prod {
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.35;
   }
 
   .tag {
-    font-size: 9.5px;
-    letter-spacing: 0.14em;
-    padding: 0.25rem 0.55rem;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    padding: 0.2rem 0.45rem;
   }
 }
 </style>
