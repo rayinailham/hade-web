@@ -928,7 +928,7 @@ onBeforeUnmount(() => ctx?.revert())
   }
   .progress { display: none; }
 
-  .rail { overflow-x: auto; scroll-snap-type: x mandatory; }
+  .rail { overflow-x: auto; overflow-y: hidden; scroll-snap-type: x proximity; touch-action: pan-x pan-y; }
   .rail::-webkit-scrollbar { height: 4px; }
 
   .track-inner {

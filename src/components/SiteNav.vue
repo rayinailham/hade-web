@@ -64,7 +64,7 @@ onBeforeUnmount(() => {
       </button>
     </div>
 
-    <div class="mobile-panel" :hidden="!open">
+    <div v-show="open" class="mobile-panel">
       <button @click="scrollTo('manifesto')">Filosofi</button>
       <button @click="scrollTo('products')">Produk</button>
       <button @click="scrollTo('videos')">Video</button>
