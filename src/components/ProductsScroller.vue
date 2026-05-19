@@ -536,7 +536,7 @@ onBeforeUnmount(() => ctx?.revert())
   height: 100dvh;
   display: flex;
   flex-direction: column;
-  padding: clamp(5rem, 9vh, 7rem) 0 clamp(2.5rem, 5vh, 3.5rem);
+  padding: clamp(4rem, 7vh, 5.5rem) 0 clamp(1.5rem, 3vh, 2.25rem);
   overflow: hidden;
 }
 
@@ -547,11 +547,11 @@ onBeforeUnmount(() => ctx?.revert())
   align-items: end;
   padding: 0 var(--gutter);
   max-width: var(--container);
-  margin: 0 auto 2.25rem;
+  margin: 0 auto 1.5rem;
   width: 100%;
 }
 
-.head-left .eyebrow { margin-bottom: 1.25rem; }
+.head-left .eyebrow { margin-bottom: 0.85rem; }
 
 .head h2 {
   font-family: var(--font-sans);
@@ -609,11 +609,14 @@ onBeforeUnmount(() => ctx?.revert())
   align-items: center;
   width: 100%;
   overflow: hidden;
+  min-height: 0;
+  padding: clamp(0.75rem, 1.5vh, 1.25rem) 0;
 }
 
 .track {
   display: block;
   will-change: transform;
+  height: 100%;
 }
 
 .track-inner {
@@ -622,13 +625,14 @@ onBeforeUnmount(() => ctx?.revert())
   padding-left: var(--gutter);
   padding-right: 25vw;
   align-items: stretch;
+  height: 100%;
 }
 
 .card {
   flex: 0 0 clamp(320px, 30vw, 420px);
-  height: 62vh;
+  height: 100%;
   max-height: 580px;
-  min-height: 460px;
+  min-height: 0;
 }
 
 .card-shell {
