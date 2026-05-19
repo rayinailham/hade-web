@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { waLink, waProductLink, SHOPEE_STORE, DISCOUNT_PERCENT } from '../composables/useContact'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -172,7 +173,7 @@ const products: Product[] = [
   },
 ]
 
-// Carousel state — one active index per product
+// Carousel state — one active image index per product
 const activeIdx = ref<number[]>(products.map(() => 0))
 
 function setSlide(productIdx: number, slideIdx: number) {
@@ -187,6 +188,50 @@ function nextSlide(productIdx: number, total: number) {
 
 function prevSlide(productIdx: number, total: number) {
   setSlide(productIdx, (activeIdx.value[productIdx] - 1 + total) % total)
+}
+
+// Mobile product-level carousel state
+const totalCards = products.length + 1 // includes CTA card
+const mobileCardIdx = ref(0)
+const mobileTrackOffset = computed(() => `translate3d(-${mobileCardIdx.value * 100}%, 0, 0)`)
+
+function goToCard(i: number) {
+  mobileCardIdx.value = Math.max(0, Math.min(totalCards - 1, i))
+}
+
+function nextCard() {
+  goToCard(mobileCardIdx.value + 1)
+}
+
+function prevCard() {
+  goToCard(mobileCardIdx.value - 1)
+}
+
+// Touch swipe detection — only triggers horizontal swap when gesture is
+// clearly horizontal, so vertical page scroll stays smooth on mobile.
+const SWIPE_THRESHOLD = 48
+const ANGLE_BIAS = 1.2 // |dx| must exceed |dy| * bias to count as horizontal
+let touchStartX = 0
+let touchStartY = 0
+let touchActive = false
+
+function onTouchStart(e: TouchEvent) {
+  if (e.touches.length !== 1) return
+  touchStartX = e.touches[0].clientX
+  touchStartY = e.touches[0].clientY
+  touchActive = true
+}
+
+function onTouchEnd(e: TouchEvent) {
+  if (!touchActive) return
+  touchActive = false
+  const t = e.changedTouches[0]
+  const dx = t.clientX - touchStartX
+  const dy = t.clientY - touchStartY
+  if (Math.abs(dx) < SWIPE_THRESHOLD) return
+  if (Math.abs(dx) < Math.abs(dy) * ANGLE_BIAS) return // vertical intent — ignore
+  if (dx < 0) nextCard()
+  else prevCard()
 }
 
 const root = ref<HTMLElement | null>(null)
@@ -273,8 +318,16 @@ onBeforeUnmount(() => ctx?.revert())
         </div>
       </header>
 
-      <div class="rail">
-        <div ref="track" class="track">
+      <div
+        class="rail"
+        @touchstart.passive="onTouchStart"
+        @touchend.passive="onTouchEnd"
+      >
+        <div
+          ref="track"
+          class="track"
+          :style="{ '--m-offset': mobileTrackOffset }"
+        >
           <div class="track-inner">
             <article
               v-for="(p, pi) in products"
@@ -355,23 +408,40 @@ onBeforeUnmount(() => ctx?.revert())
                   </div>
 
                   <footer class="card-foot">
-                    <div>
-                      <span class="label mono">harga</span>
+                    <div class="foot-price">
+                      <span class="label mono">harga shopee</span>
                       <span class="value">{{ p.price }}</span>
+                      <span class="discount mono">−{{ DISCOUNT_PERCENT }}% via WA</span>
                     </div>
-                    <a
-                      class="buy-btn"
-                      :href="p.link"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <span>Beli</span>
-                      <span class="buy-icon">
-                        <svg viewBox="0 0 16 16" fill="none">
-                          <path d="M5 11l6-6M6 5h5v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </span>
-                    </a>
+                    <div class="foot-actions">
+                      <a
+                        class="shopee-buy"
+                        :href="p.link"
+                        target="_blank"
+                        rel="noreferrer"
+                        :aria-label="`Buka ${p.name} di Shopee`"
+                      >
+                        <span class="shopee-mark" aria-hidden="true">S</span>
+                        <span>Shopee</span>
+                      </a>
+                      <a
+                        class="buy-btn wa-buy"
+                        :href="waProductLink(p.name, p.price)"
+                        target="_blank"
+                        rel="noreferrer"
+                        :aria-label="`Pesan ${p.name} via WhatsApp`"
+                      >
+                        <span class="wa-icon" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
+                          </svg>
+                        </span>
+                        <span class="wa-buy-copy">
+                          <span class="wa-buy-line">Pesan via WA</span>
+                          <span class="wa-buy-sub mono">−{{ DISCOUNT_PERCENT }}% &middot; gratis ongkir</span>
+                        </span>
+                      </a>
+                    </div>
                   </footer>
                 </div>
               </div>
@@ -382,22 +452,72 @@ onBeforeUnmount(() => ctx?.revert())
                 <div class="card-core dark">
                   <span class="num mono">END</span>
                   <h3 class="cta-title">
-                    <span>Mau lihat semua</span>
-                    <span class="italic">di Shopee?</span>
+                    <span>Mau diskon</span>
+                    <span class="italic">{{ DISCOUNT_PERCENT }}% + gratis ongkir?</span>
                   </h3>
                   <p>
-                    Toko hade Creative — 1.500+ followers, chat performance 97%,
-                    pengiriman dari Sukabumi.
+                    Chat langsung admin Hade di WhatsApp. Konsultasi gratis,
+                    pengiriman dari Sukabumi, garansi 1 bulan untuk semua adapter.
                   </p>
-                  <a class="cta-link" href="https://s.shopee.co.id/4AwuG0d1or" target="_blank" rel="noreferrer">
-                    Buka Shopee
-                    <span class="arrow">↗</span>
-                  </a>
+                  <div class="cta-actions">
+                    <a class="cta-link wa" :href="waLink()" target="_blank" rel="noreferrer">
+                      <span class="wa-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
+                        </svg>
+                      </span>
+                      <span>Chat WhatsApp</span>
+                      <span class="arrow">↗</span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </article>
           </div>
         </div>
+      </div>
+
+      <div class="m-controls" aria-hidden="false">
+        <button
+          type="button"
+          class="m-arrow"
+          :disabled="mobileCardIdx === 0"
+          aria-label="Produk sebelumnya"
+          @click="prevCard"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="m-dots" role="tablist" aria-label="Daftar produk">
+          <button
+            v-for="i in totalCards"
+            :key="i"
+            type="button"
+            class="m-dot"
+            :class="{ 'is-active': mobileCardIdx === i - 1 }"
+            :aria-selected="mobileCardIdx === i - 1"
+            :aria-label="`Produk ${i}`"
+            @click="goToCard(i - 1)"
+          />
+        </div>
+
+        <button
+          type="button"
+          class="m-arrow"
+          :disabled="mobileCardIdx === totalCards - 1"
+          aria-label="Produk berikutnya"
+          @click="nextCard"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <span class="m-counter mono">
+          {{ String(mobileCardIdx + 1).padStart(2, '0') }} / {{ String(totalCards).padStart(2, '0') }}
+        </span>
       </div>
     </div>
   </section>
@@ -782,8 +902,33 @@ onBeforeUnmount(() => ctx?.revert())
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  gap: 0.85rem;
   padding-top: 1rem;
   border-top: 1px solid var(--hairline);
+}
+
+.foot-price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.foot-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.discount {
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #128c4a;
+  margin-top: 0.15rem;
 }
 
 .label {
@@ -815,6 +960,118 @@ onBeforeUnmount(() => ctx?.revert())
   letter-spacing: -0.01em;
   transition: all 0.5s var(--ease-out);
   align-self: flex-end;
+}
+
+/* Per-card WhatsApp primary buy button */
+.buy-btn.wa-buy {
+  position: relative;
+  padding: 0.45rem 0.85rem 0.45rem 0.45rem;
+  gap: 0.55rem;
+  background: linear-gradient(140deg, #1faa55 0%, #128c4a 60%, #0d6e3a 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 10px 24px -10px rgba(18, 140, 74, 0.55);
+  overflow: hidden;
+  isolation: isolate;
+  align-self: stretch;
+}
+
+.buy-btn.wa-buy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+  transform: translateX(-110%);
+  transition: transform 1.1s var(--ease-out);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.buy-btn.wa-buy:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 14px 30px -10px rgba(18, 140, 74, 0.7);
+}
+
+.buy-btn.wa-buy:hover::before {
+  transform: translateX(110%);
+}
+
+.buy-btn .wa-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.buy-btn .wa-icon svg { width: 14px; height: 14px; }
+
+.wa-buy-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+  gap: 0.18rem;
+  position: relative;
+  z-index: 2;
+}
+
+.wa-buy-line {
+  font-weight: 500;
+  font-size: 12.5px;
+}
+
+.wa-buy-sub {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Subtle Shopee secondary on each card */
+.shopee-buy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.7rem 0.32rem 0.36rem;
+  border-radius: 999px;
+  background: rgba(238, 77, 45, 0.06);
+  border: 1px solid rgba(238, 77, 45, 0.25);
+  color: #c43d20;
+  font-size: 11px;
+  letter-spacing: -0.005em;
+  transition: background 0.4s var(--ease-out), border-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+}
+
+.shopee-buy:hover {
+  background: rgba(238, 77, 45, 0.1);
+  border-color: rgba(238, 77, 45, 0.4);
+  color: #b3361b;
+}
+
+.shopee-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #ee4d2d;
+  color: #fff;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 1;
 }
 
 .buy-btn:hover {
@@ -905,6 +1162,82 @@ onBeforeUnmount(() => ctx?.revert())
   border-color: var(--c-paper);
 }
 
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.cta-link.wa {
+  position: relative;
+  padding: 0.6rem 1rem 0.6rem 0.55rem;
+  gap: 0.55rem;
+  background: linear-gradient(140deg, #25c862 0%, #15a04f 55%, #0d6e3a 100%);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 12px 28px -10px rgba(20, 160, 80, 0.6);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cta-link.wa::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.25) 50%, transparent 70%);
+  transform: translateX(-110%);
+  transition: transform 1.1s var(--ease-out);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cta-link.wa:hover {
+  background: linear-gradient(140deg, #25c862 0%, #15a04f 55%, #0d6e3a 100%);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    0 16px 36px -10px rgba(20, 160, 80, 0.75);
+}
+
+.cta-link.wa:hover::before {
+  transform: translateX(110%);
+}
+
+.cta-link.wa .wa-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 2;
+}
+
+.cta-link.wa .wa-icon svg { width: 15px; height: 15px; }
+
+.cta-link.wa > span:not(.wa-icon) { position: relative; z-index: 2; }
+
+.cta-link.shopee-mini {
+  padding: 0.55rem 0.95rem 0.55rem 0.45rem;
+  gap: 0.5rem;
+  background: rgba(238, 77, 45, 0.1);
+  border-color: rgba(238, 77, 45, 0.4);
+  color: #ff8c70;
+  font-size: 12.5px;
+}
+
+.cta-link.shopee-mini:hover {
+  background: rgba(238, 77, 45, 0.18);
+  border-color: rgba(238, 77, 45, 0.55);
+  color: #ff9c80;
+}
+
 .arrow {
   font-family: var(--font-display);
   font-style: italic;
@@ -916,11 +1249,14 @@ onBeforeUnmount(() => ctx?.revert())
   transform: translate(2px, -2px);
 }
 
+/* Mobile carousel controls — hidden on desktop */
+.m-controls { display: none; }
+
 /* Mobile fallback */
 @media (max-width: 900px) {
   .products-frame {
     height: auto;
-    padding: 4.5rem 0 4rem;
+    padding: 4.5rem 0 3rem;
   }
   .head {
     grid-template-columns: 1fr;
@@ -928,25 +1264,100 @@ onBeforeUnmount(() => ctx?.revert())
   }
   .progress { display: none; }
 
-  .rail { overflow-x: auto; overflow-y: hidden; scroll-snap-type: x proximity; touch-action: pan-x pan-y; }
-  .rail::-webkit-scrollbar { height: 4px; }
+  /* Lock the rail — no native horizontal scroll. Vertical page scroll
+     stays free because touch-action is pan-y. */
+  .rail {
+    overflow: hidden;
+    touch-action: pan-y;
+    scroll-snap-type: none;
+    width: 100%;
+  }
+
+  .track {
+    width: 100%;
+    transform: var(--m-offset, translate3d(0, 0, 0));
+    transition: transform 0.55s var(--ease-out);
+  }
 
   .track-inner {
-    padding-right: var(--gutter);
+    gap: 0;
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
   }
 
   .card {
-    flex: 0 0 78vw;
-    height: 70vh;
-    min-height: 440px;
-    scroll-snap-align: start;
+    flex: 0 0 100%;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    padding: 0 var(--gutter);
+  }
+
+  /* Mobile carousel controls */
+  .m-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    margin: 1.5rem auto 0;
+    padding: 0 var(--gutter);
+    width: 100%;
+    max-width: var(--container);
+  }
+
+  .m-arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: var(--c-ink);
+    border: 1px solid var(--hairline-strong);
+    transition: transform 0.4s var(--ease-out), background 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
+  }
+
+  .m-arrow svg { width: 14px; height: 14px; }
+
+  .m-arrow:hover { background: var(--c-ink); color: var(--c-paper); }
+  .m-arrow:active { transform: scale(0.94); }
+  .m-arrow:disabled { opacity: 0.35; pointer-events: none; }
+
+  .m-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .m-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-fog);
+    transition: background 0.4s var(--ease-out), width 0.4s var(--ease-out);
+  }
+
+  .m-dot.is-active {
+    background: var(--c-ink);
+    width: 18px;
+    border-radius: 999px;
+  }
+
+  .m-counter {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--fg-subtle);
+    margin-left: 0.35rem;
   }
 }
 
-/* Mobile carousel — one card at a time */
+/* Mobile carousel — refine sizing for small screens */
 @media (max-width: 640px) {
   .products-frame {
-    padding: 3rem 0 3rem;
+    padding: 3rem 0 2.5rem;
   }
 
   .head {
@@ -966,25 +1377,6 @@ onBeforeUnmount(() => ctx?.revert())
   .head-right {
     font-size: 12.5px;
     line-height: 1.5;
-  }
-
-  .rail {
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scroll-padding-left: var(--gutter);
-  }
-
-  .track-inner {
-    gap: 0.75rem;
-    padding-right: var(--gutter);
-  }
-
-  .card {
-    flex: 0 0 calc(100vw - calc(var(--gutter) * 2));
-    height: auto;
-    min-height: 0;
-    max-height: none;
-    scroll-snap-align: center;
   }
 
   .card-shell {
@@ -1009,7 +1401,7 @@ onBeforeUnmount(() => ctx?.revert())
   }
 
   .visual {
-    height: 200px;
+    height: 220px;
     border-radius: 10px;
   }
 
@@ -1062,7 +1454,7 @@ onBeforeUnmount(() => ctx?.revert())
   }
 
   .card-body h3 {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     line-height: 1.1;
   }
 
@@ -1090,7 +1482,16 @@ onBeforeUnmount(() => ctx?.revert())
 
   .card-foot {
     padding-top: 0.7rem;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .foot-actions {
+    flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
   }
 
   .label {
@@ -1100,13 +1501,45 @@ onBeforeUnmount(() => ctx?.revert())
   }
 
   .value {
-    font-size: 11.5px;
+    font-size: 12px;
+  }
+
+  .discount {
+    font-size: 8.5px;
   }
 
   .buy-btn {
     font-size: 11.5px;
     padding: 0.45rem 0.5rem 0.45rem 0.8rem;
     gap: 0.3rem;
+  }
+
+  .buy-btn.wa-buy {
+    flex: 1;
+    justify-content: flex-start;
+    padding: 0.45rem 0.7rem 0.45rem 0.4rem;
+    gap: 0.5rem;
+  }
+
+  .buy-btn .wa-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .buy-btn .wa-icon svg { width: 13px; height: 13px; }
+
+  .wa-buy-line { font-size: 11.5px; }
+  .wa-buy-sub { font-size: 8.5px; letter-spacing: 0.14em; }
+
+  .shopee-buy {
+    font-size: 10.5px;
+    padding: 0.28rem 0.6rem 0.28rem 0.32rem;
+  }
+
+  .shopee-mark {
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
   }
 
   .buy-icon {
@@ -1131,6 +1564,41 @@ onBeforeUnmount(() => ctx?.revert())
   .cta-link {
     font-size: 12.5px;
     padding: 0.7rem 1rem;
+  }
+
+  .cta-link.wa {
+    padding: 0.55rem 0.95rem 0.55rem 0.45rem;
+  }
+
+  .cta-link.wa .wa-icon { width: 26px; height: 26px; }
+  .cta-link.wa .wa-icon svg { width: 13px; height: 13px; }
+
+  .cta-link.shopee-mini {
+    padding: 0.5rem 0.85rem 0.5rem 0.4rem;
+    font-size: 11.5px;
+  }
+
+  .m-controls {
+    margin-top: 1.1rem;
+    gap: 0.6rem;
+  }
+
+  .m-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .m-arrow svg { width: 12px; height: 12px; }
+
+  .m-counter {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    transition: none;
   }
 }
 </style>

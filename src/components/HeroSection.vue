@@ -2,8 +2,11 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { waLink, SHOPEE_STORE, DISCOUNT_PERCENT } from '../composables/useContact'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const waUrl = waLink()
 
 const root = ref<HTMLElement | null>(null)
 const headline = ref<HTMLElement | null>(null)
@@ -71,7 +74,7 @@ onMounted(() => {
 
     // Eyebrow + meta line
     gsap.fromTo(
-      '.hero .eyebrow, .hero .lede, .hero .actions, .hero .meta-line',
+      '.hero .eyebrow, .hero .lede, .hero .actions, .hero .alt-row, .hero .meta-line',
       { y: 24, opacity: 0, filter: 'blur(8px)' },
       {
         y: 0,
@@ -135,8 +138,16 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
         </p>
 
         <div class="actions">
-          <a class="btn-primary" href="https://s.shopee.co.id/4AwuG0d1or" target="_blank" rel="noreferrer">
-            <span>Lihat katalog</span>
+          <a class="btn-primary wa-cta" :href="waUrl" target="_blank" rel="noreferrer">
+            <span class="wa-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
+              </svg>
+            </span>
+            <span class="wa-copy">
+              <span class="wa-line">Pesan via WhatsApp</span>
+              <span class="wa-sub mono">discount {{ DISCOUNT_PERCENT }}% &middot; gratis ongkir</span>
+            </span>
             <span class="btn-icon">
               <svg viewBox="0 0 16 16" fill="none">
                 <path d="M5 11l6-6M6 5h5v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
@@ -146,6 +157,14 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
           <a class="btn-ghost" href="#products">
             <span>Pelajari produk</span>
             <span class="dot"></span>
+          </a>
+        </div>
+
+        <div class="alt-row">
+          <span class="alt-label mono">atau cek harga di</span>
+          <a class="btn-shopee" :href="SHOPEE_STORE" target="_blank" rel="noreferrer">
+            <span class="shopee-mark" aria-hidden="true">S</span>
+            <span>Shopee</span>
           </a>
         </div>
 
@@ -334,9 +353,96 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 .actions {
   display: flex;
   gap: 0.65rem;
-  align-items: center;
-  margin-bottom: 3rem;
+  align-items: stretch;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
+}
+
+.btn-primary.wa-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 0.7rem 0.7rem 0.85rem;
+  background: linear-gradient(140deg, #1faa55 0%, #128c4a 60%, #0d6e3a 100%);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 14px 36px -14px rgba(18, 140, 74, 0.55);
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.55s var(--ease-out), box-shadow 0.55s var(--ease-out);
+}
+
+.btn-primary.wa-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.22) 50%, transparent 70%);
+  transform: translateX(-110%);
+  transition: transform 1.1s var(--ease-out);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.btn-primary.wa-cta:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 22px 48px -16px rgba(18, 140, 74, 0.65);
+}
+
+.btn-primary.wa-cta:hover::before {
+  transform: translateX(110%);
+}
+
+.btn-primary.wa-cta:active { transform: scale(0.98); }
+
+.wa-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.wa-icon svg { width: 19px; height: 19px; }
+
+.wa-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+  gap: 0.18rem;
+  position: relative;
+  z-index: 2;
+}
+
+.wa-line {
+  font-weight: 500;
+  font-size: 14.5px;
+}
+
+.wa-sub {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.wa-cta .btn-icon {
+  position: relative;
+  z-index: 2;
+  margin-left: 0.15rem;
 }
 
 .btn-primary {
@@ -401,6 +507,58 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
   height: 6px;
   border-radius: 50%;
   background: var(--c-ink);
+}
+
+/* Secondary Shopee row — kept understated on purpose */
+.alt-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 2.25rem;
+  flex-wrap: wrap;
+}
+
+.alt-label {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.btn-shopee {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.85rem 0.4rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(238, 77, 45, 0.06);
+  border: 1px solid rgba(238, 77, 45, 0.28);
+  color: #c43d20;
+  font-size: 12px;
+  letter-spacing: -0.005em;
+  transition: background 0.4s var(--ease-out), border-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+}
+
+.btn-shopee:hover {
+  background: rgba(238, 77, 45, 0.1);
+  border-color: rgba(238, 77, 45, 0.45);
+  color: #b3361b;
+}
+
+.shopee-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #ee4d2d;
+  color: #fff;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1;
 }
 
 /* meta line */
@@ -694,7 +852,49 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 
   .actions {
     gap: 0.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .btn-primary.wa-cta {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.55rem 0.6rem 0.55rem 0.6rem;
+    gap: 0.6rem;
+  }
+
+  .wa-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .wa-icon svg { width: 16px; height: 16px; }
+
+  .wa-line { font-size: 13px; }
+  .wa-sub { font-size: 9.5px; letter-spacing: 0.14em; }
+
+  .wa-cta .btn-icon {
+    margin-left: auto;
+  }
+
+  .alt-row {
+    margin-bottom: 1.5rem;
+    gap: 0.5rem;
+  }
+
+  .alt-label {
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+  }
+
+  .btn-shopee {
+    font-size: 11px;
+    padding: 0.32rem 0.7rem 0.32rem 0.35rem;
+  }
+
+  .shopee-mark {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
   }
 
   .btn-primary,
@@ -703,7 +903,7 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
     padding: 0.7rem 1.05rem;
   }
 
-  .btn-primary {
+  .btn-primary:not(.wa-cta) {
     padding-left: 1.15rem;
     padding-right: 0.7rem;
   }

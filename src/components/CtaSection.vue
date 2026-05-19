@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { waLink, SHOPEE_STORE, DISCOUNT_PERCENT } from '../composables/useContact'
 
 const cta = ref<HTMLElement | null>(null)
 const x = ref(0)
 const y = ref(0)
 let raf = 0
 let target = { x: 0, y: 0 }
+
+const waUrl = waLink(
+  'Halo Hade, saya mau cek penawaran adapter lensa via WhatsApp (discount 10% + gratis ongkir). Boleh dibantu rekomendasinya?',
+)
 
 function onMove(e: MouseEvent) {
   if (!cta.value) return
@@ -54,25 +59,34 @@ onBeforeUnmount(() => {
           <h2 class="title">
             <span>Pasangkan lensa</span>
             <span class="italic">favoritmu —</span>
-            <span>hari ini juga.</span>
+            <span>hemat {{ DISCOUNT_PERCENT }}%.</span>
           </h2>
 
           <p class="lede">
-            Order sebelum jam 14:00 dikirim hari yang sama. Garansi produsen
-            1 bulan untuk semua adapter. Bantuan teknis langsung dari tim
-            hade lewat chat Shopee.
+            Order langsung via WhatsApp ke admin Hade dan dapat diskon
+            <strong>{{ DISCOUNT_PERCENT }}% dari harga Shopee</strong>
+            plus <strong>gratis ongkir</strong> ke seluruh Indonesia.
+            Tetap aman, langsung dari Sukabumi.
           </p>
 
           <div class="actions">
             <a
               ref="cta"
-              class="btn-primary magnetic"
+              class="btn-primary magnetic wa-cta"
               :style="{ transform: `translate(${x}px, ${y}px)` }"
-              href="https://s.shopee.co.id/4AwuG0d1or"
+              :href="waUrl"
               target="_blank"
               rel="noreferrer"
             >
-              <span>Belanja di Shopee</span>
+              <span class="wa-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
+                </svg>
+              </span>
+              <span class="wa-copy">
+                <span class="wa-line">Pesan via WhatsApp</span>
+                <span class="wa-sub mono">discount {{ DISCOUNT_PERCENT }}% &middot; gratis ongkir</span>
+              </span>
               <span class="btn-icon">
                 <svg viewBox="0 0 16 16" fill="none">
                   <path d="M5 11l6-6M6 5h5v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
@@ -87,6 +101,14 @@ onBeforeUnmount(() => {
               rel="noreferrer"
             >
               Tonton tutorial
+            </a>
+          </div>
+
+          <div class="alt-row">
+            <span class="alt-label mono">harga publik</span>
+            <a class="btn-shopee" :href="SHOPEE_STORE" target="_blank" rel="noreferrer">
+              <span class="shopee-mark" aria-hidden="true">S</span>
+              <span>Lihat di Shopee</span>
             </a>
           </div>
 
@@ -218,6 +240,93 @@ onBeforeUnmount(() => {
   box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.5);
 }
 
+/* WA primary CTA — green, distinct, prominent */
+.btn-primary.wa-cta {
+  position: relative;
+  padding: 0.7rem 0.7rem 0.7rem 0.85rem;
+  gap: 0.7rem;
+  background: linear-gradient(140deg, #25c862 0%, #15a04f 55%, #0d6e3a 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 18px 50px -16px rgba(20, 160, 80, 0.65);
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.55s var(--ease-out), box-shadow 0.55s var(--ease-out);
+}
+
+.btn-primary.wa-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
+  transform: translateX(-110%);
+  transition: transform 1.2s var(--ease-out);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.btn-primary.wa-cta:hover {
+  background: linear-gradient(140deg, #25c862 0%, #15a04f 55%, #0d6e3a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 24px 60px -18px rgba(20, 160, 80, 0.8);
+}
+
+.btn-primary.wa-cta:hover::before {
+  transform: translateX(110%);
+}
+
+.wa-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.wa-icon svg { width: 19px; height: 19px; }
+
+.wa-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+  gap: 0.18rem;
+  position: relative;
+  z-index: 2;
+}
+
+.wa-line {
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.wa-sub {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.wa-cta .btn-icon {
+  position: relative;
+  z-index: 2;
+  margin-left: 0.15rem;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.wa-cta:hover .btn-icon {
+  background: rgba(255, 255, 255, 0.28);
+}
+
 .btn-icon {
   display: inline-flex;
   align-items: center;
@@ -252,6 +361,58 @@ onBeforeUnmount(() => {
 .btn-ghost:hover {
   background: rgba(245, 245, 243, 0.08);
   border-color: rgba(245, 245, 243, 0.4);
+}
+
+/* Secondary Shopee row inside dark card */
+.alt-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.alt-label {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 243, 0.45);
+}
+
+.btn-shopee {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem 0.4rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(238, 77, 45, 0.1);
+  border: 1px solid rgba(238, 77, 45, 0.4);
+  color: #ff7a5c;
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+  transition: background 0.4s var(--ease-out), border-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+}
+
+.btn-shopee:hover {
+  background: rgba(238, 77, 45, 0.18);
+  border-color: rgba(238, 77, 45, 0.6);
+  color: #ff8c70;
+}
+
+.shopee-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #ee4d2d;
+  color: #fff;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 11.5px;
+  line-height: 1;
 }
 
 .meta {
@@ -304,7 +465,44 @@ onBeforeUnmount(() => {
 
   .actions {
     gap: 0.45rem;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .btn-primary.wa-cta {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.55rem 0.6rem 0.55rem 0.55rem;
+    gap: 0.6rem;
+  }
+
+  .wa-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .wa-icon svg { width: 16px; height: 16px; }
+
+  .wa-line { font-size: 13.5px; }
+  .wa-sub { font-size: 9.5px; letter-spacing: 0.14em; }
+
+  .wa-cta .btn-icon { margin-left: auto; }
+
+  .alt-row {
+    margin-bottom: 1.5rem;
+    gap: 0.55rem;
+  }
+
+  .alt-label { font-size: 9.5px; letter-spacing: 0.16em; }
+
+  .btn-shopee {
+    font-size: 11.5px;
+    padding: 0.32rem 0.75rem 0.32rem 0.4rem;
+  }
+
+  .shopee-mark {
+    width: 18px;
+    height: 18px;
+    font-size: 10.5px;
   }
 
   .btn-primary,
@@ -313,7 +511,7 @@ onBeforeUnmount(() => {
     padding: 0.7rem 1.1rem;
   }
 
-  .btn-primary {
+  .btn-primary:not(.wa-cta) {
     padding-left: 1.2rem;
     padding-right: 0.7rem;
   }

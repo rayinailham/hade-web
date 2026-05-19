@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { waLink, WA_DISPLAY, DISCOUNT_PERCENT, SHOPEE_STORE } from '../composables/useContact'
 const year = new Date().getFullYear()
+const waUrl = waLink()
 </script>
 
 <template>
@@ -21,8 +23,15 @@ const year = new Date().getFullYear()
         </div>
 
         <div class="col">
-          <h4 class="mono">Belanja</h4>
-          <a href="https://s.shopee.co.id/4AwuG0d1or" target="_blank" rel="noreferrer">Toko Shopee</a>
+          <h4 class="mono">Pesan langsung</h4>
+          <a class="wa-link" :href="waUrl" target="_blank" rel="noreferrer">
+            <span class="wa-dot" aria-hidden="true"></span>
+            <span class="wa-stack">
+              <span>WhatsApp {{ WA_DISPLAY }}</span>
+              <span class="wa-perk mono">−{{ DISCOUNT_PERCENT }}% &middot; gratis ongkir</span>
+            </span>
+          </a>
+          <a :href="SHOPEE_STORE" target="_blank" rel="noreferrer">Lihat di Shopee</a>
           <a href="#products">Katalog</a>
           <a href="#compatibility">Kompatibilitas</a>
         </div>
@@ -35,7 +44,7 @@ const year = new Date().getFullYear()
 
         <div class="col">
           <h4 class="mono">Bantuan</h4>
-          <span class="meta">Chat 97% &middot; respon hitungan jam</span>
+          <span class="meta">Chat WA respon hitungan menit</span>
           <span class="meta">Pre-order 3 hari kerja</span>
           <span class="meta">Garansi 1 bulan</span>
         </div>
@@ -132,6 +141,51 @@ const year = new Date().getFullYear()
 .col a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
 
 .col .meta { color: rgba(245, 245, 243, 0.55); }
+
+.col .wa-link {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.6rem 0.85rem;
+  margin-bottom: 0.25rem;
+  border-radius: 14px;
+  background: rgba(31, 170, 85, 0.12);
+  border: 1px solid rgba(37, 200, 98, 0.35);
+  color: #cbf3dc;
+  text-decoration: none;
+  transition: background 0.4s var(--ease-out), border-color 0.4s var(--ease-out);
+}
+
+.col .wa-link:hover {
+  background: rgba(31, 170, 85, 0.2);
+  border-color: rgba(37, 200, 98, 0.55);
+  color: #e3fbed;
+  text-decoration: none;
+}
+
+.wa-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #25c862;
+  margin-top: 0.55rem;
+  box-shadow: 0 0 0 4px rgba(37, 200, 98, 0.18);
+  flex-shrink: 0;
+}
+
+.wa-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  line-height: 1.2;
+}
+
+.wa-perk {
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(203, 243, 220, 0.75);
+}
 
 .bottom {
   display: flex;
