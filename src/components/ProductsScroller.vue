@@ -942,4 +942,195 @@ onBeforeUnmount(() => ctx?.revert())
     scroll-snap-align: start;
   }
 }
+
+/* Mobile carousel — one card at a time */
+@media (max-width: 640px) {
+  .products-frame {
+    padding: 3rem 0 3rem;
+  }
+
+  .head {
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+  }
+
+  .head-left .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+
+  .head h2 {
+    font-size: 1.6rem;
+    line-height: 1.05;
+  }
+
+  .head-right {
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  .rail {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-left: var(--gutter);
+  }
+
+  .track-inner {
+    gap: 0.75rem;
+    padding-right: var(--gutter);
+  }
+
+  .card {
+    flex: 0 0 calc(100vw - calc(var(--gutter) * 2));
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    scroll-snap-align: center;
+  }
+
+  .card-shell {
+    border-radius: 18px;
+    padding: 4px;
+  }
+
+  .card-core {
+    border-radius: 14px;
+    padding: 1rem 1rem 1rem;
+    gap: 0.85rem;
+  }
+
+  .card-top {
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+  }
+
+  .best {
+    font-size: 9px;
+    padding: 0.2rem 0.45rem;
+  }
+
+  .visual {
+    height: 200px;
+    border-radius: 10px;
+  }
+
+  .family-tag {
+    font-size: 9px;
+    padding: 0.2rem 0.45rem;
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .counter {
+    font-size: 9px;
+    padding: 0.2rem 0.45rem;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .nav-btn {
+    width: 30px;
+    height: 30px;
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .nav-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .nav-prev { left: 0.4rem; }
+  .nav-next { right: 0.4rem; }
+
+  .dots {
+    bottom: 0.5rem;
+    gap: 0.25rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  .dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .dot.is-active {
+    width: 12px;
+  }
+
+  .card-body {
+    gap: 0.4rem;
+  }
+
+  .card-body h3 {
+    font-size: 1.05rem;
+    line-height: 1.1;
+  }
+
+  .mount {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+  }
+
+  .card-body ul {
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+  }
+
+  .card-body li {
+    font-size: 11.5px;
+    line-height: 1.4;
+    padding-left: 0.9rem;
+  }
+
+  .li-dot {
+    width: 4px;
+    height: 4px;
+    top: 0.5em;
+  }
+
+  .card-foot {
+    padding-top: 0.7rem;
+    align-items: center;
+  }
+
+  .label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.15rem;
+  }
+
+  .value {
+    font-size: 11.5px;
+  }
+
+  .buy-btn {
+    font-size: 11.5px;
+    padding: 0.45rem 0.5rem 0.45rem 0.8rem;
+    gap: 0.3rem;
+  }
+
+  .buy-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .buy-icon svg {
+    width: 9px;
+    height: 9px;
+  }
+
+  .cta-title {
+    font-size: 1.4rem;
+  }
+
+  .cta-card p {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .cta-link {
+    font-size: 12.5px;
+    padding: 0.7rem 1rem;
+  }
+}
 </style>

@@ -176,4 +176,61 @@ const year = new Date().getFullYear()
   .grid { grid-template-columns: 1fr; }
   .megatype { font-size: 28vw; }
 }
+
+@media (max-width: 640px) {
+  .foot {
+    padding: clamp(2.5rem, 6vh, 4rem) 0 0;
+  }
+
+  .grid {
+    gap: 1.5rem;
+    padding-bottom: 2.25rem;
+  }
+
+  .brand-row {
+    margin-bottom: 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .brand img {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
+  .brand-text {
+    font-size: 14px;
+    gap: 0.25rem;
+  }
+
+  .brand-text em {
+    font-size: 12.5px;
+  }
+
+  .brand p {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .col {
+    gap: 0.5rem;
+  }
+
+  .col h4 {
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.25rem;
+  }
+
+  .col a, .col .meta {
+    font-size: 12px;
+  }
+
+  .bottom {
+    padding: 1.25rem 0;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    gap: 0.4rem;
+  }
+}
 </style>

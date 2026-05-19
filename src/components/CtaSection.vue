@@ -269,4 +269,70 @@ onBeforeUnmount(() => {
 .dot-sep {
   color: rgba(245, 245, 243, 0.3);
 }
+
+@media (max-width: 640px) {
+  .cta-section {
+    padding: clamp(3rem, 7vh, 4.5rem) 0;
+  }
+
+  .card-shell {
+    border-radius: 24px;
+    padding: 5px;
+  }
+
+  .card-core {
+    border-radius: 20px;
+    padding: 1.75rem 1.5rem 1.75rem;
+  }
+
+  .card-core .eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .title {
+    font-size: 1.7rem;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    margin-bottom: 1rem;
+  }
+
+  .lede {
+    font-size: 12.5px;
+    line-height: 1.55;
+    margin-bottom: 1.75rem;
+  }
+
+  .actions {
+    gap: 0.45rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    font-size: 12.5px;
+    padding: 0.7rem 1.1rem;
+  }
+
+  .btn-primary {
+    padding-left: 1.2rem;
+    padding-right: 0.7rem;
+  }
+
+  .btn-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .btn-icon svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .meta {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    gap: 0.4rem 0.65rem;
+    padding-top: 1.1rem;
+  }
+}
 </style>

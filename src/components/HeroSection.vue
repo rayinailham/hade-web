@@ -664,4 +664,118 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
   40% { transform: scaleY(1); opacity: 1; }
   100% { transform: scaleY(1) translateY(36px); opacity: 0; }
 }
+
+@media (max-width: 640px) {
+  .hero {
+    min-height: auto;
+    padding: clamp(5.5rem, 12vh, 7rem) 0 2.5rem;
+  }
+
+  .hero-grid {
+    gap: 2rem;
+  }
+
+  .eyebrow {
+    margin-bottom: 1rem;
+  }
+
+  .headline {
+    font-size: 2.2rem;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 1rem;
+  }
+
+  .lede {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .actions {
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    font-size: 12.5px;
+    padding: 0.7rem 1.05rem;
+  }
+
+  .btn-primary {
+    padding-left: 1.15rem;
+    padding-right: 0.7rem;
+  }
+
+  .btn-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .btn-icon svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .meta-line {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 0;
+    padding-top: 1rem;
+  }
+
+  .meta-line > div {
+    padding-right: 0.75rem;
+  }
+
+  .meta-line > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .meta-line > div:nth-child(3) {
+    grid-column: 1 / -1;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--hairline);
+    border-right: 0;
+  }
+
+  .meta-line dt {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.25rem;
+  }
+
+  .meta-line dd {
+    font-size: 12.5px;
+  }
+
+  .device {
+    width: min(280px, 80%);
+  }
+
+  .device-shell {
+    border-radius: 26px;
+    padding: 7px;
+  }
+
+  .device-core {
+    border-radius: 20px;
+  }
+
+  .caption {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    bottom: -1.4rem;
+  }
+
+  .scroll-cue {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .headline {
+    font-size: 1.95rem;
+  }
+}
 </style>

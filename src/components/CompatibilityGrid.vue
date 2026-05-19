@@ -178,4 +178,56 @@ const rows = [
   .end { text-align: left; }
   .tag { align-self: flex-start; }
 }
+
+@media (max-width: 640px) {
+  .compat {
+    padding: clamp(3.5rem, 8vh, 5rem) 0;
+  }
+
+  .head {
+    margin-bottom: 2rem;
+    gap: 0.85rem;
+  }
+
+  .head h2 {
+    font-size: 1.55rem;
+    line-height: 1.05;
+  }
+
+  .head p {
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  .row {
+    padding: 1rem 0;
+    gap: 0.4rem;
+  }
+
+  .cell-lens {
+    font-size: 13.5px;
+    gap: 0.65rem;
+  }
+
+  .badge {
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+
+  .mount {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  .prod {
+    font-size: 12px;
+  }
+
+  .tag {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    padding: 0.25rem 0.55rem;
+  }
+}
 </style>

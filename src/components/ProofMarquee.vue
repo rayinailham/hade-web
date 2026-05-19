@@ -273,4 +273,73 @@ onBeforeUnmount(() => ctx?.revert())
   text-transform: uppercase;
   color: var(--fg-subtle);
 }
+
+@media (max-width: 640px) {
+  .proof {
+    padding: clamp(3.5rem, 8vh, 5rem) 0 clamp(2.5rem, 5vh, 3.5rem);
+  }
+
+  .head {
+    margin-bottom: 2rem;
+    gap: 0.85rem;
+  }
+
+  .head h2 {
+    font-size: 1.55rem;
+    line-height: 1.05;
+  }
+
+  .marquee::before, .marquee::after {
+    width: 8vw;
+  }
+
+  .marquee-row {
+    gap: 0.65rem;
+    padding-right: 0.65rem;
+  }
+
+  .stat {
+    padding: 0.7rem 1rem;
+    gap: 0.55rem;
+  }
+
+  .stat-value {
+    font-size: 1.05rem;
+  }
+
+  .stat-label {
+    font-size: 10.5px;
+  }
+
+  .marquee-reviews .marquee-row {
+    gap: 0.85rem;
+    padding-right: 0.85rem;
+  }
+
+  .review {
+    flex: 0 0 260px;
+    padding: 1.1rem 1.15rem;
+    border-radius: 14px;
+    gap: 0.75rem;
+  }
+
+  .quote {
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+
+  .review footer {
+    padding-top: 0.65rem;
+    gap: 0.15rem;
+  }
+
+  .who {
+    font-size: 12px;
+  }
+
+  .role {
+    font-size: 9.5px;
+    letter-spacing: 0.13em;
+  }
+}
 </style>

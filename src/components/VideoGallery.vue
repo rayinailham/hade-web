@@ -365,10 +365,89 @@ function embedSrc(v: Video) {
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 640px) {
+  .videos {
+    padding: clamp(3rem, 7vh, 4.5rem) 0;
+  }
+
+  .head {
+    margin-bottom: 2rem;
+    gap: 0.75rem;
+  }
+
+  .head h2 {
+    font-size: 1.4rem;
+    line-height: 1.1;
+  }
+
+  .head p {
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
   .grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem 0.75rem;
+  }
+
+  .card {
+    gap: 0.55rem;
+  }
+
+  .player {
+    border-radius: 9px;
+  }
+
+  .play {
+    width: 36px;
+    height: 36px;
+  }
+
+  .play svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .num {
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+  }
+
+  .card-meta {
+    gap: 0.3rem;
+  }
+
+  .card-meta h3 {
+    font-size: 0.78rem;
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+  }
+
+  .row {
+    font-size: 10px;
+    gap: 0.3rem;
+  }
+
+  .topic {
+    font-size: 10.5px;
+  }
+
+  .footnote {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .head h2 {
+    font-size: 1.25rem;
+  }
+
+  .card-meta h3 {
+    font-size: 0.72rem;
   }
 }
 </style>

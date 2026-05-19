@@ -278,4 +278,52 @@ onBeforeUnmount(() => {
     margin-top: 0.25rem;
   }
 }
+
+@media (max-width: 640px) {
+  .nav {
+    top: 0.75rem;
+    padding: 0 0.75rem;
+  }
+
+  .nav-inner {
+    padding: 0.3rem 0.3rem 0.3rem 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .brand {
+    padding-right: 0.55rem;
+    gap: 0.45rem;
+  }
+
+  .brand img {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+  }
+
+  .brand-text {
+    font-size: 12.5px;
+    gap: 0.2rem;
+  }
+
+  .brand-text em {
+    font-size: 11.5px;
+  }
+
+  .burger {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mobile-panel {
+    left: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .mobile-panel button,
+  .mobile-panel .cta {
+    font-size: 13.5px;
+    padding: 0.7rem 0.85rem;
+  }
+}
 </style>
