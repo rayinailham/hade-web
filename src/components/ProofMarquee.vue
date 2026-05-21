@@ -136,6 +136,7 @@ onBeforeUnmount(() => ctx?.revert())
 .head {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1.25rem;
   margin-bottom: 3.5rem;
   max-width: 760px;

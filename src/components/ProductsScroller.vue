@@ -241,50 +241,25 @@ const progressBar = ref<HTMLElement | null>(null)
 let ctx: gsap.Context | null = null
 
 onMounted(() => {
-  if (!root.value || !track.value) return
+  if (!root.value) return
 
   ctx = gsap.context(() => {
-    const trackEl = track.value!
-    const totalScroll = () => trackEl.scrollWidth - window.innerWidth
-
-    const isMobile = window.matchMedia('(max-width: 900px)').matches
-    if (isMobile) return // skip pinned horizontal scroll on mobile
-
-    const horizontalTween = gsap.to(trackEl, {
-      x: () => -totalScroll(),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: root.value!,
-        start: 'top top',
-        end: () => '+=' + totalScroll(),
-        scrub: 0.7,
-        pin: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          if (progressBar.value) {
-            progressBar.value.style.transform = `scaleX(${self.progress})`
-          }
-        },
-      },
-    })
-
-    // Per-card subtle scale-in tied to the horizontal tween
-    const cards = trackEl.querySelectorAll<HTMLElement>('.card')
-    cards.forEach((card) => {
+    // Subtle entrance for each card on scroll into view
+    const cards = root.value!.querySelectorAll<HTMLElement>('.card')
+    cards.forEach((card, i) => {
       gsap.fromTo(
         card,
-        { scale: 0.95, opacity: 0.4 },
+        { y: 28, opacity: 0 },
         {
-          scale: 1,
+          y: 0,
           opacity: 1,
+          duration: 0.7,
           ease: 'power2.out',
+          delay: (i % 3) * 0.06,
           scrollTrigger: {
             trigger: card,
-            containerAnimation: horizontalTween,
-            start: 'left 90%',
-            end: 'left 50%',
-            scrub: true,
+            start: 'top 88%',
+            once: true,
           },
         },
       )
@@ -533,11 +508,9 @@ onBeforeUnmount(() => ctx?.revert())
 
 .products-frame {
   position: relative;
-  height: 100dvh;
   display: flex;
   flex-direction: column;
-  padding: clamp(4rem, 7vh, 5.5rem) 0 clamp(1.5rem, 3vh, 2.25rem);
-  overflow: hidden;
+  padding: clamp(4rem, 8vh, 6rem) 0 clamp(4rem, 8vh, 6rem);
 }
 
 .head {
@@ -603,35 +576,35 @@ onBeforeUnmount(() => ctx?.revert())
   transition: transform 0.1s linear;
 }
 
+.progress {
+  display: none;
+}
+
+.progress-bar {
+  display: none;
+}
+
 .rail {
-  flex: 1;
-  display: flex;
-  align-items: center;
   width: 100%;
-  overflow: hidden;
-  min-height: 0;
-  padding: clamp(0.75rem, 1.5vh, 1.25rem) 0;
+  padding: 0 var(--gutter);
+  max-width: var(--container);
+  margin: 0 auto;
 }
 
 .track {
   display: block;
-  will-change: transform;
-  height: 100%;
 }
 
 .track-inner {
-  display: flex;
-  gap: 1.25rem;
-  padding-left: var(--gutter);
-  padding-right: 25vw;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
   align-items: stretch;
-  height: 100%;
 }
 
 .card {
-  flex: 0 0 clamp(320px, 30vw, 420px);
-  height: 100%;
-  max-height: 580px;
+  width: 100%;
+  height: auto;
   min-height: 0;
 }
 
@@ -682,6 +655,7 @@ onBeforeUnmount(() => ctx?.revert())
 .visual {
   position: relative;
   height: 48%;
+  min-height: 280px;
   background:
     linear-gradient(180deg, #fafaf9, #ececea);
   border: 1px solid var(--hairline);
@@ -748,11 +722,11 @@ onBeforeUnmount(() => ctx?.revert())
 
 .visual-img.is-active {
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1.05);
 }
 
 .card:hover .visual-img.is-active {
-  transform: scale(1.05);
+  transform: scale(1.09);
   filter: grayscale(0) contrast(1.06);
 }
 
@@ -1259,22 +1233,18 @@ onBeforeUnmount(() => ctx?.revert())
 /* Mobile fallback */
 @media (max-width: 900px) {
   .products-frame {
-    height: auto;
     padding: 4.5rem 0 3rem;
   }
   .head {
     grid-template-columns: 1fr;
     margin-bottom: 1.75rem;
   }
-  .progress { display: none; }
 
-  /* Lock the rail — no native horizontal scroll. Vertical page scroll
-     stays free because touch-action is pan-y. */
+  /* Switch to single-card slider on mobile */
   .rail {
     overflow: hidden;
     touch-action: pan-y;
-    scroll-snap-type: none;
-    width: 100%;
+    padding: 0;
   }
 
   .track {
@@ -1284,9 +1254,10 @@ onBeforeUnmount(() => ctx?.revert())
   }
 
   .track-inner {
+    display: flex;
+    grid-template-columns: none;
     gap: 0;
-    padding-left: 0;
-    padding-right: 0;
+    padding: 0;
     width: 100%;
   }
 
