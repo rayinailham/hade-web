@@ -113,31 +113,28 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
     <div class="grain" aria-hidden="true"></div>
 
     <div class="container hero-grid">
-      <div class="left">
-        <span class="eyebrow">
-          <span class="mono">est. 2017 — sukabumi</span>
+      <span class="eyebrow">
+        <span class="mono">est. 2017 — sukabumi</span>
+      </span>
+
+      <h1 ref="headline" class="headline">
+        <span class="line">
+          <span v-for="(w, i) in headlineWords.slice(0, 2)" :key="i" class="word-wrap">
+            <span data-word>{{ w }}</span>
+          </span>
         </span>
-
-        <h1 ref="headline" class="headline">
-          <span class="line">
-            <span v-for="(w, i) in headlineWords.slice(0, 2)" :key="i" class="word-wrap">
-              <span data-word>{{ w }}</span>
-            </span>
+        <span class="line italic">
+          <span v-for="(w, i) in headlineWords.slice(2)" :key="i" class="word-wrap">
+            <span data-word>{{ w }}</span>
           </span>
-          <span class="line italic">
-            <span v-for="(w, i) in headlineWords.slice(2)" :key="i" class="word-wrap">
-              <span data-word>{{ w }}</span>
-            </span>
-          </span>
-        </h1>
+        </span>
+      </h1>
 
-        <p class="lede">
-          Adapter presisi yang menghubungkan lensa DSLR dan mirrorless ke
-          smartphone. Optik yang sudah kamu kenal — di kamera yang selalu
-          ada di sakumu.
-        </p>
+      <p class="lede">
+        Adapter lensa DSLR/mirrorless ke smartphone.
+      </p>
 
-        <div class="actions">
+      <div class="actions">
           <a class="btn-primary wa-cta" :href="waUrl" target="_blank" rel="noreferrer">
             <span class="wa-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="currentColor">
@@ -168,24 +165,22 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
           </a>
         </div>
 
-        <dl class="meta-line">
-          <div>
-            <dt>Terjual</dt>
-            <dd class="mono tick">230+ unit</dd>
-          </div>
-          <div>
-            <dt>Rating rata-rata</dt>
-            <dd class="mono tick">4.78 / 5</dd>
-          </div>
-          <div>
-            <dt>Tonton</dt>
-            <dd class="mono tick">527K views</dd>
-          </div>
-        </dl>
-      </div>
+      <dl class="meta-line">
+        <div>
+          <dt>Terjual</dt>
+          <dd class="mono tick">230+ unit</dd>
+        </div>
+        <div>
+          <dt>Rating rata-rata</dt>
+          <dd class="mono tick">4.78 / 5</dd>
+        </div>
+        <div>
+          <dt>Tonton</dt>
+          <dd class="mono tick">527K views</dd>
+        </div>
+      </dl>
 
-      <div class="right">
-        <div class="device">
+      <div class="device">
           <!-- OLD: pure CSS/HTML device (kept as fallback — re-enable if needed)
           <div class="device-shell">
             <div class="device-core">
@@ -302,8 +297,7 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
             </g>
           </svg>
 
-          <span class="caption mono">hade · clamp adapter v.2026</span>
-        </div>
+        <span class="caption mono">hade · clamp adapter v.2026</span>
       </div>
     </div>
 
@@ -379,17 +373,52 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 .hero-grid {
   display: grid;
   grid-template-columns: 1.05fr 1fr;
+  grid-template-areas:
+    "eyebrow  device"
+    "headline device"
+    "lede     device"
+    "actions  device"
+    "alt      device"
+    "meta     device";
   align-items: center;
-  gap: clamp(2rem, 5vw, 4rem);
+  gap: 0 clamp(2rem, 5vw, 4rem);
   position: relative;
   z-index: 1;
 }
 
+.hero-grid > .eyebrow  { grid-area: eyebrow; }
+.hero-grid > .headline { grid-area: headline; }
+.hero-grid > .lede     { grid-area: lede; }
+.hero-grid > .actions  { grid-area: actions; }
+.hero-grid > .alt-row  { grid-area: alt; }
+.hero-grid > .meta-line{ grid-area: meta; }
+.hero-grid > .device {
+  grid-area: device;
+  justify-self: center;
+  align-self: center;
+}
+
 @media (max-width: 900px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    gap: 3rem;
+  .hero {
+    min-height: auto;
+    padding: clamp(5.5rem, 12vh, 7rem) 0 clamp(2.5rem, 6vh, 4rem);
   }
+
+  .hero-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  /* Mobile order: headline → lede → device → eyebrow → CTAs → alt → meta */
+  .headline  { order: 1; margin-bottom: 0; }
+  .lede      { order: 2; margin: 0; max-width: 100%; }
+  .device    { order: 3; margin: 0.25rem auto 0.75rem; }
+  .eyebrow   { order: 4; align-self: flex-start; margin-bottom: 0; }
+  .actions   { order: 5; margin-bottom: 0; }
+  .alt-row   { order: 6; margin-bottom: 0; }
+  .meta-line { order: 7; max-width: 100%; }
 }
 
 .eyebrow {
@@ -916,86 +945,119 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 @media (max-width: 640px) {
   .hero {
     min-height: auto;
-    padding: clamp(5.5rem, 12vh, 7rem) 0 2.5rem;
+    padding: clamp(5rem, 11vh, 6.5rem) 0 2.25rem;
   }
 
+  /* Soften textures on mobile so headline holds focus */
+  .grid-tex {
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(ellipse 110% 60% at 50% 35%, #000 25%, transparent 75%);
+            mask-image: radial-gradient(ellipse 110% 60% at 50% 35%, #000 25%, transparent 75%);
+  }
+
+  .halftone {
+    width: 80%;
+    height: 60%;
+    bottom: -10%;
+    opacity: 0.22;
+    background-size: 9px 9px;
+  }
+
+  .grain { opacity: 0.04; }
+
   .hero-grid {
-    gap: 2rem;
+    gap: 1.4rem;
   }
 
   .eyebrow {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
+    padding: 0.32rem 0.7rem;
+    font-size: 10px;
+    letter-spacing: 0.2em;
   }
 
   .headline {
-    font-size: 1.85rem;
-    line-height: 0.98;
-    letter-spacing: -0.04em;
-    margin-bottom: 1rem;
+    font-size: clamp(2.4rem, 11.5vw, 3.4rem);
+    line-height: 0.96;
+    letter-spacing: -0.045em;
+    margin-bottom: 0;
+  }
+
+  .headline .line {
+    gap: 0 0.32ch;
   }
 
   .lede {
-    font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 0;
+    color: var(--fg-muted);
+    max-width: 38ch;
   }
 
   .actions {
-    gap: 0.5rem;
-    margin-bottom: 0.85rem;
+    gap: 0.55rem;
+    margin-bottom: 0;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .btn-primary.wa-cta {
     width: 100%;
     justify-content: flex-start;
-    padding: 0.55rem 0.6rem 0.55rem 0.6rem;
-    gap: 0.6rem;
+    padding: 0.7rem 0.75rem 0.7rem 0.7rem;
+    gap: 0.7rem;
+    border-radius: 18px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      0 18px 40px -16px rgba(18, 140, 74, 0.55);
   }
 
   .wa-icon {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
 
-  .wa-icon svg { width: 16px; height: 16px; }
+  .wa-icon svg { width: 17px; height: 17px; }
 
-  .wa-line { font-size: 13px; }
-  .wa-sub { font-size: 9.5px; letter-spacing: 0.14em; }
+  .wa-line { font-size: 14px; font-weight: 500; }
+  .wa-sub  { font-size: 9.5px; letter-spacing: 0.16em; }
 
   .wa-cta .btn-icon {
     margin-left: auto;
+    width: 30px;
+    height: 30px;
+  }
+
+  .btn-ghost {
+    width: 100%;
+    justify-content: center;
+    padding: 0.78rem 1.1rem;
+    font-size: 13px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.55);
   }
 
   .alt-row {
-    margin-bottom: 1.5rem;
-    gap: 0.5rem;
+    margin-bottom: 0;
+    gap: 0.55rem;
+    justify-content: flex-start;
   }
 
   .alt-label {
     font-size: 9.5px;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.18em;
   }
 
   .btn-shopee {
-    font-size: 11px;
-    padding: 0.32rem 0.7rem 0.32rem 0.35rem;
+    font-size: 11.5px;
+    padding: 0.38rem 0.8rem 0.38rem 0.4rem;
   }
 
   .shopee-mark {
-    width: 16px;
-    height: 16px;
-    font-size: 10px;
-  }
-
-  .btn-primary,
-  .btn-ghost {
-    font-size: 12.5px;
-    padding: 0.7rem 1.05rem;
-  }
-
-  .btn-primary:not(.wa-cta) {
-    padding-left: 1.15rem;
-    padding-right: 0.7rem;
+    width: 17px;
+    height: 17px;
+    font-size: 10.5px;
   }
 
   .btn-icon {
@@ -1009,30 +1071,25 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
   }
 
   .meta-line {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem 0;
-    padding-top: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    padding-top: 1.1rem;
+    margin-top: 0.25rem;
   }
 
   .meta-line > div {
-    padding-right: 0.75rem;
+    padding-right: 0.6rem;
   }
 
-  .meta-line > div:nth-child(2) {
+  .meta-line > div:last-child {
     border-right: 0;
-  }
-
-  .meta-line > div:nth-child(3) {
-    grid-column: 1 / -1;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--hairline);
-    border-right: 0;
+    padding-right: 0;
   }
 
   .meta-line dt {
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 0.14em;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.35rem;
   }
 
   .meta-line dd {
@@ -1040,22 +1097,24 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
   }
 
   .device {
-    width: min(280px, 80%);
+    width: min(280px, 78%);
+    aspect-ratio: 3 / 4;
+    filter: drop-shadow(0 24px 36px rgba(14, 14, 15, 0.18));
   }
 
   .device-shell {
-    border-radius: 26px;
-    padding: 7px;
+    border-radius: 28px;
+    padding: 8px;
   }
 
   .device-core {
-    border-radius: 20px;
+    border-radius: 22px;
   }
 
   .caption {
-    font-size: 9.5px;
-    letter-spacing: 0.14em;
-    bottom: -1.4rem;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    bottom: -1.5rem;
   }
 
   .scroll-cue {
@@ -1064,8 +1123,29 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 }
 
 @media (max-width: 380px) {
+  .hero {
+    padding-top: 4.5rem;
+  }
+
   .headline {
-    font-size: 1.95rem;
+    font-size: clamp(2.1rem, 12vw, 2.6rem);
+  }
+
+  .lede {
+    font-size: 14px;
+  }
+
+  .device {
+    width: min(240px, 80%);
+  }
+
+  .meta-line dt {
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+  }
+
+  .meta-line dd {
+    font-size: 11.5px;
   }
 }
 </style>
