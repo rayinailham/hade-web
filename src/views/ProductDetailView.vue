@@ -111,13 +111,17 @@ const SWIPE_THRESHOLD = 50
 function onDragStart(e: PointerEvent) {
   if (!product.value || product.value.images.length < 2) return
   if (e.pointerType === 'mouse' && e.button !== 0) return
+  // Skip when pointer starts on interactive child (arrow buttons), so their
+  // click events fire normally without being eaten by setPointerCapture.
+  const target = e.target as HTMLElement | null
+  if (target?.closest('button, a')) return
   pointerId = e.pointerId
   dragStartX = e.clientX
   dragStartY = e.clientY
   lockedAxis = null
   isDragging.value = true
   dragOffset.value = 0
-  mainRef.value?.setPointerCapture(e.pointerId)
+  // Defer setPointerCapture until x-axis drag is confirmed in onDragMove.
 }
 
 function onDragMove(e: PointerEvent) {
@@ -132,6 +136,9 @@ function onDragMove(e: PointerEvent) {
       cancelDrag()
       return
     }
+    if (lockedAxis === 'x') {
+      try { mainRef.value?.setPointerCapture(e.pointerId) } catch {}
+    }
   }
 
   if (lockedAxis === 'x') {
@@ -143,10 +150,14 @@ function onDragMove(e: PointerEvent) {
 function onDragEnd(e: PointerEvent) {
   if (!isDragging.value || e.pointerId !== pointerId) return
   const dx = dragOffset.value
+  const wasAxisLocked = lockedAxis
   finishDrag()
-  if (Math.abs(dx) > SWIPE_THRESHOLD) {
+  if (wasAxisLocked === 'x' && Math.abs(dx) > SWIPE_THRESHOLD) {
     if (dx < 0) nextImg()
     else prevImg()
+  } else if (wasAxisLocked === null) {
+    // No real drag — treat as click → open lightbox
+    openLightbox()
   }
 }
 
@@ -167,6 +178,81 @@ function finishDrag() {
 const galleryStyle = computed(() => {
   if (!isDragging.value) return {}
   return { '--drag-x': `${dragOffset.value}px` } as Record<string, string>
+})
+
+// Share
+const shareCopied = ref(false)
+let shareResetTimer: ReturnType<typeof setTimeout> | null = null
+
+async function shareProduct() {
+  if (!product.value) return
+  const url = typeof window !== 'undefined' ? window.location.href : ''
+  const shareData = {
+    title: product.value.name,
+    text: `${product.value.name} — ${product.value.tagline}`,
+    url,
+  }
+  // Prefer native share sheet (mobile)
+  if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+    try {
+      await navigator.share(shareData)
+      return
+    } catch (err) {
+      // User cancelled — bail without copy fallback
+      if (err instanceof DOMException && err.name === 'AbortError') return
+    }
+  }
+  // Clipboard fallback
+  try {
+    if (navigator?.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url)
+    } else if (typeof document !== 'undefined') {
+      const ta = document.createElement('textarea')
+      ta.value = url
+      ta.style.position = 'fixed'
+      ta.style.opacity = '0'
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+    }
+    shareCopied.value = true
+    if (shareResetTimer) clearTimeout(shareResetTimer)
+    shareResetTimer = setTimeout(() => { shareCopied.value = false }, 1800)
+  } catch {}
+}
+
+// Lightbox
+const lightboxOpen = ref(false)
+
+function openLightbox() {
+  if (!product.value || product.value.images.length === 0) return
+  lightboxOpen.value = true
+}
+
+function closeLightbox() {
+  lightboxOpen.value = false
+}
+
+function onLightboxKey(e: KeyboardEvent) {
+  if (!lightboxOpen.value) return
+  if (e.key === 'Escape') closeLightbox()
+  else if (e.key === 'ArrowRight') nextImg()
+  else if (e.key === 'ArrowLeft') prevImg()
+}
+
+watch(lightboxOpen, (open) => {
+  if (typeof document === 'undefined') return
+  document.body.style.overflow = open ? 'hidden' : ''
+  if (open) window.addEventListener('keydown', onLightboxKey)
+  else window.removeEventListener('keydown', onLightboxKey)
+})
+
+onBeforeUnmount(() => {
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = ''
+    window.removeEventListener('keydown', onLightboxKey)
+  }
 })
 </script>
 
@@ -298,6 +384,25 @@ const galleryStyle = computed(() => {
             </div>
 
             <div class="pd-actions" data-stagger>
+              <button
+                type="button"
+                class="btn btn-share"
+                :class="{ 'is-copied': shareCopied }"
+                :aria-label="shareCopied ? 'Tautan disalin' : 'Bagikan produk'"
+                @click="shareProduct"
+              >
+                <span class="share-icon" aria-hidden="true">
+                  <svg v-if="!shareCopied" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 8a3 3 0 1 0-2.83-4H15a3 3 0 0 0 .17 4l-6.34 3.66A3 3 0 1 0 9 14l6 3.34A3 3 0 1 0 18 16a3 3 0 0 0-1.83.66L9.83 13A3.04 3.04 0 0 0 9 11l6.17-3.66A3 3 0 0 0 18 8z"
+                      stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                  </svg>
+                  <svg v-else viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor"
+                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="share-label">{{ shareCopied ? 'Tautan disalin' : 'Bagikan' }}</span>
+              </button>
               <a class="btn btn-shopee" :href="product.link" target="_blank" rel="noreferrer">
                 Lihat di Shopee
               </a>
@@ -341,6 +446,67 @@ const galleryStyle = computed(() => {
     <template v-if="product">
       <ProductDetailBody :product="product" :related="related" />
     </template>
+
+    <!-- Lightbox -->
+    <Transition name="lb">
+      <div
+        v-if="lightboxOpen && product"
+        class="lb"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Pratinjau foto produk"
+        @click.self="closeLightbox"
+      >
+        <button
+          type="button"
+          class="lb-close"
+          aria-label="Tutup"
+          @click="closeLightbox"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <button
+          v-if="product.images.length > 1"
+          type="button"
+          class="lb-arrow lb-prev"
+          aria-label="Foto sebelumnya"
+          @click.stop="prevImg"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M10 3l-5 5 5 5" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button
+          v-if="product.images.length > 1"
+          type="button"
+          class="lb-arrow lb-next"
+          aria-label="Foto berikutnya"
+          @click.stop="nextImg"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M6 3l5 5-5 5" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <figure class="lb-stage" @click.self="closeLightbox">
+          <img
+            :src="product.images[activeImage]"
+            :alt="product.name"
+            class="lb-img"
+            draggable="false"
+          />
+          <figcaption class="lb-caption mono">
+            {{ activeImage + 1 }} / {{ product.images.length }}
+          </figcaption>
+        </figure>
+      </div>
+    </Transition>
   </main>
 </template>
 
@@ -437,7 +603,7 @@ const galleryStyle = computed(() => {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
-  background: var(--c-paper-2);
+  background: #fff;
   border-radius: 6px;
   overflow: hidden;
   touch-action: pan-y;
@@ -455,7 +621,7 @@ const galleryStyle = computed(() => {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   filter: contrast(1.02);
   transition: transform 0.55s var(--ease-out);
   will-change: transform;
@@ -735,6 +901,33 @@ const galleryStyle = computed(() => {
   background: rgba(14, 14, 15, 0.04);
 }
 
+.btn-share {
+  background: transparent;
+  color: var(--c-ink);
+  border-color: var(--hairline-strong);
+  padding: 0.85rem 1.1rem;
+}
+
+.btn-share:hover {
+  border-color: var(--c-ink);
+  background: rgba(14, 14, 15, 0.04);
+}
+
+.btn-share.is-copied {
+  border-color: #128c4a;
+  color: #128c4a;
+}
+
+.share-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.share-icon svg { width: 16px; height: 16px; }
+
 .btn-dark {
   background: var(--c-ink);
   color: var(--c-paper);
@@ -786,6 +979,98 @@ const galleryStyle = computed(() => {
   color: var(--c-iron);
   letter-spacing: -0.05em;
 }
+
+/* Lightbox */
+.lb {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 14, 15, 0.92);
+  backdrop-filter: blur(8px);
+  padding: clamp(1rem, 4vw, 3rem);
+}
+
+.lb-stage {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  pointer-events: none;
+}
+
+.lb-img {
+  max-width: 100%;
+  max-height: calc(100% - 2.4rem);
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+  pointer-events: auto;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.lb-caption {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+
+.lb-close,
+.lb-arrow {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: background 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+.lb-close svg,
+.lb-arrow svg { width: 16px; height: 16px; }
+
+.lb-close { top: clamp(1rem, 3vw, 1.5rem); right: clamp(1rem, 3vw, 1.5rem); }
+.lb-prev { left: clamp(1rem, 3vw, 1.5rem); top: 50%; transform: translateY(-50%); }
+.lb-next { right: clamp(1rem, 3vw, 1.5rem); top: 50%; transform: translateY(-50%); }
+
+.lb-close:hover,
+.lb-arrow:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.lb-prev:hover { transform: translateY(-50%) scale(1.06); }
+.lb-next:hover { transform: translateY(-50%) scale(1.06); }
+.lb-close:hover { transform: scale(1.06); }
+
+/* Lightbox transition */
+.lb-enter-active,
+.lb-leave-active {
+  transition: opacity 0.3s var(--ease-out);
+}
+.lb-enter-active .lb-img,
+.lb-leave-active .lb-img {
+  transition: transform 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
+}
+.lb-enter-from,
+.lb-leave-to { opacity: 0; }
+.lb-enter-from .lb-img,
+.lb-leave-to .lb-img { transform: scale(0.96); opacity: 0; }
 
 /* Responsive */
 @media (max-width: 1024px) {
@@ -893,6 +1178,22 @@ const galleryStyle = computed(() => {
     color: var(--c-ink);
   }
   .pd-actions .btn-shopee:hover { background: rgba(14, 14, 15, 0.04); }
+  .pd-actions .btn-share {
+    flex: 0 0 56px;
+    width: 56px;
+    padding: 0;
+    background: #fff;
+    color: var(--c-ink);
+    border-right: 1px solid var(--hairline-strong);
+  }
+  .pd-actions .btn-share.is-copied {
+    color: #128c4a;
+  }
+  .pd-actions .btn-share .share-label {
+    display: none;
+  }
+  .pd-actions .btn-share .share-icon { width: 18px; height: 18px; }
+  .pd-actions .btn-share .share-icon svg { width: 18px; height: 18px; }
   .pd-actions .wa-mark { width: 24px; height: 24px; }
   .pd-actions .wa-mark svg { width: 12px; height: 12px; }
 
