@@ -34,16 +34,17 @@ export function waProductLink(productName: string, price?: string): string {
 }
 
 /**
- * Open Shopee product link. Tries to open the native Shopee app on mobile
- * without leaving the current tab.
+ * Open Shopee product link. On Android, tries to launch the Shopee app
+ * directly without leaving the hade page or spawning an extra tab.
  *
- * - Android: opens a new tab with an `intent://` URL — Chrome launches the
- *   Shopee app if installed, otherwise auto-falls back to the regular web URL
- *   inside that same new tab via `S.browser_fallback_url`.
- * - iOS: lets the default `target="_blank"` anchor open in a new tab. iOS
- *   universal links route `https://shopee.co.id/...` straight to the Shopee
- *   app when installed, otherwise the new tab simply shows the web page.
- * - Desktop: lets the default anchor open in a new tab.
+ * Strategy:
+ * - Android: set `location.href` to an `intent://` URL targeting the Shopee
+ *   package. Chrome hands it to the app — current tab is NOT navigated.
+ *   If the app isn't installed, a 1.5s timer opens shopee.co.id in a new
+ *   tab as a fallback. We watch `visibilitychange`: if the page is
+ *   backgrounded the app launched, so we skip the fallback.
+ * - iOS / desktop: rely on the default `target="_blank"` anchor (universal
+ *   links route iOS users into the app automatically when installed).
  *
  * Usage in template:
  *   <a :href="url" target="_blank" @click="openShopeeProduct(url, $event)">
@@ -53,15 +54,8 @@ export function openShopeeProduct(webUrl: string, e?: Event): void {
 
   const ua = navigator.userAgent || ''
   const isAndroid = /android/i.test(ua)
-
-  // Only Android needs custom handling — iOS + desktop ride on `target="_blank"`
-  // and (on iOS) universal links.
   if (!isAndroid) return
 
-  // Use HTTPS scheme + package targeting. Shopee app registers as default
-  // handler for shopee.co.id app-links and routes the URL to the correct
-  // product page. Custom shopeeid:// schemes often dump users on the home
-  // screen because the path format keeps changing.
   let parsed: URL
   try {
     parsed = new URL(webUrl)
@@ -70,17 +64,32 @@ export function openShopeeProduct(webUrl: string, e?: Event): void {
   }
 
   e?.preventDefault()
+
+  // No `S.browser_fallback_url` — we don't want Chrome to auto-navigate the
+  // current tab if the app is missing. We control the fallback ourselves.
   const path = `${parsed.host}${parsed.pathname}${parsed.search}`
   const intentUrl =
     `intent://${path}` +
-    `#Intent;scheme=https;package=com.shopee.id;` +
-    `S.browser_fallback_url=${encodeURIComponent(webUrl)};end`
+    `#Intent;scheme=https;package=com.shopee.id;end`
 
-  const opened = window.open(intentUrl, '_blank', 'noopener,noreferrer')
-  if (!opened) {
-    // Popup blocked — fall back to plain web URL in a new tab. If even that
-    // fails (rare), navigate the current tab as a last resort.
-    const fallback = window.open(webUrl, '_blank', 'noopener,noreferrer')
-    if (!fallback) window.location.href = webUrl
+  let fallbackFired = false
+  const fallbackTimer = window.setTimeout(() => {
+    fallbackFired = true
+    window.open(webUrl, '_blank', 'noopener,noreferrer')
+  }, 1500)
+
+  const onVisibility = () => {
+    // App took over → page is hidden. Cancel the fallback so we don't open
+    // an extra tab when the user comes back.
+    if (document.visibilityState === 'hidden' && !fallbackFired) {
+      window.clearTimeout(fallbackTimer)
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
   }
+  document.addEventListener('visibilitychange', onVisibility)
+
+  // Fire the intent in the current tab. If the app is installed Chrome
+  // routes it to Shopee without changing this page; if not, our timeout
+  // opens the web URL in a new tab.
+  window.location.href = intentUrl
 }
