@@ -451,9 +451,17 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 
 .word-wrap {
   display: inline-flex;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: visible;
   padding: 0 0.04em 0.1em;
   margin: 0 0 -0.05em;
+}
+
+.headline .italic .word-wrap {
+  padding-left: 0.12em;
+  padding-right: 0.12em;
+  margin-left: -0.08em;
+  margin-right: -0.08em;
 }
 
 .word-wrap > span[data-word] {
