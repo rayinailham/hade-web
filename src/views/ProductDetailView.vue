@@ -72,12 +72,6 @@ onBeforeUnmount(() => {
 
 function selectImage(i: number) {
   activeImage.value = i
-  // soft glide on the main image
-  gsap.fromTo(
-    '.pd-main-img',
-    { opacity: 0.4, scale: 1.04 },
-    { opacity: 1, scale: 1, duration: 0.8, ease: 'power3.out' },
-  )
 }
 
 function nextImg() {
@@ -282,6 +276,7 @@ function prevImg() {
   padding: 0.4rem 0.7rem 0.4rem 0.5rem;
   border-radius: 999px;
   border: 1px solid var(--hairline-strong);
+  background: #fff;
   transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
 }
 
@@ -337,8 +332,6 @@ function prevImg() {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  position: sticky;
-  top: 130px;
 }
 
 .pd-main {

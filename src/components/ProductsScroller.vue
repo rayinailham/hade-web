@@ -152,6 +152,12 @@ onBeforeUnmount(() => {
         </div>
       </header>
 
+      <div class="rail-top">
+        <RouterLink to="/products" class="view-all mono">
+          lihat semua →
+        </RouterLink>
+      </div>
+
       <div
         class="rail"
         @touchstart.passive="onTouchStart"
@@ -332,6 +338,31 @@ onBeforeUnmount(() => {
 
 .progress,
 .progress-bar { display: none; }
+
+/* View all link above rail */
+.rail-top {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 var(--gutter);
+  max-width: var(--container);
+  margin: 0 auto clamp(1rem, 2vh, 1.4rem);
+  width: 100%;
+}
+
+.view-all {
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition: color 0.3s var(--ease-out);
+}
+
+.view-all:hover {
+  color: var(--fg-muted);
+}
 
 /* Rail */
 .rail {

@@ -28,7 +28,7 @@ function onEnter(el: Element, done: () => void) {
     opacity: 1,
     y: 0,
     filter: 'blur(0px)',
-    duration: 0.85,
+    duration: 0.5,
     ease: 'power3.out',
     onComplete: () => {
       transitioning.value = false
@@ -42,7 +42,7 @@ function onLeave(el: Element, done: () => void) {
     opacity: 0,
     y: -16,
     filter: 'blur(6px)',
-    duration: 0.45,
+    duration: 0.25,
     ease: 'power2.in',
     onComplete: done,
   })

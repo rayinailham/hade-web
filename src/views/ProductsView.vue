@@ -116,73 +116,77 @@ function setFilter(f: Filter) {
       </div>
     </section>
 
-    <!-- Filter rail -->
-    <section class="cat-filters">
-      <div class="container">
-        <div class="filter-row">
-          <button
-            v-for="f in filters"
-            :key="f"
-            type="button"
-            class="filter-chip"
-            :class="{ 'is-active': activeFilter === f }"
-            @click="setFilter(f)"
-          >
-            <span>{{ f }}</span>
-            <span v-if="f !== 'Semua'" class="filter-count mono">
-              {{ products.filter(p => p.family === f).length }}
-            </span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Grid -->
+    <!-- Filter + Grid layout -->
     <section class="cat-grid-wrap">
       <div class="container">
-        <div class="cat-grid">
-          <RouterLink
-            v-for="p in visibleProducts"
-            :key="p.slug"
-            :to="`/products/${p.slug}`"
-            class="cat-card"
-            :class="{ 'is-best': p.best }"
-            :style="{ '--r': aspectMap[p.slug] ?? 1.25 }"
-          >
-            <div class="card-visual">
-              <img
-                :src="p.images[0]"
-                :alt="p.name"
-                loading="lazy"
-                decoding="async"
-                @load="(e) => onImgLoad(p.slug, e)"
-              />
-              <span v-if="p.best" class="card-tag mono">terlaris</span>
-              <span class="card-arrow" aria-hidden="true">
-                <svg viewBox="0 0 16 16" fill="none">
-                  <path d="M5 11l6-6M6 5h5v5" stroke="currentColor"
-                    stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
+        <div class="cat-layout">
+          <!-- Side filter -->
+          <aside class="cat-filters">
+            <div class="filter-head">
+              <span class="filter-label mono">filter</span>
+              <span class="filter-total mono">{{ visibleProducts.length }} / {{ products.length }}</span>
             </div>
-            <div class="card-meta">
-              <span class="card-family mono">
-                {{ p.family }} · {{ p.index }} / 07
-              </span>
-              <h3 class="card-title">{{ p.name }}</h3>
-              <span class="card-mount mono">{{ p.mount }}</span>
-              <p class="card-tagline">{{ p.tagline }}</p>
-              <div class="card-foot">
-                <span class="card-price">{{ p.price }}</span>
-                <span class="card-link mono">lihat detail →</span>
-              </div>
+            <div class="filter-col">
+              <button
+                v-for="f in filters"
+                :key="f"
+                type="button"
+                class="filter-chip"
+                :class="{ 'is-active': activeFilter === f }"
+                @click="setFilter(f)"
+              >
+                <span>{{ f }}</span>
+                <span v-if="f !== 'Semua'" class="filter-count mono">
+                  {{ products.filter(p => p.family === f).length }}
+                </span>
+              </button>
             </div>
-          </RouterLink>
-        </div>
+          </aside>
 
-        <p v-if="!visibleProducts.length" class="cat-empty">
-          Tidak ada produk untuk filter ini.
-        </p>
+          <!-- Grid -->
+          <div class="cat-main">
+            <div class="cat-grid">
+              <RouterLink
+                v-for="p in visibleProducts"
+                :key="p.slug"
+                :to="`/products/${p.slug}`"
+                class="cat-card"
+                :class="{ 'is-best': p.best }"
+                :style="{ '--r': aspectMap[p.slug] ?? 1.25 }"
+              >
+                <div class="card-visual">
+                  <img
+                    :src="p.images[0]"
+                    :alt="p.name"
+                    loading="lazy"
+                    decoding="async"
+                    @load="(e) => onImgLoad(p.slug, e)"
+                  />
+                  <span v-if="p.best" class="card-tag mono">terlaris</span>
+                  <span class="card-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none">
+                      <path d="M5 11l6-6M6 5h5v5" stroke="currentColor"
+                        stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </div>
+                <div class="card-meta">
+                  <h3 class="card-title">{{ p.name }}</h3>
+                  <span class="card-mount mono">{{ p.mount }}</span>
+                  <p class="card-tagline">{{ p.tagline }}</p>
+                  <div class="card-foot">
+                    <span class="card-price">{{ p.price }}</span>
+                    <span class="card-link mono">lihat detail →</span>
+                  </div>
+                </div>
+              </RouterLink>
+            </div>
+
+            <p v-if="!visibleProducts.length" class="cat-empty">
+              Tidak ada produk untuk filter ini.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -218,12 +222,12 @@ function setFilter(f: Filter) {
 .catalog {
   background: var(--bg);
   min-height: 100dvh;
-  padding-top: clamp(7rem, 14vh, 9rem);
+  padding-top: clamp(4.5rem, 8vh, 6rem);
 }
 
 /* ========== Hero ========== */
 .cat-hero {
-  padding: clamp(2rem, 5vh, 3rem) 0 clamp(2.5rem, 5vh, 3.5rem);
+  padding: clamp(1rem, 2.5vh, 1.5rem) 0 clamp(1.5rem, 3.5vh, 2.5rem);
   border-bottom: 1px solid var(--hairline);
 }
 
@@ -321,49 +325,82 @@ function setFilter(f: Filter) {
   background: var(--hairline-strong);
 }
 
-/* ========== Filter row ========== */
+/* ========== Layout: side filter + grid ========== */
+.cat-grid-wrap {
+  padding: clamp(2.5rem, 6vh, 4.5rem) 0 clamp(3.5rem, 8vh, 6rem);
+}
+
+.cat-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.cat-main { min-width: 0; }
+
+/* ========== Side filter ========== */
 .cat-filters {
-  position: sticky;
-  top: 88px;
-  z-index: 20;
-  padding: 1rem 0;
-  background: rgba(245, 245, 243, 0.78);
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  position: static;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+.filter-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 0.85rem;
+  margin-bottom: 1rem;
   border-bottom: 1px solid var(--hairline);
 }
 
-.filter-row {
+.filter-label {
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.filter-total {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: var(--fg-muted);
+}
+
+.filter-col {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .filter-chip {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.55rem 1rem;
-  border-radius: 999px;
-  border: 1px solid var(--hairline-strong);
+  padding: 0.6rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--fg-muted);
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 500;
   letter-spacing: -0.005em;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
   transition:
-    background 0.35s var(--ease-out),
-    color 0.35s var(--ease-out),
-    border-color 0.35s var(--ease-out),
-    transform 0.35s var(--ease-out);
+    background 0.3s var(--ease-out),
+    color 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out);
 }
 
 .filter-chip:hover {
-  border-color: var(--c-ink);
   color: var(--c-ink);
+  background: var(--c-paper-2);
 }
-
-.filter-chip:active { transform: scale(0.97); }
 
 .filter-chip.is-active {
   background: var(--c-ink);
@@ -374,38 +411,32 @@ function setFilter(f: Filter) {
 .filter-count {
   font-size: 10.5px;
   letter-spacing: 0.12em;
-  opacity: 0.65;
+  opacity: 0.55;
 }
 
 .filter-chip.is-active .filter-count { opacity: 0.7; }
 
-/* ========== Grid ========== */
-.cat-grid-wrap {
-  padding: clamp(2.5rem, 6vh, 4.5rem) 0 clamp(3.5rem, 8vh, 6rem);
-}
-
 .cat-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: clamp(1.4rem, 2.6vw, 2.4rem) clamp(1.2rem, 2.4vw, 2.2rem);
-  --row-h: clamp(220px, 26vw, 320px);
 }
 
 .cat-card {
-  /* width grows from natural aspect ratio (--r = w/h) at row height */
-  flex: var(--r, 1.25) 1 calc(var(--row-h) * var(--r, 1.25));
-  min-width: min(280px, 100%);
   display: flex;
   flex-direction: column;
   gap: 0.95rem;
   color: var(--c-ink);
   cursor: pointer;
+  min-width: 0;
+  height: 100%;
 }
 
 .card-visual {
   position: relative;
   width: 100%;
-  height: var(--row-h);
+  aspect-ratio: 1 / 1;
+  height: auto;
   background: var(--c-paper-2);
   border-radius: 4px;
   overflow: hidden;
@@ -473,6 +504,7 @@ function setFilter(f: Filter) {
   flex-direction: column;
   gap: 0.35rem;
   padding: 0 0.15rem;
+  flex: 1;
 }
 
 .card-family {
@@ -491,6 +523,11 @@ function setFilter(f: Filter) {
   line-height: 1.1;
   letter-spacing: -0.025em;
   color: var(--c-ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(2 * 1.1em);
 }
 
 .card-mount {
@@ -506,6 +543,10 @@ function setFilter(f: Filter) {
   line-height: 1.55;
   color: var(--fg-muted);
   max-width: 38ch;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-foot {
@@ -513,7 +554,7 @@ function setFilter(f: Filter) {
   justify-content: space-between;
   align-items: baseline;
   gap: 0.85rem;
-  margin-top: 0.85rem;
+  margin-top: auto;
   padding-top: 0.85rem;
   border-top: 1px solid var(--hairline);
 }
@@ -643,6 +684,10 @@ function setFilter(f: Filter) {
 
 /* ========== Tablet ========== */
 @media (max-width: 1024px) {
+  .cat-layout {
+    grid-template-columns: 180px 1fr;
+    gap: 2rem;
+  }
   .cat-grid {
     --row-h: clamp(200px, 32vw, 280px);
   }
@@ -651,7 +696,21 @@ function setFilter(f: Filter) {
 /* ========== Mobile ========== */
 @media (max-width: 640px) {
   .catalog { padding-top: 6.5rem; }
-  .cat-filters { top: 76px; }
+  .cat-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .filter-col {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .filter-chip {
+    width: auto;
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--hairline-strong);
+  }
   .cat-grid {
     --row-h: clamp(220px, 56vw, 320px);
     gap: 1.4rem;

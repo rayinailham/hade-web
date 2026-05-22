@@ -186,8 +186,6 @@ defineProps<{
 }
 
 .pdb-specs {
-  position: sticky;
-  top: 140px;
   align-self: flex-start;
   padding: 1.6rem;
   border: 1px solid rgba(14, 14, 15, 0.5);
