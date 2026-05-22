@@ -228,7 +228,7 @@ function prevCard() {
 
 function updateCardsPerView() {
   const w = typeof window !== 'undefined' ? window.innerWidth : 1200
-  const next = w >= 1200 ? 3 : w >= 760 ? 2 : 1
+  const next = w >= 1200 ? 2.5 : w >= 760 ? 1.67 : 1
   if (next !== cardsPerView.value) cardsPerView.value = next
   cardIdx.value = clampCardIdx(cardIdx.value)
 }
@@ -428,39 +428,6 @@ onBeforeUnmount(() => {
                 <span class="mount mono">{{ p.mount }}</span>
 
                 <p class="desc">{{ p.bullets.join(' · ') }}</p>
-
-                <div class="meta-foot">
-                  <div class="price-block">
-                    <span class="price">{{ p.price }}</span>
-                    <span class="discount mono">−{{ DISCOUNT_PERCENT }}% via WA · gratis ongkir</span>
-                  </div>
-
-                  <div class="actions">
-                    <a
-                      class="btn btn-wa"
-                      :href="waProductLink(p.name, p.price)"
-                      target="_blank"
-                      rel="noreferrer"
-                      :aria-label="`Pesan ${p.name} via WhatsApp`"
-                    >
-                      <span class="wa-mark" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
-                        </svg>
-                      </span>
-                      <span>Pesan via WhatsApp</span>
-                    </a>
-                    <a
-                      class="btn btn-shopee"
-                      :href="p.link"
-                      target="_blank"
-                      rel="noreferrer"
-                      :aria-label="`Buka ${p.name} di Shopee`"
-                    >
-                      Lihat di Shopee
-                    </a>
-                  </div>
-                </div>
               </div>
             </article>
 
@@ -627,7 +594,7 @@ onBeforeUnmount(() => {
 
 .track-inner {
   --gap: clamp(2rem, 4vw, 3.5rem);
-  --per-view: 3;
+  --per-view: 2.5;
   display: flex;
   gap: var(--gap);
   align-items: stretch;
