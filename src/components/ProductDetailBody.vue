@@ -41,11 +41,16 @@ defineProps<{
       <!-- Related -->
       <section class="pdb-related pd-reveal" v-if="related.length">
         <header class="pdb-rel-head">
-          <span class="pdb-section-mark mono">produk lainnya</span>
-          <h2 class="pdb-section-title">
-            <span>Tetap satu sistem,</span>
-            <span class="italic">beda fungsi.</span>
-          </h2>
+          <div class="pdb-rel-head-text">
+            <span class="pdb-section-mark mono">produk lainnya</span>
+            <h2 class="pdb-section-title">
+              <span>Tetap satu sistem,</span>
+              <span class="italic">beda fungsi.</span>
+            </h2>
+          </div>
+          <RouterLink to="/products" class="pdb-rel-viewall mono">
+            lihat semua →
+          </RouterLink>
         </header>
         <div class="pdb-rel-grid">
           <RouterLink
@@ -95,9 +100,8 @@ defineProps<{
 
 <style scoped>
 .pdb {
-  padding: clamp(4rem, 9vh, 7rem) 0 clamp(4rem, 8vh, 6rem);
-  border-top: 1px solid var(--hairline);
-  margin-top: clamp(3rem, 6vh, 4.5rem);
+  padding: clamp(1rem, 2vh, 1.5rem) 0 clamp(4rem, 8vh, 6rem);
+  margin-top: clamp(1rem, 2vh, 1.5rem);
 }
 
 .pdb-detail {
@@ -105,10 +109,11 @@ defineProps<{
   grid-template-columns: 1.4fr 1fr;
   gap: clamp(2rem, 5vw, 4rem);
   padding: clamp(1.5rem, 3vw, 2rem);
-  margin-bottom: clamp(3rem, 7vh, 5rem);
+  margin-bottom: clamp(1rem, 2vh, 1.5rem);
   background: #fff;
-  border: 1px solid rgba(14, 14, 15, 0.5);
+  border: 1px solid rgba(14, 14, 15, 0.2);
   border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(14, 14, 15, 0.04), 0 4px 12px -6px rgba(14, 14, 15, 0.06);
 }
 
 .pdb-desc {
@@ -226,13 +231,41 @@ defineProps<{
 /* Related */
 .pdb-related {
   padding: clamp(1.5rem, 3vw, 2rem);
-  margin: clamp(3rem, 6vh, 4.5rem) 0 clamp(3rem, 6vh, 4.5rem);
+  margin: 0 0 clamp(1rem, 2vh, 1.5rem);
   background: #fff;
-  border: 1px solid rgba(14, 14, 15, 0.5);
+  border: 1px solid rgba(14, 14, 15, 0.2);
   border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(14, 14, 15, 0.04), 0 4px 12px -6px rgba(14, 14, 15, 0.06);
 }
 
-.pdb-rel-head { margin-bottom: 2.5rem; }
+.pdb-rel-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.pdb-rel-head-text { display: flex; flex-direction: column; }
+
+.pdb-rel-viewall {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 0.5rem 0.85rem;
+  border: 1px solid rgba(14, 14, 15, 0.2);
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+}
+
+.pdb-rel-viewall:hover {
+  color: var(--c-ink);
+  border-color: var(--c-ink);
+  background: rgba(14, 14, 15, 0.03);
+}
 
 .pdb-rel-grid {
   display: grid;

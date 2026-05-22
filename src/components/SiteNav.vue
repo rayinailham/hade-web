@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -13,8 +13,12 @@ const route = useRoute()
 
 const navRoot = ref<HTMLElement | null>(null)
 const shell = ref<HTMLElement | null>(null)
-const condensed = ref(false)
+const scrolled = ref(false)
 const open = ref(false)
+
+// Routes that should ALWAYS show the condensed (glass + border) navbar
+const forceCondensed = computed(() => route.path.startsWith('/products'))
+const condensed = computed(() => forceCondensed.value || scrolled.value)
 
 let ctx: gsap.Context | null = null
 let st: ScrollTrigger | null = null
@@ -25,6 +29,18 @@ const links = [
   { href: '#compatibility', label: 'Kompatibilitas' },
   { href: '#videos', label: 'Galeri' },
 ]
+
+function setupScrollTrigger() {
+  st?.kill()
+  st = null
+  if (forceCondensed.value) return
+  st = ScrollTrigger.create({
+    start: 60,
+    end: 99999,
+    onEnter: () => (scrolled.value = true),
+    onLeaveBack: () => (scrolled.value = false),
+  })
+}
 
 onMounted(() => {
   ctx = gsap.context(() => {
@@ -42,15 +58,19 @@ onMounted(() => {
       },
     )
 
-    // Toggle condensed pill on scroll
-    st = ScrollTrigger.create({
-      start: 60,
-      end: 99999,
-      onEnter: () => (condensed.value = true),
-      onLeaveBack: () => (condensed.value = false),
-    })
+    // Toggle condensed pill on scroll (skipped on /products routes)
+    setupScrollTrigger()
   }, navRoot.value!)
 })
+
+// Re-evaluate scroll trigger when route changes (home <-> products)
+watch(
+  () => route.path,
+  () => {
+    scrolled.value = false
+    setupScrollTrigger()
+  },
+)
 
 onBeforeUnmount(() => {
   st?.kill()
@@ -98,7 +118,7 @@ function goHome(e: MouseEvent) {
 <template>
   <header
     ref="navRoot"
-    class="site-nav vt-nav"
+    class="site-nav"
     :class="{ 'is-condensed': condensed, 'is-open': open }"
     aria-label="Navigasi utama"
   >

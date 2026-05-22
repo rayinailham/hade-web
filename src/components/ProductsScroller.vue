@@ -1,25 +1,12 @@
 ﻿<script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { waLink, waProductLink, SHOPEE_STORE, DISCOUNT_PERCENT } from '../composables/useContact'
 import { products as catalogProducts } from '../data/products'
-import { navigateToProduct, productVTName } from '../composables/useProductTransition'
 
 gsap.registerPlugin(ScrollTrigger)
-
-const router = useRouter()
-
-function goToProduct(e: MouseEvent, slug: string) {
-  // Let modifier-clicks (cmd/ctrl/middle) follow normal browser semantics so
-  // users can still open detail pages in a new tab.
-  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
-  e.preventDefault()
-  const card = e.currentTarget as HTMLElement | null
-  const img = card?.querySelector<HTMLElement>('.visual-img')
-  navigateToProduct(router, slug, `/products/${slug}`, img)
-}
 
 // Reuse the shared catalog so /, /products, and /products/:slug stay in sync.
 const products = catalogProducts
@@ -203,7 +190,6 @@ onBeforeUnmount(() => {
               :to="`/products/${p.slug}`"
               class="item item-link"
               :class="{ 'is-best': p.best }"
-              @click="(e: MouseEvent) => goToProduct(e, p.slug)"
             >
               <div class="visual">
                 <img

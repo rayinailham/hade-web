@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { gsap } from 'gsap'
 import { useLenis } from './composables/useLenis'
 import { useReveal } from './composables/useReveal'
-import { supportsViewTransitions } from './composables/useViewTransition'
 
 import IntroScreen from './components/IntroScreen.vue'
 import SiteNav from './components/SiteNav.vue'
@@ -12,12 +11,6 @@ import SiteFooter from './components/SiteFooter.vue'
 
 useLenis()
 useReveal()
-
-// Decide ONCE at app boot which transition path to use. Doing this per
-// navigation creates a race between Vue's <transition> tearing down the
-// outgoing element and the browser's view-transition snapshot reusing it
-// (parentNode becomes null and Vue throws).
-const useVT = supportsViewTransitions()
 
 const transitioning = ref(false)
 
@@ -60,13 +53,7 @@ function onLeave(el: Element, done: () => void) {
   <IntroScreen />
   <SiteNav />
 
-  <!-- VT-capable browsers: let document.startViewTransition() drive the
-       swap. We render the routed component directly so Vue does not
-       race the browser snapshot. -->
-  <RouterView v-if="useVT" />
-
-  <!-- Fallback path: Vue <transition> + GSAP timeline does the cross-fade. -->
-  <RouterView v-else v-slot="{ Component, route }">
+  <RouterView v-slot="{ Component, route }">
     <transition
       mode="out-in"
       :css="false"

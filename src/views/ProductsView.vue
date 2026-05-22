@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, reactive } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { products, type ProductFamily } from '../data/products'
 import { waLink, DISCOUNT_PERCENT } from '../composables/useContact'
-import { navigateToProduct } from '../composables/useProductTransition'
 
 gsap.registerPlugin(ScrollTrigger)
-
-const router = useRouter()
 
 // natural aspect ratio (w/h) per slug — drives justified row layout
 const aspectMap = reactive<Record<string, number>>({})
@@ -19,14 +16,6 @@ function onImgLoad(slug: string, e: Event) {
   if (img.naturalWidth && img.naturalHeight) {
     aspectMap[slug] = img.naturalWidth / img.naturalHeight
   }
-}
-
-function goToProduct(e: MouseEvent, slug: string) {
-  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
-  e.preventDefault()
-  const card = e.currentTarget as HTMLElement | null
-  const img = card?.querySelector<HTMLElement>('.card-visual img')
-  navigateToProduct(router, slug, `/products/${slug}`, img)
 }
 
 type Filter = 'Semua' | ProductFamily
@@ -159,7 +148,6 @@ function setFilter(f: Filter) {
             class="cat-card"
             :class="{ 'is-best': p.best }"
             :style="{ '--r': aspectMap[p.slug] ?? 1.25 }"
-            @click="(e: MouseEvent) => goToProduct(e, p.slug)"
           >
             <div class="card-visual">
               <img
