@@ -37,6 +37,7 @@ const products: Product[] = [
     images: IMG_BASE(
       'Hade Clamp Adapter Lensa DSLR CanonNikon to Handphone versi 2026 Hade Creative Production',
       [
+        'id-11134207-822wp-mmz0luinyy2q9d.webp',
         'id-11134207-822wi-mmz0luidxy4id0.webp',
         'id-11134207-822wi-mmz0luiprk759f.webp',
         'id-11134207-822wk-mmz0luiafj0le8.webp',
@@ -99,10 +100,10 @@ const products: Product[] = [
     images: IMG_BASE(
       'Hade Clamp Adaptor Direc Sensor Lensa Sony E-mount to Handphone dilengkapi dengan pengaturan jarak Sensor ke Mounting (FFD Seting)',
       [
+        'id-11134207-82250-mggly2zgkwzz44.webp',
         'id-11134207-8224t-mggly2zgjifj39.webp',
         'id-11134207-8224x-mggly30l766n8c.webp',
         'id-11134207-8224x-mghulx5pnjm4c0.webp',
-        'id-11134207-82250-mggly2zgkwzz44.webp',
         'id-11134207-82251-mggly2zr1d6yb8.webp',
       ],
     ),
@@ -142,9 +143,9 @@ const products: Product[] = [
     images: IMG_BASE(
       'Hade Bracket Lensa Tele Handphone (18X, 22X, 36X & 60X) Rigging System 2026 Cocok untuk Apexel, TaffSPORT, Pickogen, Soha DLL',
       [
+        'id-11134207-822wl-mma0sn4ge03z68.webp',
         'id-11134207-822wh-mnhndq6a8glg3a.webp',
         'id-11134207-822wi-mnhndq6a721048.webp',
-        'id-11134207-822wl-mma0sn4ge03z68.webp',
         'id-11134207-822wn-mma0sn4h1vr9fa.webp',
         'id-11134207-822wo-mma0sn4h3abp80.webp',
       ],
@@ -172,23 +173,6 @@ const products: Product[] = [
     ),
   },
 ]
-
-// Carousel state – one active image index per product
-const activeIdx = ref<number[]>(products.map(() => 0))
-
-function setSlide(productIdx: number, slideIdx: number) {
-  const next = [...activeIdx.value]
-  next[productIdx] = slideIdx
-  activeIdx.value = next
-}
-
-function nextSlide(productIdx: number, total: number) {
-  setSlide(productIdx, (activeIdx.value[productIdx] + 1) % total)
-}
-
-function prevSlide(productIdx: number, total: number) {
-  setSlide(productIdx, (activeIdx.value[productIdx] - 1 + total) % total)
-}
 
 // Carousel state – single shared idx for desktop (3 visible) + mobile (1 visible)
 const totalCards = products.length + 1 // includes CTA card
@@ -370,52 +354,13 @@ onBeforeUnmount(() => {
               :class="{ 'is-best': p.best }"
             >
               <div class="visual">
-                <div class="slides">
-                  <img
-                    v-for="(src, si) in p.images"
-                    :key="src"
-                    class="visual-img"
-                    :class="{ 'is-active': activeIdx[pi] === si }"
-                    :src="src"
-                    :alt="`${p.name} – view ${si + 1}`"
-                    :loading="si === 0 ? 'eager' : 'lazy'"
-                    decoding="async"
-                  />
-                </div>
-
-                <button
-                  class="nav-btn nav-prev"
-                  type="button"
-                  :aria-label="`Foto sebelumnya ${p.name}`"
-                  @click="prevSlide(pi, p.images.length)"
-                >
-                  <svg viewBox="0 0 16 16" fill="none">
-                    <path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </button>
-                <button
-                  class="nav-btn nav-next"
-                  type="button"
-                  :aria-label="`Foto berikutnya ${p.name}`"
-                  @click="nextSlide(pi, p.images.length)"
-                >
-                  <svg viewBox="0 0 16 16" fill="none">
-                    <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </button>
-
-                <div class="dots" role="tablist" :aria-label="`Galeri ${p.name}`">
-                  <button
-                    v-for="(_, si) in p.images"
-                    :key="si"
-                    type="button"
-                    class="dot"
-                    :class="{ 'is-active': activeIdx[pi] === si }"
-                    :aria-selected="activeIdx[pi] === si"
-                    :aria-label="`Foto ${si + 1}`"
-                    @click="setSlide(pi, si)"
-                  />
-                </div>
+                <img
+                  class="visual-img is-active"
+                  :src="p.images[0]"
+                  :alt="p.name"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
 
               <div class="meta">
@@ -635,7 +580,7 @@ onBeforeUnmount(() => {
   object-position: center;
   filter: contrast(1.02);
   opacity: 0;
-  transform: scale(1.04);
+  transform: scale(1);
   transition:
     opacity 0.7s var(--ease-out),
     transform 1.6s var(--ease-out);
@@ -645,11 +590,11 @@ onBeforeUnmount(() => {
 
 .visual-img.is-active {
   opacity: 1;
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .item:hover .visual-img.is-active {
-  transform: scale(1.08);
+  transform: scale(1.09);
 }
 
 /* Carousel nav buttons (per-image) */
