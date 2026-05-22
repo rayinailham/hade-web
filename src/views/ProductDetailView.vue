@@ -11,10 +11,23 @@ gsap.registerPlugin(ScrollTrigger)
 
 const route = useRoute()
 
-const product = computed(() => {
-  const slug = (route.params.slug as string) ?? ''
-  return findProduct(slug)
-})
+// Snapshot slug locally. During mode="out-in" leave animation the old view
+// is still in DOM; if we read `route.params.slug` directly it becomes
+// undefined the moment user navigates to /products, briefly flashing the
+// empty state. We only update the local ref while the route still matches
+// the product-detail route.
+const currentSlug = ref<string>((route.params.slug as string) ?? '')
+
+watch(
+  () => [route.name, route.params.slug] as const,
+  ([name, slug]) => {
+    if (name === 'product-detail' && typeof slug === 'string') {
+      currentSlug.value = slug
+    }
+  },
+)
+
+const product = computed(() => findProduct(currentSlug.value))
 
 const activeImage = ref(0)
 

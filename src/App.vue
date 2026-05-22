@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { gsap } from 'gsap'
 import { useLenis } from './composables/useLenis'
 import { useReveal } from './composables/useReveal'
@@ -12,39 +13,78 @@ import SiteFooter from './components/SiteFooter.vue'
 useLenis()
 useReveal()
 
+const router = useRouter()
+const route = useRoute()
 const transitioning = ref(false)
 
-function onBeforeEnter(el: Element) {
-  gsap.set(el, { opacity: 0, y: 24, filter: 'blur(8px)' })
-}
+// Track browser back/forward — skip fade for these
+const scrollMap = new Map<string, number>()
+let isPopNav = false
 
-function onEnter(el: Element, done: () => void) {
-  transitioning.value = true
-  const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis
-  if (lenis) lenis.scrollTo(0, { immediate: true, duration: 0 })
-  else window.scrollTo({ top: 0, behavior: 'auto' })
-
-  gsap.to(el, {
-    opacity: 1,
-    y: 0,
-    filter: 'blur(0px)',
-    duration: 0.5,
-    ease: 'power3.out',
-    onComplete: () => {
-      transitioning.value = false
-      done()
-    },
+if (typeof window !== 'undefined') {
+  window.addEventListener('popstate', () => {
+    isPopNav = true
   })
 }
 
-function onLeave(el: Element, done: () => void) {
-  gsap.to(el, {
-    opacity: 0,
-    y: -16,
-    filter: 'blur(6px)',
-    duration: 0.25,
-    ease: 'power2.in',
-    onComplete: done,
+router.beforeEach((_to, from) => {
+  // Save scroll for current page before leaving
+  if (from.fullPath) scrollMap.set(from.fullPath, window.scrollY)
+})
+
+function scrollTo(y: number, smooth = false) {
+  const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis
+  if (lenis) {
+    if (smooth) lenis.scrollTo(y, { duration: 0.7, easing: (t: number) => 1 - Math.pow(1 - t, 3) })
+    else lenis.scrollTo(y, { immediate: true, duration: 0 })
+  } else {
+    window.scrollTo({ top: y, behavior: smooth ? 'smooth' : 'auto' })
+  }
+}
+
+function onBeforeEnter(el: Element) {
+  if (isPopNav) {
+    gsap.set(el, { opacity: 1 })
+    return
+  }
+  // Page mounts hidden behind the veil
+  gsap.set(el, { opacity: 0 })
+}
+
+function onEnter(el: Element, done: () => void) {
+  if (isPopNav) {
+    isPopNav = false
+    gsap.set(el, { opacity: 1 })
+    // Smooth-scroll restore to saved position
+    scrollTo(scrollMap.get(route.fullPath) ?? 0, true)
+    done()
+    return
+  }
+
+  // Page is now mounted (and at top — scroll was animated behind the veil)
+  gsap.set(el, { opacity: 1 })
+
+  // Brief settle so first paint + entrance anims begin behind the veil,
+  // then drop the veil to reveal a fully-painted page.
+  gsap.delayedCall(0.15, () => {
+    transitioning.value = false
+    done()
+  })
+}
+
+function onLeave(_el: Element, done: () => void) {
+  if (isPopNav) {
+    done()
+    return
+  }
+  // 1) Raise the veil
+  transitioning.value = true
+
+  // 2) Once the veil has fully covered, animate scroll to top behind it
+  gsap.delayedCall(0.25, () => {
+    scrollTo(0, true)
+    // 3) Wait for the smooth scroll to complete before swapping pages
+    gsap.delayedCall(0.7, done)
   })
 }
 </script>
@@ -61,7 +101,9 @@ function onLeave(el: Element, done: () => void) {
       @enter="onEnter"
       @leave="onLeave"
     >
-      <component :is="Component" :key="route.fullPath" />
+      <keep-alive :max="10">
+        <component :is="Component" :key="route.fullPath" />
+      </keep-alive>
     </transition>
   </RouterView>
 

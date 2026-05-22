@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, reactive } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, reactive, nextTick } from 'vue'
 import { RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -71,8 +71,23 @@ onBeforeUnmount(() => {
   ctx?.revert()
 })
 
-function setFilter(f: Filter) {
+async function setFilter(f: Filter) {
   activeFilter.value = f
+  // wait for Vue to re-render shorter/longer grid before scrolling
+  await nextTick()
+  const target = document.querySelector('.cat-grid-wrap') as HTMLElement | null
+  if (!target) return
+  const top = target.getBoundingClientRect().top + window.scrollY - 80
+  // clamp to max scroll so we never overshoot into footer on short lists
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+  const y = Math.min(top, Math.max(0, maxScroll))
+  // Lenis owns scroll; fallback to native if absent
+  const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis
+  if (lenis) {
+    lenis.scrollTo(y, { duration: 0.7, easing: (t: number) => 1 - Math.pow(1 - t, 3) })
+  } else {
+    window.scrollTo({ top: y, behavior: 'smooth' })
+  }
 }
 </script>
 
@@ -341,7 +356,8 @@ function setFilter(f: Filter) {
 
 /* ========== Side filter ========== */
 .cat-filters {
-  position: static;
+  position: sticky;
+  top: clamp(5rem, 10vh, 7rem);
   padding: 0;
   background: transparent;
   border: 0;
@@ -430,6 +446,15 @@ function setFilter(f: Filter) {
   cursor: pointer;
   min-width: 0;
   height: 100%;
+  background: #fff;
+  border: 1px solid rgba(14, 14, 15, 0.12);
+  border-radius: 8px;
+  padding: 0.85rem 0.85rem 1.1rem;
+  transition: border-color 0.3s var(--ease-out), transform 0.4s var(--ease-out);
+}
+
+.cat-card:hover {
+  border-color: rgba(14, 14, 15, 0.25);
 }
 
 .card-visual {
@@ -447,8 +472,7 @@ function setFilter(f: Filter) {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  padding: clamp(0.6rem, 1.4vw, 1.1rem);
+  object-fit: cover;
   transform: scale(1.02);
   transition: transform 1.2s var(--ease-out), filter 0.6s var(--ease-out);
   filter: contrast(1.02);
