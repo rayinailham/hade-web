@@ -4,6 +4,7 @@ import { useReveal } from './composables/useReveal'
 
 import IntroScreen from './components/IntroScreen.vue'
 import SiteNav from './components/SiteNav.vue'
+import CustomScrollbar from './components/CustomScrollbar.vue'
 import HeroSection from './components/HeroSection.vue'
 import ManifestoSection from './components/ManifestoSection.vue'
 import ProductsScroller from './components/ProductsScroller.vue'
@@ -30,6 +31,7 @@ useReveal()
     <FinalCta />
   </main>
   <SiteFooter />
+  <CustomScrollbar />
 </template>
 
 <style scoped>
