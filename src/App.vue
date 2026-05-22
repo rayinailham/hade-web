@@ -9,6 +9,7 @@ import ProductsScroller from './components/ProductsScroller.vue'
 import VideoGallery from './components/VideoGallery.vue'
 import CompatibilityGrid from './components/CompatibilityGrid.vue'
 import ProofMarquee from './components/ProofMarquee.vue'
+import FinalCta from './components/FinalCta.vue'
 import SiteFooter from './components/SiteFooter.vue'
 
 useLenis()
@@ -24,11 +25,7 @@ useReveal()
     <CompatibilityGrid />
     <VideoGallery />
     <ProofMarquee />
-    <section class="cta-placeholder" aria-label="Final CTA placeholder">
-      <div class="container">
-        <p class="cta-placeholder-mono">final cta — coming soon</p>
-      </div>
-    </section>
+    <FinalCta />
   </main>
   <SiteFooter />
 </template>
