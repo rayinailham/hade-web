@@ -58,19 +58,22 @@ export function openShopeeProduct(webUrl: string, e?: Event): void {
   // and (on iOS) universal links.
   if (!isAndroid) return
 
-  // Shopee product URLs encode shop + item id as: ...i.{shopid}.{itemid}...
-  const match = webUrl.match(/i\.(\d+)\.(\d+)/)
-  if (!match) return
+  // Use HTTPS scheme + package targeting. Shopee app registers as default
+  // handler for shopee.co.id app-links and routes the URL to the correct
+  // product page. Custom shopeeid:// schemes often dump users on the home
+  // screen because the path format keeps changing.
+  let parsed: URL
+  try {
+    parsed = new URL(webUrl)
+  } catch {
+    return
+  }
 
-  const [, shopid, itemid] = match
-
-  // intent:// URL: Chrome launches the Shopee app if installed, otherwise
-  // auto-falls back to the regular web URL — both inside the new tab so the
-  // current tab is never replaced.
   e?.preventDefault()
+  const path = `${parsed.host}${parsed.pathname}${parsed.search}`
   const intentUrl =
-    `intent://product/${shopid}/${itemid}` +
-    `#Intent;scheme=shopeeid;package=com.shopee.id;` +
+    `intent://${path}` +
+    `#Intent;scheme=https;package=com.shopee.id;` +
     `S.browser_fallback_url=${encodeURIComponent(webUrl)};end`
 
   const opened = window.open(intentUrl, '_blank', 'noopener,noreferrer')
