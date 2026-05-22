@@ -19,6 +19,12 @@ const trackInner = ref<HTMLElement | null>(null)
 
 const maxCardIdx = computed(() => Math.max(0, totalCards - cardsPerView.value))
 
+// Integer-only count for dot pagination + counter UI. v-for over a float
+// crashes Vue (`new Array(5.5)` throws RangeError) — desktop has
+// cardsPerView=2.5 which makes maxCardIdx fractional.
+const dotCount = computed(() => Math.max(1, Math.ceil(maxCardIdx.value) + 1))
+const currentDot = computed(() => Math.min(dotCount.value, Math.floor(cardIdx.value) + 1))
+
 function clampCardIdx(i: number) {
   return Math.max(0, Math.min(maxCardIdx.value, i))
 }
@@ -255,7 +261,7 @@ onBeforeUnmount(() => {
       <div class="m-controls" aria-hidden="false">
         <div class="m-dots" role="tablist" aria-label="Daftar produk">
           <button
-            v-for="i in (maxCardIdx + 1)"
+            v-for="i in dotCount"
             :key="i"
             type="button"
             class="m-dot"
@@ -267,7 +273,7 @@ onBeforeUnmount(() => {
         </div>
 
         <span class="m-counter mono">
-          {{ String(cardIdx + 1).padStart(2, '0') }} / {{ String(maxCardIdx + 1).padStart(2, '0') }}
+          {{ String(currentDot).padStart(2, '0') }} / {{ String(dotCount).padStart(2, '0') }}
         </span>
       </div>
     </div>
