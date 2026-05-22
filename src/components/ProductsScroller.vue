@@ -190,21 +190,47 @@ function prevSlide(productIdx: number, total: number) {
   setSlide(productIdx, (activeIdx.value[productIdx] - 1 + total) % total)
 }
 
-// Mobile product-level carousel state
+// Carousel state — single shared idx for desktop (3 visible) + mobile (1 visible)
 const totalCards = products.length + 1 // includes CTA card
-const mobileCardIdx = ref(0)
-const mobileTrackOffset = computed(() => `translate3d(-${mobileCardIdx.value * 100}%, 0, 0)`)
+const cardIdx = ref(0)
+const cardsPerView = ref(1)
+const trackInner = ref<HTMLElement | null>(null)
+
+const maxCardIdx = computed(() => Math.max(0, totalCards - cardsPerView.value))
+
+function clampCardIdx(i: number) {
+  return Math.max(0, Math.min(maxCardIdx.value, i))
+}
+
+function applyShift() {
+  if (!trackInner.value) return
+  const first = trackInner.value.querySelector<HTMLElement>('.card')
+  if (!first) return
+  const w = first.getBoundingClientRect().width
+  const styles = getComputedStyle(trackInner.value)
+  const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0
+  const shift = cardIdx.value * (w + gap)
+  trackInner.value.style.setProperty('--shift', `${shift}px`)
+}
 
 function goToCard(i: number) {
-  mobileCardIdx.value = Math.max(0, Math.min(totalCards - 1, i))
+  cardIdx.value = clampCardIdx(i)
+  requestAnimationFrame(applyShift)
 }
 
 function nextCard() {
-  goToCard(mobileCardIdx.value + 1)
+  goToCard(cardIdx.value + 1)
 }
 
 function prevCard() {
-  goToCard(mobileCardIdx.value - 1)
+  goToCard(cardIdx.value - 1)
+}
+
+function updateCardsPerView() {
+  const w = typeof window !== 'undefined' ? window.innerWidth : 1200
+  const next = w >= 1200 ? 3 : w >= 760 ? 2 : 1
+  if (next !== cardsPerView.value) cardsPerView.value = next
+  cardIdx.value = clampCardIdx(cardIdx.value)
 }
 
 // Touch swipe detection — only triggers horizontal swap when gesture is
@@ -243,6 +269,10 @@ let ctx: gsap.Context | null = null
 onMounted(() => {
   if (!root.value) return
 
+  updateCardsPerView()
+  applyShift()
+  window.addEventListener('resize', onResize, { passive: true })
+
   ctx = gsap.context(() => {
     // Subtle entrance for each card on scroll into view
     const cards = root.value!.querySelectorAll<HTMLElement>('.card')
@@ -267,7 +297,15 @@ onMounted(() => {
   }, root.value)
 })
 
-onBeforeUnmount(() => ctx?.revert())
+function onResize() {
+  updateCardsPerView()
+  applyShift()
+}
+
+onBeforeUnmount(() => {
+  ctx?.revert()
+  window.removeEventListener('resize', onResize)
+})
 </script>
 
 <template>
@@ -298,12 +336,33 @@ onBeforeUnmount(() => ctx?.revert())
         @touchstart.passive="onTouchStart"
         @touchend.passive="onTouchEnd"
       >
+        <button
+          type="button"
+          class="rail-arrow rail-prev"
+          :disabled="cardIdx === 0"
+          aria-label="Produk sebelumnya"
+          @click="prevCard"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="rail-arrow rail-next"
+          :disabled="cardIdx >= maxCardIdx"
+          aria-label="Produk berikutnya"
+          @click="nextCard"
+        >
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
         <div
           ref="track"
           class="track"
-          :style="{ '--m-offset': mobileTrackOffset }"
         >
-          <div class="track-inner">
+          <div ref="trackInner" class="track-inner">
             <article
               v-for="(p, pi) in products"
               :key="p.index"
@@ -453,45 +512,21 @@ onBeforeUnmount(() => ctx?.revert())
       </div>
 
       <div class="m-controls" aria-hidden="false">
-        <button
-          type="button"
-          class="m-arrow"
-          :disabled="mobileCardIdx === 0"
-          aria-label="Produk sebelumnya"
-          @click="prevCard"
-        >
-          <svg viewBox="0 0 16 16" fill="none">
-            <path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
-
         <div class="m-dots" role="tablist" aria-label="Daftar produk">
           <button
-            v-for="i in totalCards"
+            v-for="i in (maxCardIdx + 1)"
             :key="i"
             type="button"
             class="m-dot"
-            :class="{ 'is-active': mobileCardIdx === i - 1 }"
-            :aria-selected="mobileCardIdx === i - 1"
+            :class="{ 'is-active': cardIdx === i - 1 }"
+            :aria-selected="cardIdx === i - 1"
             :aria-label="`Produk ${i}`"
             @click="goToCard(i - 1)"
           />
         </div>
 
-        <button
-          type="button"
-          class="m-arrow"
-          :disabled="mobileCardIdx === totalCards - 1"
-          aria-label="Produk berikutnya"
-          @click="nextCard"
-        >
-          <svg viewBox="0 0 16 16" fill="none">
-            <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
-
         <span class="m-counter mono">
-          {{ String(mobileCardIdx + 1).padStart(2, '0') }} / {{ String(totalCards).padStart(2, '0') }}
+          {{ String(cardIdx + 1).padStart(2, '0') }} / {{ String(maxCardIdx + 1).padStart(2, '0') }}
         </span>
       </div>
     </div>
@@ -585,27 +620,79 @@ onBeforeUnmount(() => ctx?.revert())
 }
 
 .rail {
+  position: relative;
   width: 100%;
-  padding: 0 var(--gutter);
+  padding: 0.5rem var(--gutter) 2rem;
   max-width: var(--container);
   margin: 0 auto;
+  overflow-x: clip;
+  overflow-y: visible;
 }
+
+.rail-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 48px;
+  height: 48px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--c-ink);
+  border: 1px solid var(--hairline-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 14px 30px -12px rgba(14, 14, 15, 0.35);
+  backdrop-filter: blur(8px);
+  transition:
+    transform 0.4s var(--ease-out),
+    background 0.4s var(--ease-out),
+    color 0.4s var(--ease-out),
+    opacity 0.3s var(--ease-out);
+}
+
+.rail-arrow svg { width: 16px; height: 16px; }
+
+.rail-prev { left: calc(var(--gutter) * 0.25); }
+.rail-next { right: calc(var(--gutter) * 0.25); }
+
+.rail-arrow:hover {
+  background: var(--c-ink);
+  color: var(--c-paper);
+  transform: translateY(-50%) scale(1.06);
+}
+
+.rail-arrow:active { transform: translateY(-50%) scale(0.94); }
+.rail-arrow:disabled { opacity: 0; pointer-events: none; }
 
 .track {
   display: block;
+  width: 100%;
 }
 
 .track-inner {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+  --gap: 1.5rem;
+  --per-view: 3;
+  --peek-left: 30px;
+  --peek-right: 20px;
+  display: flex;
+  gap: var(--gap);
   align-items: stretch;
+  padding-left: var(--peek-left);
+  padding-right: var(--peek-right);
+  transform: translate3d(calc(var(--shift, 0px) * -1), 0, 0);
+  transition: transform 0.55s var(--ease-out);
+  will-change: transform;
 }
 
 .card {
-  width: 100%;
+  flex: 0 0 calc((100% - var(--peek-left) - var(--peek-right) - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
   height: auto;
   min-height: 0;
+  display: flex;
 }
 
 .card-shell {
@@ -891,6 +978,12 @@ onBeforeUnmount(() => ctx?.revert())
   gap: 0.18rem;
   flex: 1;
   min-width: 0;
+}
+
+.foot-price .value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .foot-actions {
@@ -1227,8 +1320,104 @@ onBeforeUnmount(() => ctx?.revert())
   transform: translate(2px, -2px);
 }
 
-/* Mobile carousel controls — hidden on desktop */
-.m-controls { display: none; }
+/* Carousel controls (desktop + mobile) */
+.m-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  margin: 1.75rem auto 0;
+  padding: 0 var(--gutter);
+  width: 100%;
+  max-width: var(--container);
+}
+
+.m-arrow {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: var(--c-ink);
+  border: 1px solid var(--hairline-strong);
+  transition: transform 0.4s var(--ease-out), background 0.4s var(--ease-out), color 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
+}
+
+.m-arrow svg { width: 14px; height: 14px; }
+.m-arrow:hover { background: var(--c-ink); color: var(--c-paper); }
+.m-arrow:active { transform: scale(0.94); }
+.m-arrow:disabled { opacity: 0.35; pointer-events: none; }
+
+.m-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.m-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-fog);
+  border: 0;
+  transition: background 0.4s var(--ease-out), width 0.4s var(--ease-out);
+}
+
+.m-dot.is-active {
+  background: var(--c-ink);
+  width: 18px;
+  border-radius: 999px;
+}
+
+.m-counter {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--fg-subtle);
+  margin-left: 0.35rem;
+}
+
+/* Tablet — 2-up */
+@media (max-width: 1199px) and (min-width: 760px) {
+  .track-inner {
+    --per-view: 2;
+    --gap: 1.25rem;
+    --peek-left: 20px;
+    --peek-right: 20px;
+  }
+
+  .card-core {
+    padding: 1.4rem 1.4rem 1.3rem;
+    gap: 1rem;
+  }
+
+  .visual {
+    min-height: 240px;
+  }
+
+  .card-body h3 {
+    font-size: 1.3rem;
+  }
+
+  .card-foot {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .foot-actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .buy-btn.wa-buy {
+    flex: 1;
+    justify-content: flex-start;
+  }
+}
 
 /* Mobile fallback */
 @media (max-width: 900px) {
@@ -1249,14 +1438,11 @@ onBeforeUnmount(() => ctx?.revert())
 
   .track {
     width: 100%;
-    transform: var(--m-offset, translate3d(0, 0, 0));
-    transition: transform 0.55s var(--ease-out);
   }
 
   .track-inner {
-    display: flex;
-    grid-template-columns: none;
-    gap: 0;
+    --per-view: 1;
+    --gap: 0;
     padding: 0;
     width: 100%;
   }
