@@ -244,8 +244,8 @@ function scrollToProducts(e: MouseEvent) {
           <dd class="mono tick">4.78 / 5</dd>
         </div>
         <div>
-          <dt>Tonton</dt>
-          <dd class="mono tick">527K views</dd>
+          <dt>Penonton</dt>
+          <dd class="mono tick">1.1M++</dd>
         </div>
       </dl>
 

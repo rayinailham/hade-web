@@ -242,7 +242,8 @@ onBeforeUnmount(() => {
                 </h3>
                 <p class="cta-desc">
                   Chat langsung admin Hade di WhatsApp. Konsultasi gratis,
-                  pengiriman dari Sukabumi, garansi 1 bulan untuk semua adapter.
+                  pengiriman dari Sukabumi, garansi 1 bulan untuk semua
+                  Clamp Adapter & Direc Sensor.
                 </p>
                 <a class="btn btn-wa cta-btn" :href="waLink()" target="_blank" rel="noreferrer">
                   <span class="wa-mark" aria-hidden="true">

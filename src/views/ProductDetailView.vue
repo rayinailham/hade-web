@@ -97,6 +97,77 @@ function prevImg() {
   const len = product.value.images.length
   selectImage((activeImage.value - 1 + len) % len)
 }
+
+// Drag / swipe to change image
+const mainRef = ref<HTMLElement | null>(null)
+const dragOffset = ref(0)
+const isDragging = ref(false)
+let dragStartX = 0
+let dragStartY = 0
+let pointerId: number | null = null
+let lockedAxis: 'x' | 'y' | null = null
+const SWIPE_THRESHOLD = 50
+
+function onDragStart(e: PointerEvent) {
+  if (!product.value || product.value.images.length < 2) return
+  if (e.pointerType === 'mouse' && e.button !== 0) return
+  pointerId = e.pointerId
+  dragStartX = e.clientX
+  dragStartY = e.clientY
+  lockedAxis = null
+  isDragging.value = true
+  dragOffset.value = 0
+  mainRef.value?.setPointerCapture(e.pointerId)
+}
+
+function onDragMove(e: PointerEvent) {
+  if (!isDragging.value || e.pointerId !== pointerId) return
+  const dx = e.clientX - dragStartX
+  const dy = e.clientY - dragStartY
+
+  if (!lockedAxis) {
+    if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return
+    lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+    if (lockedAxis === 'y') {
+      cancelDrag()
+      return
+    }
+  }
+
+  if (lockedAxis === 'x') {
+    e.preventDefault()
+    dragOffset.value = dx
+  }
+}
+
+function onDragEnd(e: PointerEvent) {
+  if (!isDragging.value || e.pointerId !== pointerId) return
+  const dx = dragOffset.value
+  finishDrag()
+  if (Math.abs(dx) > SWIPE_THRESHOLD) {
+    if (dx < 0) nextImg()
+    else prevImg()
+  }
+}
+
+function cancelDrag() {
+  if (pointerId !== null) {
+    try { mainRef.value?.releasePointerCapture(pointerId) } catch {}
+  }
+  finishDrag()
+}
+
+function finishDrag() {
+  isDragging.value = false
+  dragOffset.value = 0
+  pointerId = null
+  lockedAxis = null
+}
+
+const galleryStyle = computed(() => {
+  if (!isDragging.value) return {}
+  return { '--drag-x': `${dragOffset.value}px` } as Record<string, string>
+})
 </script>
 
 <template>
@@ -121,16 +192,27 @@ function prevImg() {
         <!-- Hero split -->
         <section class="pd-hero">
           <div class="pd-gallery">
-            <div class="pd-main">
+            <div
+              class="pd-main"
+              ref="mainRef"
+              :class="{ 'is-dragging': isDragging }"
+              :style="galleryStyle"
+              @pointerdown="onDragStart"
+              @pointermove="onDragMove"
+              @pointerup="onDragEnd"
+              @pointercancel="onDragEnd"
+            >
               <img
                 v-for="(img, i) in product.images"
                 :key="img"
                 class="pd-main-img"
                 :class="{ 'is-active': i === activeImage }"
+                :style="{ transform: `translate3d(calc(${(i - activeImage) * 100}% + var(--drag-x, 0px)), 0, 0)` }"
                 :src="img"
                 :alt="product.name"
                 loading="eager"
                 decoding="async"
+                draggable="false"
               />
 
               <button
@@ -235,7 +317,7 @@ function prevImg() {
             </div>
 
             <p class="pd-foot mono" data-stagger>
-              order &lt; jam 14:00 → kirim hari yang sama (Sukabumi)
+              {{ product.shipNote ?? 'order < jam 14:00 → kirim hari yang sama (Sukabumi)' }}
             </p>
           </div>
         </section>
@@ -358,6 +440,14 @@ function prevImg() {
   background: var(--c-paper-2);
   border-radius: 6px;
   overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pd-main.is-dragging {
+  cursor: grabbing;
 }
 
 .pd-main-img {
@@ -367,16 +457,19 @@ function prevImg() {
   height: 100%;
   object-fit: cover;
   filter: contrast(1.02);
-  opacity: 0;
-  transform: scale(1.02);
-  transition: opacity 0.7s var(--ease-out), transform 1.4s var(--ease-out);
+  transition: transform 0.55s var(--ease-out);
+  will-change: transform;
   pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .pd-main-img.is-active {
-  opacity: 1;
-  transform: scale(1);
   pointer-events: auto;
+}
+
+.pd-main.is-dragging .pd-main-img {
+  transition: none;
 }
 
 .pd-arrow {
