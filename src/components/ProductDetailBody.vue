@@ -162,17 +162,17 @@ defineProps<{
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 1rem;
 }
 
 .pdb-inbox-list li {
   position: relative;
-  padding-left: 1.4rem;
-  font-size: 14.5px;
+  padding-left: 1.1rem;
+  font-size: 12.5px;
   color: var(--fg-muted);
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 .pdb-inbox-list li::before {
@@ -180,14 +180,14 @@ defineProps<{
   position: absolute;
   left: 0;
   top: 0.55em;
-  width: 8px;
+  width: 7px;
   height: 1px;
   background: var(--c-ink);
 }
 
 .pdb-specs {
   align-self: flex-start;
-  padding: 1.6rem;
+  padding: 1.3rem;
   border: 1px solid rgba(14, 14, 15, 0.5);
   border-radius: 8px;
   background: #fff;
@@ -195,25 +195,28 @@ defineProps<{
 
 .pdb-spec-list {
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1rem;
 }
 
 .pdb-spec-row {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 1rem;
-  padding: 0.85rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.6rem 0;
   border-bottom: 1px solid var(--hairline);
-  font-size: 13.5px;
-  line-height: 1.45;
+  font-size: 12px;
+  line-height: 1.4;
+  min-width: 0;
 }
 
-.pdb-spec-row:last-child { border-bottom: 0; }
+.pdb-spec-row:last-child { border-bottom: 1px solid var(--hairline); }
+.pdb-spec-row:nth-last-child(-n+2) { border-bottom: 0; }
 
 .pdb-spec-row dt {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--fg-subtle);
@@ -224,6 +227,8 @@ defineProps<{
   margin: 0;
   color: var(--c-ink);
   font-weight: 500;
+  font-size: 12px;
+  word-break: break-word;
 }
 
 /* Related */
@@ -426,7 +431,18 @@ defineProps<{
 
 @media (max-width: 640px) {
   .pdb-rel-grid { grid-template-columns: 1fr; }
-  .pdb-spec-row { grid-template-columns: 1fr; gap: 0.25rem; }
+  .pdb-inbox-list {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+  .pdb-spec-list {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .pdb-spec-row {
+    border-bottom: 1px solid var(--hairline) !important;
+  }
+  .pdb-spec-row:last-child { border-bottom: 0 !important; }
   .pdb-cta-card { border-radius: 8px; }
 }
 </style>

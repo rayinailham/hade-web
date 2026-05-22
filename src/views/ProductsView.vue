@@ -131,76 +131,77 @@ async function setFilter(f: Filter) {
       </div>
     </section>
 
-    <!-- Filter + Grid layout -->
+    <!-- Filter toolbar + Grid -->
     <section class="cat-grid-wrap">
       <div class="container">
-        <div class="cat-layout">
-          <!-- Side filter -->
-          <aside class="cat-filters">
-            <div class="filter-head">
-              <span class="filter-label mono">filter</span>
-              <span class="filter-total mono">{{ visibleProducts.length }} / {{ products.length }}</span>
-            </div>
-            <div class="filter-col">
-              <button
-                v-for="f in filters"
-                :key="f"
-                type="button"
-                class="filter-chip"
-                :class="{ 'is-active': activeFilter === f }"
-                @click="setFilter(f)"
-              >
-                <span>{{ f }}</span>
-                <span v-if="f !== 'Semua'" class="filter-count mono">
-                  {{ products.filter(p => p.family === f).length }}
-                </span>
-              </button>
-            </div>
-          </aside>
-
-          <!-- Grid -->
-          <div class="cat-main">
-            <div class="cat-grid">
-              <RouterLink
-                v-for="p in visibleProducts"
-                :key="p.slug"
-                :to="`/products/${p.slug}`"
-                class="cat-card"
-                :class="{ 'is-best': p.best }"
-                :style="{ '--r': aspectMap[p.slug] ?? 1.25 }"
-              >
-                <div class="card-visual">
-                  <img
-                    :src="p.images[0]"
-                    :alt="p.name"
-                    loading="lazy"
-                    decoding="async"
-                    @load="(e) => onImgLoad(p.slug, e)"
-                  />
-                  <span v-if="p.best" class="card-tag mono">terlaris</span>
-                  <span class="card-arrow" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" fill="none">
-                      <path d="M5 11l6-6M6 5h5v5" stroke="currentColor"
-                        stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </span>
-                </div>
-                <div class="card-meta">
-                  <h3 class="card-title">{{ p.name }}</h3>
-                  <span class="card-mount mono">{{ p.mount }}</span>
-                  <p class="card-tagline">{{ p.tagline }}</p>
-                  <div class="card-foot">
-                    <span class="card-price">{{ p.price }}</span>
-                    <span class="card-link mono">lihat detail →</span>
-                  </div>
-                </div>
-              </RouterLink>
-            </div>
-
-            <p v-if="!visibleProducts.length" class="cat-empty">
-              Tidak ada produk untuk filter ini.
-            </p>
+        <!-- Top filter toolbar -->
+        <div class="cat-toolbar">
+          <div class="toolbar-head">
+            <span class="filter-label mono">filter</span>
+            <span class="filter-total mono">
+              {{ visibleProducts.length }} / {{ products.length }}
+            </span>
           </div>
+          <div class="filter-row" role="tablist" aria-label="Filter kategori">
+            <button
+              v-for="f in filters"
+              :key="f"
+              type="button"
+              class="filter-chip"
+              :class="{ 'is-active': activeFilter === f }"
+              :aria-pressed="activeFilter === f"
+              @click="setFilter(f)"
+            >
+              <span>{{ f }}</span>
+              <span v-if="f !== 'Semua'" class="filter-count mono">
+                {{ products.filter(p => p.family === f).length }}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="cat-main">
+          <div class="cat-grid">
+            <RouterLink
+              v-for="p in visibleProducts"
+              :key="p.slug"
+              :to="`/products/${p.slug}`"
+              class="cat-card"
+              :class="{ 'is-best': p.best }"
+              :style="{ '--r': aspectMap[p.slug] ?? 1.25 }"
+            >
+              <div class="card-visual">
+                <img
+                  :src="p.images[0]"
+                  :alt="p.name"
+                  loading="lazy"
+                  decoding="async"
+                  @load="(e) => onImgLoad(p.slug, e)"
+                />
+                <span v-if="p.best" class="card-tag mono">terlaris</span>
+                <span class="card-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path d="M5 11l6-6M6 5h5v5" stroke="currentColor"
+                      stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
+              <div class="card-meta">
+                <h3 class="card-title">{{ p.name }}</h3>
+                <span class="card-mount mono">{{ p.mount }}</span>
+                <p class="card-tagline">{{ p.tagline }}</p>
+                <div class="card-foot">
+                  <span class="card-price">{{ p.price }}</span>
+                  <span class="card-link mono">detail →</span>
+                </div>
+              </div>
+            </RouterLink>
+          </div>
+
+          <p v-if="!visibleProducts.length" class="cat-empty">
+            Tidak ada produk untuk filter ini.
+          </p>
         </div>
       </div>
     </section>
@@ -340,36 +341,28 @@ async function setFilter(f: Filter) {
   background: var(--hairline-strong);
 }
 
-/* ========== Layout: side filter + grid ========== */
+/* ========== Layout: top toolbar + grid ========== */
 .cat-grid-wrap {
-  padding: clamp(2.5rem, 6vh, 4.5rem) 0 clamp(3.5rem, 8vh, 6rem);
-}
-
-.cat-layout {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: clamp(2rem, 4vw, 3.5rem);
-  align-items: start;
+  padding: clamp(2rem, 5vh, 3.5rem) 0 clamp(3.5rem, 8vh, 6rem);
 }
 
 .cat-main { min-width: 0; }
 
-/* ========== Side filter ========== */
-.cat-filters {
-  position: sticky;
-  top: clamp(5rem, 10vh, 7rem);
-  padding: 0;
-  background: transparent;
-  border: 0;
+/* ========== Top filter toolbar ========== */
+.cat-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding-bottom: 1rem;
+  margin-bottom: clamp(1.4rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--hairline);
 }
 
-.filter-head {
+.toolbar-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding-bottom: 0.85rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--hairline);
+  gap: 1rem;
 }
 
 .filter-label {
@@ -385,28 +378,26 @@ async function setFilter(f: Filter) {
   color: var(--fg-muted);
 }
 
-.filter-col {
+.filter-row {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 .filter-chip {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.6rem 0.85rem;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background: transparent;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-strong);
+  background: #fff;
   color: var(--fg-muted);
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 500;
   letter-spacing: -0.005em;
-  text-align: left;
-  width: 100%;
   cursor: pointer;
+  white-space: nowrap;
   transition:
     background 0.3s var(--ease-out),
     color 0.3s var(--ease-out),
@@ -415,7 +406,7 @@ async function setFilter(f: Filter) {
 
 .filter-chip:hover {
   color: var(--c-ink);
-  background: var(--c-paper-2);
+  border-color: var(--c-ink);
 }
 
 .filter-chip.is-active {
@@ -425,23 +416,25 @@ async function setFilter(f: Filter) {
 }
 
 .filter-count {
-  font-size: 10.5px;
+  font-size: 10px;
   letter-spacing: 0.12em;
   opacity: 0.55;
+  padding-left: 0.3rem;
+  border-left: 1px solid currentColor;
 }
 
-.filter-chip.is-active .filter-count { opacity: 0.7; }
+.filter-chip.is-active .filter-count { opacity: 0.75; }
 
 .cat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: clamp(1.4rem, 2.6vw, 2.4rem) clamp(1.2rem, 2.4vw, 2.2rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.2rem, 2.4vw, 2rem) clamp(1rem, 2vw, 1.6rem);
 }
 
 .cat-card {
   display: flex;
   flex-direction: column;
-  gap: 0.95rem;
+  gap: 0.75rem;
   color: var(--c-ink);
   cursor: pointer;
   min-width: 0;
@@ -449,7 +442,7 @@ async function setFilter(f: Filter) {
   background: #fff;
   border: 1px solid rgba(14, 14, 15, 0.12);
   border-radius: 8px;
-  padding: 0.85rem 0.85rem 1.1rem;
+  padding: 0.75rem 0.75rem 0.95rem;
   transition: border-color 0.3s var(--ease-out), transform 0.4s var(--ease-out);
 }
 
@@ -484,11 +477,11 @@ async function setFilter(f: Filter) {
 
 .card-tag {
   position: absolute;
-  top: 0.85rem;
-  left: 0.85rem;
+  top: 0.7rem;
+  left: 0.7rem;
   z-index: 2;
-  padding: 0.32rem 0.6rem;
-  font-size: 9.5px;
+  padding: 0.28rem 0.55rem;
+  font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   background: var(--c-ink);
@@ -498,11 +491,11 @@ async function setFilter(f: Filter) {
 
 .card-arrow {
   position: absolute;
-  bottom: 0.85rem;
-  right: 0.85rem;
+  bottom: 0.7rem;
+  right: 0.7rem;
   z-index: 2;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -516,7 +509,7 @@ async function setFilter(f: Filter) {
   transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
 }
 
-.card-arrow svg { width: 14px; height: 14px; }
+.card-arrow svg { width: 12px; height: 12px; }
 
 .cat-card:hover .card-arrow {
   opacity: 1;
@@ -543,28 +536,28 @@ async function setFilter(f: Filter) {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(1.3rem, 1.6vw, 1.6rem);
-  line-height: 1.1;
+  font-size: clamp(1.05rem, 1.3vw, 1.35rem);
+  line-height: 1.15;
   letter-spacing: -0.025em;
   color: var(--c-ink);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: calc(2 * 1.1em);
+  min-height: calc(2 * 1.15em);
 }
 
 .card-mount {
-  font-size: 10.5px;
+  font-size: 9.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--fg-subtle);
 }
 
 .card-tagline {
-  margin: 0.35rem 0 0;
-  font-size: 13.5px;
-  line-height: 1.55;
+  margin: 0.3rem 0 0;
+  font-size: 12px;
+  line-height: 1.5;
   color: var(--fg-muted);
   max-width: 38ch;
   display: -webkit-box;
@@ -577,25 +570,26 @@ async function setFilter(f: Filter) {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 0.85rem;
+  gap: 0.6rem;
   margin-top: auto;
-  padding-top: 0.85rem;
+  padding-top: 0.7rem;
   border-top: 1px solid var(--hairline);
 }
 
 .card-price {
-  font-size: 13.5px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--c-ink);
   letter-spacing: -0.005em;
 }
 
 .card-link {
-  font-size: 10.5px;
+  font-size: 9.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--fg-muted);
   transition: color 0.3s var(--ease-out);
+  white-space: nowrap;
 }
 
 .cat-card:hover .card-link { color: var(--c-ink); }
@@ -708,41 +702,51 @@ async function setFilter(f: Filter) {
 
 /* ========== Tablet ========== */
 @media (max-width: 1024px) {
-  .cat-layout {
-    grid-template-columns: 180px 1fr;
-    gap: 2rem;
-  }
   .cat-grid {
-    --row-h: clamp(200px, 32vw, 280px);
+    gap: 1.4rem 1.1rem;
   }
 }
 
 /* ========== Mobile ========== */
 @media (max-width: 640px) {
   .catalog { padding-top: 6.5rem; }
-  .cat-layout {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+  .cat-toolbar {
+    gap: 0.6rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 1.2rem;
   }
-  .filter-col {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
+  .filter-row { gap: 0.35rem; }
   .filter-chip {
-    width: auto;
-    padding: 0.5rem 0.85rem;
-    border-radius: 999px;
-    border: 1px solid var(--hairline-strong);
+    padding: 0.4rem 0.7rem;
+    font-size: 11.5px;
   }
   .cat-grid {
-    --row-h: clamp(220px, 56vw, 320px);
-    gap: 1.4rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem 0.7rem;
   }
   .cat-card {
-    flex: 1 1 100%;
-    min-width: 100%;
+    padding: 0.55rem 0.55rem 0.75rem;
+    gap: 0.55rem;
+    border-radius: 6px;
   }
+  .card-title { font-size: 14px; }
+  .card-mount { font-size: 9px; }
+  .card-tagline { font-size: 11px; -webkit-line-clamp: 3; }
+  .card-price { font-size: 11.5px; }
+  .card-link { font-size: 9px; }
+  .card-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    padding-top: 0.5rem;
+  }
+  .card-tag {
+    top: 0.45rem;
+    left: 0.45rem;
+    padding: 0.22rem 0.45rem;
+    font-size: 8.5px;
+  }
+  .card-arrow { display: none; }
   .cat-meta { gap: 1rem; }
   .meta-divider { display: none; }
   .cta-card { border-radius: 8px; }

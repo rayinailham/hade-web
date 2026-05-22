@@ -530,26 +530,26 @@ function prevImg() {
 }
 
 .pd-bullets {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
   margin-bottom: 1.6rem;
 }
 
 .pd-bullet {
   display: flex;
   align-items: flex-start;
-  gap: 0.7rem;
-  font-size: 14px;
-  line-height: 1.55;
+  gap: 0.55rem;
+  font-size: 12.5px;
+  line-height: 1.5;
   color: var(--fg-muted);
 }
 
 .bullet-mark {
   flex-shrink: 0;
-  width: 6px;
-  height: 6px;
-  margin-top: 0.5em;
+  width: 5px;
+  height: 5px;
+  margin-top: 0.55em;
   border-radius: 50%;
   background: var(--c-ink);
 }
