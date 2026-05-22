@@ -4,7 +4,7 @@ import { useRoute, RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { findProduct, products } from '../data/products'
-import { waProductLink, DISCOUNT_PERCENT } from '../composables/useContact'
+import { waProductLink, openShopeeProduct, DISCOUNT_PERCENT } from '../composables/useContact'
 import ProductDetailBody from '../components/ProductDetailBody.vue'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -262,10 +262,23 @@ onBeforeUnmount(() => {
       <div class="container pd-shell">
         <!-- Breadcrumb / back -->
         <nav class="pd-back" aria-label="Breadcrumb">
-          <RouterLink to="/products" class="pd-back-link">
-            <span class="back-arrow" aria-hidden="true">←</span>
-            <span>kembali ke katalog</span>
-          </RouterLink>
+          <div class="pd-back-row">
+            <RouterLink to="/products" class="pd-back-link">
+              <span class="back-arrow" aria-hidden="true">←</span>
+              <span>kembali ke katalog</span>
+            </RouterLink>
+            <a
+              class="pd-shopee-top"
+              :href="product.link"
+              target="_blank"
+              rel="noreferrer"
+              :aria-label="`Lihat ${product.name} di Shopee`"
+              @click="openShopeeProduct(product.link, $event)"
+            >
+              <span class="shopee-mark" aria-hidden="true">S</span>
+              <span>Shopee</span>
+            </a>
+          </div>
           <span class="pd-crumbs mono">
             <RouterLink to="/">hade</RouterLink>
             <span class="sep">/</span>
@@ -403,7 +416,13 @@ onBeforeUnmount(() => {
                 </span>
                 <span class="share-label">{{ shareCopied ? 'Tautan disalin' : 'Bagikan' }}</span>
               </button>
-              <a class="btn btn-shopee" :href="product.link" target="_blank" rel="noreferrer">
+              <a
+                class="btn btn-shopee"
+                :href="product.link"
+                target="_blank"
+                rel="noreferrer"
+                @click="openShopeeProduct(product.link, $event)"
+              >
                 Lihat di Shopee
               </a>
               <a
@@ -530,6 +549,48 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.pd-back-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pd-shopee-top {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  padding: 0.4rem 0.85rem 0.4rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid #ee4d2d;
+  background: #ee4d2d;
+  text-decoration: none;
+  transition: background 0.3s var(--ease-out), border-color 0.3s var(--ease-out),
+    transform 0.3s var(--ease-out);
+}
+
+.pd-shopee-top:hover {
+  background: #d8431f;
+  border-color: #d8431f;
+}
+
+.pd-shopee-top .shopee-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
 }
 
 .pd-back-link {
@@ -891,14 +952,15 @@ onBeforeUnmount(() => {
 .wa-mark svg { width: 14px; height: 14px; }
 
 .btn-shopee {
-  background: transparent;
-  color: var(--c-ink);
-  border-color: var(--hairline-strong);
+  background: #ee4d2d;
+  color: #fff;
+  border-color: #ee4d2d;
 }
 
 .btn-shopee:hover {
-  border-color: var(--c-ink);
-  background: rgba(14, 14, 15, 0.04);
+  background: #d8431f;
+  border-color: #d8431f;
+  color: #fff;
 }
 
 .btn-share {
@@ -1085,6 +1147,12 @@ onBeforeUnmount(() => {
   }
   .pd-shell { gap: 1.1rem; }
   .pd-back { gap: 0.5rem; }
+  .pd-back-row {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .pd-shopee-top { display: inline-flex; }
   .pd-crumbs { font-size: 10px; }
   .pd-crumbs .current { max-width: 14ch; }
   .pd-actions { gap: 0.5rem; }
@@ -1174,10 +1242,10 @@ onBeforeUnmount(() => {
   }
   .pd-actions .btn-wa:hover { transform: none; }
   .pd-actions .btn-shopee {
-    background: #fff;
-    color: var(--c-ink);
+    background: #ee4d2d;
+    color: #fff;
   }
-  .pd-actions .btn-shopee:hover { background: rgba(14, 14, 15, 0.04); }
+  .pd-actions .btn-shopee:hover { background: #d8431f; }
   .pd-actions .btn-share {
     flex: 0 0 56px;
     width: 56px;

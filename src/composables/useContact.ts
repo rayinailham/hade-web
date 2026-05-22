@@ -32,3 +32,52 @@ export function waProductLink(productName: string, price?: string): string {
   ].filter(Boolean)
   return waLink(lines.join('\n'))
 }
+
+/**
+ * Open Shopee product link. Tries to open the native Shopee app on mobile
+ * without leaving the current tab.
+ *
+ * - Android: opens a new tab with an `intent://` URL — Chrome launches the
+ *   Shopee app if installed, otherwise auto-falls back to the regular web URL
+ *   inside that same new tab via `S.browser_fallback_url`.
+ * - iOS: lets the default `target="_blank"` anchor open in a new tab. iOS
+ *   universal links route `https://shopee.co.id/...` straight to the Shopee
+ *   app when installed, otherwise the new tab simply shows the web page.
+ * - Desktop: lets the default anchor open in a new tab.
+ *
+ * Usage in template:
+ *   <a :href="url" target="_blank" @click="openShopeeProduct(url, $event)">
+ */
+export function openShopeeProduct(webUrl: string, e?: Event): void {
+  if (typeof window === 'undefined' || !webUrl) return
+
+  const ua = navigator.userAgent || ''
+  const isAndroid = /android/i.test(ua)
+
+  // Only Android needs custom handling — iOS + desktop ride on `target="_blank"`
+  // and (on iOS) universal links.
+  if (!isAndroid) return
+
+  // Shopee product URLs encode shop + item id as: ...i.{shopid}.{itemid}...
+  const match = webUrl.match(/i\.(\d+)\.(\d+)/)
+  if (!match) return
+
+  const [, shopid, itemid] = match
+
+  // intent:// URL: Chrome launches the Shopee app if installed, otherwise
+  // auto-falls back to the regular web URL — both inside the new tab so the
+  // current tab is never replaced.
+  e?.preventDefault()
+  const intentUrl =
+    `intent://product/${shopid}/${itemid}` +
+    `#Intent;scheme=shopeeid;package=com.shopee.id;` +
+    `S.browser_fallback_url=${encodeURIComponent(webUrl)};end`
+
+  const opened = window.open(intentUrl, '_blank', 'noopener,noreferrer')
+  if (!opened) {
+    // Popup blocked — fall back to plain web URL in a new tab. If even that
+    // fails (rare), navigate the current tab as a last resort.
+    const fallback = window.open(webUrl, '_blank', 'noopener,noreferrer')
+    if (!fallback) window.location.href = webUrl
+  }
+}
