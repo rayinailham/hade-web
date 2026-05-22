@@ -22,7 +22,7 @@ const principles = [
   <section id="manifesto" class="manifesto">
     <div class="container">
       <header class="head">
-        <span class="eyebrow">
+        <span class="eyebrow" data-reveal>
           <span class="mono">filosofi</span>
         </span>
         <h2 class="title" data-reveal data-reveal-stagger="0.08" data-reveal-children=".tword">

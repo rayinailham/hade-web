@@ -12,7 +12,7 @@ const rows = [
   <section id="compatibility" class="compat">
     <div class="container">
       <header class="head">
-        <span class="eyebrow"><span class="mono">kompatibilitas</span></span>
+        <span class="eyebrow" data-reveal><span class="mono">kompatibilitas</span></span>
         <h2 data-reveal>
           <span>Lensa kamu</span>
           <span class="italic">sudah cocok.</span>

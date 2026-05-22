@@ -7,6 +7,7 @@ const visible = ref(true)
 let ctx: gsap.Context | null = null
 
 const SKIP_KEY = 'hade-intro-played'
+const DONE_EVENT = 'hade:intro-done'
 
 const lockScroll = () => {
   document.documentElement.style.overflow = 'hidden'
@@ -17,11 +18,17 @@ const unlockScroll = () => {
   document.body.style.overflow = ''
 }
 
+const fireDone = () => {
+  ;(window as unknown as { __hadeIntroDone?: boolean }).__hadeIntroDone = true
+  window.dispatchEvent(new CustomEvent(DONE_EVENT))
+}
+
 onMounted(() => {
   if (typeof window === 'undefined') return
 
   if (sessionStorage.getItem(SKIP_KEY) === '1') {
     visible.value = false
+    fireDone()
     return
   }
 
@@ -29,6 +36,7 @@ onMounted(() => {
   if (reduce) {
     sessionStorage.setItem(SKIP_KEY, '1')
     visible.value = false
+    fireDone()
     return
   }
 
@@ -123,6 +131,7 @@ onMounted(() => {
 
     // Phase 5 — hold + wipe out
     tl.addLabel('exit', 'logo+=1.85')
+    tl.call(fireDone, [], 'exit')
     tl.to('.intro-content', { y: -28, autoAlpha: 0, duration: 0.55, ease: 'power3.in' }, 'exit')
     tl.to(root.value, { yPercent: -100, duration: 0.95, ease: 'expo.inOut' }, 'exit+=0.18')
   }, root.value!)

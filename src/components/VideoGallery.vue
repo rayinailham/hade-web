@@ -67,7 +67,7 @@ function embedSrc(v: Video) {
   <section id="videos" class="videos">
     <div class="container">
       <header class="head">
-        <span class="eyebrow"><span class="mono">video</span></span>
+        <span class="eyebrow" data-reveal><span class="mono">video</span></span>
         <h2 data-reveal>
           <span>Lihat hasilnya</span>
           <span class="italic">dari kamera HP.</span>

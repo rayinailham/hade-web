@@ -88,7 +88,7 @@ onBeforeUnmount(() => ctx?.revert())
   <section ref="root" class="proof">
     <div class="container">
       <header class="head">
-        <span class="eyebrow"><span class="mono">bukti</span></span>
+        <span class="eyebrow" data-reveal><span class="mono">bukti</span></span>
         <h2 data-reveal>
           <span>Angka tidak</span>
           <span class="italic">berbohong.</span>
@@ -97,7 +97,7 @@ onBeforeUnmount(() => ctx?.revert())
     </div>
 
     <!-- Stats marquee row 1 -->
-    <div class="marquee">
+    <div class="marquee" data-reveal data-reveal-delay="0.1">
       <div class="marquee-track">
         <div v-for="i in 2" :key="`s-${i}`" class="marquee-row">
           <div v-for="s in stats" :key="`${i}-${s.label}`" class="stat">

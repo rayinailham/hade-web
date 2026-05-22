@@ -13,7 +13,7 @@ const headline = ref<HTMLElement | null>(null)
 
 let ctx: gsap.Context | null = null
 
-onMounted(() => {
+function runHeroAnims() {
   ctx = gsap.context(() => {
     // Headline word-by-word reveal
     if (headline.value) {
@@ -28,7 +28,7 @@ onMounted(() => {
           duration: 1.4,
           stagger: 0.06,
           ease: 'power4.out',
-          delay: 0.25,
+          delay: 0.05,
         },
       )
     }
@@ -83,9 +83,40 @@ onMounted(() => {
         duration: 1,
         stagger: 0.08,
         ease: 'power3.out',
-        delay: 0.35,
+        delay: 0.15,
       },
     )
+
+    // Device + caption entrance
+    if (device) {
+      gsap.fromTo(
+        device as Element,
+        { y: 48, opacity: 0, scale: 0.92, filter: 'blur(12px)' },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          filter: 'blur(0px)',
+          duration: 1.4,
+          ease: 'power3.out',
+          delay: 0.25,
+        },
+      )
+    }
+    const caption = root.value?.querySelector('.caption')
+    if (caption) {
+      gsap.fromTo(
+        caption as Element,
+        { y: 12, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          ease: 'power3.out',
+          delay: 0.9,
+        },
+      )
+    }
 
     // Floating orbit numbers ticking
     gsap.to('.tick', {
@@ -97,9 +128,35 @@ onMounted(() => {
       stagger: 0.4,
     })
   }, root.value!)
+}
+
+let onIntroDone: (() => void) | null = null
+
+onMounted(() => {
+  // Pre-hide animated targets so nothing flashes before intro completes
+  const preset = root.value?.querySelectorAll<HTMLElement>(
+    '[data-word], .eyebrow, .lede, .actions, .alt-row, .meta-line, .device, .caption',
+  )
+  preset?.forEach((el) => {
+    el.style.opacity = '0'
+  })
+
+  const introDone = (window as unknown as { __hadeIntroDone?: boolean }).__hadeIntroDone
+  if (introDone) {
+    runHeroAnims()
+    return
+  }
+
+  onIntroDone = () => {
+    runHeroAnims()
+  }
+  window.addEventListener('hade:intro-done', onIntroDone, { once: true })
 })
 
-onBeforeUnmount(() => ctx?.revert())
+onBeforeUnmount(() => {
+  if (onIntroDone) window.removeEventListener('hade:intro-done', onIntroDone)
+  ctx?.revert()
+})
 
 const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 </script>

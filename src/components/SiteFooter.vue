@@ -8,7 +8,7 @@ const waUrl = waLink()
   <footer class="foot">
     <div class="container">
       <div class="grid">
-        <div class="brand">
+        <div class="brand" data-reveal>
           <div class="brand-row">
             <img src="/hade-logo.jpg" alt="hade creative" />
             <span class="brand-text">
@@ -22,7 +22,7 @@ const waUrl = waLink()
           </p>
         </div>
 
-        <div class="col">
+        <div class="col" data-reveal data-reveal-delay="0.05">
           <h4 class="mono">Pesan langsung</h4>
           <a class="wa-link" :href="waUrl" target="_blank" rel="noreferrer">
             <span class="wa-mark" aria-hidden="true">
@@ -40,13 +40,13 @@ const waUrl = waLink()
           <a href="#compatibility">Kompatibilitas</a>
         </div>
 
-        <div class="col">
+        <div class="col" data-reveal data-reveal-delay="0.1">
           <h4 class="mono">Konten</h4>
           <a href="https://www.youtube.com/channel/UCyL2_W6d7BYtlf6pP2sHrvQ" target="_blank" rel="noreferrer">YouTube channel</a>
           <a href="#manifesto">Filosofi</a>
         </div>
 
-        <div class="col">
+        <div class="col" data-reveal data-reveal-delay="0.15">
           <h4 class="mono">Bantuan</h4>
           <span class="meta">Chat WA respon hitungan menit</span>
           <span class="meta">Pre-order 3 hari kerja</span>
@@ -54,7 +54,7 @@ const waUrl = waLink()
         </div>
       </div>
 
-      <div class="bottom">
+      <div class="bottom" data-reveal data-reveal-delay="0.2">
         <span class="mono">© {{ year }} hade creative — Kab. Sukabumi, Jawa Barat</span>
         <span class="mono dim">Dibuat dengan presisi optik &amp; sedikit kepala dingin.</span>
       </div>

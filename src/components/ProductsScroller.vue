@@ -297,15 +297,15 @@ onBeforeUnmount(() => {
     <div class="products-frame">
       <header class="head">
         <div class="head-left">
-          <span class="eyebrow">
+          <span class="eyebrow" data-reveal>
             <span class="mono">katalog · 7 produk</span>
           </span>
-          <h2>
+          <h2 data-reveal data-reveal-stagger="0.08" data-reveal-children="span">
             <span>Bertujuh,</span>
             <span class="italic">satu sistem.</span>
           </h2>
         </div>
-        <p class="head-right">
+        <p class="head-right" data-reveal data-reveal-delay="0.1">
           Dua lini utama: <strong>Clamp Adapter</strong> untuk pengguna baru –
           plug & play, tanpa bongkar HP. Dan <strong>Direc Sensor</strong>
           untuk yang menginginkan hasil paling bersih.

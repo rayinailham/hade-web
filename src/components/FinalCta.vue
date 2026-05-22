@@ -119,7 +119,7 @@ onBeforeUnmount(() => {
   <section ref="root" class="cta" aria-label="Final call to action">
     <div class="container cta-grid">
       <div class="left">
-        <div class="eyebrow eyebrow-dark">
+        <div class="eyebrow eyebrow-dark" data-reveal>
           <span class="mono">online · balas chat hitungan menit</span>
         </div>
 
@@ -132,13 +132,13 @@ onBeforeUnmount(() => {
           </span>
         </h2>
 
-        <p class="kicker">
+        <p class="kicker" data-reveal data-reveal-delay="0.05">
           Pasang ke HP-mu, jepret seperti pakai lensa tele.
           Pesan via WhatsApp untuk diskon {{ DISCOUNT_PERCENT }}% plus gratis ongkir,
           atau ambil di Shopee kalau lebih nyaman.
         </p>
 
-        <div class="ctas">
+        <div class="ctas" data-reveal data-reveal-delay="0.1">
           <a
             ref="primaryBtn"
             class="btn primary"
@@ -175,7 +175,7 @@ onBeforeUnmount(() => {
       </div>
 
       <aside class="side" aria-hidden="true">
-        <div class="side-card">
+        <div class="side-card" data-reveal data-reveal-delay="0.15">
           <header class="side-head">
             <span class="dot" aria-hidden="true"></span>
             <span class="mono side-title">live · whatsapp</span>
