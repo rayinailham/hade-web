@@ -2,6 +2,7 @@
 import { useLenis } from './composables/useLenis'
 import { useReveal } from './composables/useReveal'
 
+import IntroScreen from './components/IntroScreen.vue'
 import SiteNav from './components/SiteNav.vue'
 import HeroSection from './components/HeroSection.vue'
 import ManifestoSection from './components/ManifestoSection.vue'
@@ -17,6 +18,7 @@ useReveal()
 </script>
 
 <template>
+  <IntroScreen />
   <SiteNav />
   <main>
     <HeroSection />

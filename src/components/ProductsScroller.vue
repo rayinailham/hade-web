@@ -29,7 +29,7 @@ const products: Product[] = [
     family: 'Clamp',
     name: 'Clamp Adapter DSLR 2026',
     mount: 'Canon EF · Nikon F',
-    price: 'Rp 895.000 — 1.060.000',
+    price: 'Rp 895.000 – 1.060.000',
     rating: '4.7',
     sold: '12 terjual',
     bullets: ['Plug & play, tanpa bongkar lensa HP', 'Hasil full layar tanpa vignette', 'Paket sudah termasuk Grip Bluetooth V4.1'],
@@ -50,10 +50,10 @@ const products: Product[] = [
     family: 'Clamp',
     name: 'Clamp Adapter Mirrorless 2026',
     mount: 'Sony E-Mount · MFT',
-    price: 'Rp 598.000 — 760.000',
+    price: 'Rp 598.000 – 760.000',
     rating: '4.7',
     sold: '50 terjual',
-    bullets: ['Cocok 7Artisans, Meike, Samyang', 'Mendukung lensa DSLR via adapter', 'Universal — semua merk HP'],
+    bullets: ['Cocok 7Artisans, Meike, Samyang', 'Mendukung lensa DSLR via adapter', 'Universal – semua merk HP'],
     link: 'https://shopee.co.id/Hade-Clamp-Adapter-Lensa-Mirrorless-to-Handphone-versi-2026-Hade-Creative-Production-i.43595306.10357387631?extraParams=%7B%22display_model_id%22%3A139370555716%2C%22model_selection_logic%22%3A3%7D',
     images: IMG_BASE(
       'Hade Clamp Adapter Lensa Mirrorless to Handphone versi 2026 Hade Creative Production',
@@ -68,9 +68,9 @@ const products: Product[] = [
   {
     index: '03',
     family: 'Direc Sensor',
-    name: 'Direc Sensor DSLR — FFD',
+    name: 'Direc Sensor DSLR – FFD',
     mount: 'Canon · Nikon',
-    price: 'Rp 325.000 — 495.000',
+    price: 'Rp 325.000 – 495.000',
     rating: '4.5',
     sold: '16 terjual',
     bullets: ['Gambar tidak terbalik', 'FFD setting untuk fokus presisi', 'Hotshoe + collar tripod'],
@@ -91,7 +91,7 @@ const products: Product[] = [
     family: 'Direc Sensor',
     name: 'Direc Sensor Sony E-mount',
     mount: 'Sony E',
-    price: 'Rp 185.000 — 450.000',
+    price: 'Rp 185.000 – 450.000',
     rating: '4.9',
     sold: '22 terjual',
     bullets: ['Sensor langsung ke lensa', 'Minim chromatic aberration', 'Filamen atau aluminium'],
@@ -112,7 +112,7 @@ const products: Product[] = [
     family: 'Direc Sensor',
     name: 'Direc Sensor MFT',
     mount: 'Micro Four Thirds',
-    price: 'Rp 185.000 — 450.000',
+    price: 'Rp 185.000 – 450.000',
     rating: '5.0',
     sold: '1 terjual',
     bullets: ['Hasil full layar tanpa distorsi', 'Fleksibel semua tipe HP', 'FFD setting'],
@@ -132,8 +132,8 @@ const products: Product[] = [
     index: '06',
     family: 'Bracket',
     name: 'Bracket Rigging System 2026',
-    mount: 'Universal Tele 18x — 60x',
-    price: 'Rp 180.000 — 545.000',
+    mount: 'Universal Tele 18x – 60x',
+    price: 'Rp 180.000 – 545.000',
     rating: '4.8',
     sold: '107 terjual',
     best: true,
@@ -173,7 +173,7 @@ const products: Product[] = [
   },
 ]
 
-// Carousel state — one active image index per product
+// Carousel state – one active image index per product
 const activeIdx = ref<number[]>(products.map(() => 0))
 
 function setSlide(productIdx: number, slideIdx: number) {
@@ -190,7 +190,7 @@ function prevSlide(productIdx: number, total: number) {
   setSlide(productIdx, (activeIdx.value[productIdx] - 1 + total) % total)
 }
 
-// Carousel state — single shared idx for desktop (3 visible) + mobile (1 visible)
+// Carousel state – single shared idx for desktop (3 visible) + mobile (1 visible)
 const totalCards = products.length + 1 // includes CTA card
 const cardIdx = ref(0)
 const cardsPerView = ref(1)
@@ -204,7 +204,7 @@ function clampCardIdx(i: number) {
 
 function applyShift() {
   if (!trackInner.value) return
-  const first = trackInner.value.querySelector<HTMLElement>('.card')
+  const first = trackInner.value.querySelector<HTMLElement>('.item')
   if (!first) return
   const w = first.getBoundingClientRect().width
   const styles = getComputedStyle(trackInner.value)
@@ -233,7 +233,7 @@ function updateCardsPerView() {
   cardIdx.value = clampCardIdx(cardIdx.value)
 }
 
-// Touch swipe detection — only triggers horizontal swap when gesture is
+// Touch swipe detection – only triggers horizontal swap when gesture is
 // clearly horizontal, so vertical page scroll stays smooth on mobile.
 const SWIPE_THRESHOLD = 48
 const ANGLE_BIAS = 1.2 // |dx| must exceed |dy| * bias to count as horizontal
@@ -255,7 +255,7 @@ function onTouchEnd(e: TouchEvent) {
   const dx = t.clientX - touchStartX
   const dy = t.clientY - touchStartY
   if (Math.abs(dx) < SWIPE_THRESHOLD) return
-  if (Math.abs(dx) < Math.abs(dy) * ANGLE_BIAS) return // vertical intent — ignore
+  if (Math.abs(dx) < Math.abs(dy) * ANGLE_BIAS) return // vertical intent – ignore
   if (dx < 0) nextCard()
   else prevCard()
 }
@@ -275,10 +275,10 @@ onMounted(() => {
 
   ctx = gsap.context(() => {
     // Subtle entrance for each card on scroll into view
-    const cards = root.value!.querySelectorAll<HTMLElement>('.card')
-    cards.forEach((card, i) => {
+    const items = root.value!.querySelectorAll<HTMLElement>('.item')
+    items.forEach((item, i) => {
       gsap.fromTo(
-        card,
+        item,
         { y: 28, opacity: 0 },
         {
           y: 0,
@@ -287,7 +287,7 @@ onMounted(() => {
           ease: 'power2.out',
           delay: (i % 3) * 0.06,
           scrollTrigger: {
-            trigger: card,
+            trigger: item,
             start: 'top 88%',
             once: true,
           },
@@ -322,7 +322,7 @@ onBeforeUnmount(() => {
           </h2>
         </div>
         <p class="head-right">
-          Dua lini utama: <strong>Clamp Adapter</strong> untuk pengguna baru —
+          Dua lini utama: <strong>Clamp Adapter</strong> untuk pengguna baru –
           plug & play, tanpa bongkar HP. Dan <strong>Direc Sensor</strong>
           untuk yang menginginkan hasil paling bersih.
         </p>
@@ -366,145 +366,113 @@ onBeforeUnmount(() => {
             <article
               v-for="(p, pi) in products"
               :key="p.index"
-              class="card"
+              class="item"
               :class="{ 'is-best': p.best }"
             >
-              <div class="card-shell">
-                <div class="card-core">
-                  <div class="card-top">
-                    <span class="num mono">{{ p.index }} / 07</span>
-                    <span v-if="p.best" class="best mono">terlaris</span>
+              <div class="visual">
+                <div class="slides">
+                  <img
+                    v-for="(src, si) in p.images"
+                    :key="src"
+                    class="visual-img"
+                    :class="{ 'is-active': activeIdx[pi] === si }"
+                    :src="src"
+                    :alt="`${p.name} – view ${si + 1}`"
+                    :loading="si === 0 ? 'eager' : 'lazy'"
+                    decoding="async"
+                  />
+                </div>
+
+                <button
+                  class="nav-btn nav-prev"
+                  type="button"
+                  :aria-label="`Foto sebelumnya ${p.name}`"
+                  @click="prevSlide(pi, p.images.length)"
+                >
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+                <button
+                  class="nav-btn nav-next"
+                  type="button"
+                  :aria-label="`Foto berikutnya ${p.name}`"
+                  @click="nextSlide(pi, p.images.length)"
+                >
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+
+                <div class="dots" role="tablist" :aria-label="`Galeri ${p.name}`">
+                  <button
+                    v-for="(_, si) in p.images"
+                    :key="si"
+                    type="button"
+                    class="dot"
+                    :class="{ 'is-active': activeIdx[pi] === si }"
+                    :aria-selected="activeIdx[pi] === si"
+                    :aria-label="`Foto ${si + 1}`"
+                    @click="setSlide(pi, si)"
+                  />
+                </div>
+              </div>
+
+              <div class="meta">
+                <div class="meta-top">
+                  <span class="family mono">{{ p.family }} · {{ p.index }} / 07</span>
+                  <span v-if="p.best" class="best mono">terlaris</span>
+                </div>
+
+                <h3 class="title">{{ p.name }}</h3>
+                <span class="mount mono">{{ p.mount }}</span>
+
+                <p class="desc">{{ p.bullets.join(' · ') }}</p>
+
+                <div class="meta-foot">
+                  <div class="price-block">
+                    <span class="price">{{ p.price }}</span>
+                    <span class="discount mono">−{{ DISCOUNT_PERCENT }}% via WA · gratis ongkir</span>
                   </div>
 
-                  <div class="visual">
-                    <span class="family-tag mono">{{ p.family }}</span>
-
-                    <div class="slides">
-                      <img
-                        v-for="(src, si) in p.images"
-                        :key="src"
-                        class="visual-img"
-                        :class="{ 'is-active': activeIdx[pi] === si }"
-                        :src="src"
-                        :alt="`${p.name} — view ${si + 1}`"
-                        :loading="si === 0 ? 'eager' : 'lazy'"
-                        decoding="async"
-                      />
-                    </div>
-
-                    <button
-                      class="nav-btn nav-prev"
-                      type="button"
-                      :aria-label="`Foto sebelumnya ${p.name}`"
-                      @click="prevSlide(pi, p.images.length)"
+                  <div class="actions">
+                    <a
+                      class="btn btn-wa"
+                      :href="waProductLink(p.name, p.price)"
+                      target="_blank"
+                      rel="noreferrer"
+                      :aria-label="`Pesan ${p.name} via WhatsApp`"
                     >
-                      <svg viewBox="0 0 16 16" fill="none">
-                        <path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                    </button>
-                    <button
-                      class="nav-btn nav-next"
-                      type="button"
-                      :aria-label="`Foto berikutnya ${p.name}`"
-                      @click="nextSlide(pi, p.images.length)"
+                      Pesan via WhatsApp
+                    </a>
+                    <a
+                      class="btn btn-shopee"
+                      :href="p.link"
+                      target="_blank"
+                      rel="noreferrer"
+                      :aria-label="`Buka ${p.name} di Shopee`"
                     >
-                      <svg viewBox="0 0 16 16" fill="none">
-                        <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                    </button>
-
-                    <div class="dots" role="tablist" :aria-label="`Galeri ${p.name}`">
-                      <button
-                        v-for="(_, si) in p.images"
-                        :key="si"
-                        type="button"
-                        class="dot"
-                        :class="{ 'is-active': activeIdx[pi] === si }"
-                        :aria-selected="activeIdx[pi] === si"
-                        :aria-label="`Foto ${si + 1}`"
-                        @click="setSlide(pi, si)"
-                      />
-                    </div>
-
-                    <span class="counter mono">
-                      {{ String(activeIdx[pi] + 1).padStart(2, '0') }} / {{ String(p.images.length).padStart(2, '0') }}
-                    </span>
+                      Lihat di Shopee
+                    </a>
                   </div>
-
-                  <div class="card-body">
-                    <h3>{{ p.name }}</h3>
-                    <span class="mount mono">{{ p.mount }}</span>
-                    <ul>
-                      <li v-for="b in p.bullets" :key="b">
-                        <span class="li-dot"></span>{{ b }}
-                      </li>
-                    </ul>
-                  </div>
-
-                  <footer class="card-foot">
-                    <div class="foot-price">
-                      <span class="label mono">harga shopee</span>
-                      <span class="value">{{ p.price }}</span>
-                      <span class="discount mono">−{{ DISCOUNT_PERCENT }}% via WA</span>
-                    </div>
-                    <div class="foot-actions">
-                      <a
-                        class="shopee-buy"
-                        :href="p.link"
-                        target="_blank"
-                        rel="noreferrer"
-                        :aria-label="`Buka ${p.name} di Shopee`"
-                      >
-                        <span class="shopee-mark" aria-hidden="true">S</span>
-                        <span>Shopee</span>
-                      </a>
-                      <a
-                        class="buy-btn wa-buy"
-                        :href="waProductLink(p.name, p.price)"
-                        target="_blank"
-                        rel="noreferrer"
-                        :aria-label="`Pesan ${p.name} via WhatsApp`"
-                      >
-                        <span class="wa-icon" aria-hidden="true">
-                          <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
-                          </svg>
-                        </span>
-                        <span class="wa-buy-copy">
-                          <span class="wa-buy-line">Pesan via WA</span>
-                          <span class="wa-buy-sub mono">−{{ DISCOUNT_PERCENT }}% &middot; gratis ongkir</span>
-                        </span>
-                      </a>
-                    </div>
-                  </footer>
                 </div>
               </div>
             </article>
 
-            <article class="card cta-card">
-              <div class="card-shell">
-                <div class="card-core dark">
-                  <span class="num mono">END</span>
-                  <h3 class="cta-title">
-                    <span>Mau diskon {{ DISCOUNT_PERCENT }}%</span>
-                    <span class="italic">+ gratis ongkir?</span>
-                  </h3>
-                  <p>
-                    Chat langsung admin Hade di WhatsApp. Konsultasi gratis,
-                    pengiriman dari Sukabumi, garansi 1 bulan untuk semua adapter.
-                  </p>
-                  <div class="cta-actions">
-                    <a class="cta-link wa" :href="waLink()" target="_blank" rel="noreferrer">
-                      <span class="wa-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
-                        </svg>
-                      </span>
-                      <span>Chat WhatsApp</span>
-                      <span class="arrow">↗</span>
-                    </a>
-                  </div>
-                </div>
+            <article class="item cta-item">
+              <div class="cta-visual">
+                <span class="cta-mark mono">END / 08</span>
+                <h3 class="cta-title">
+                  <span>Mau diskon {{ DISCOUNT_PERCENT }}%</span>
+                  <span class="italic">+ gratis ongkir?</span>
+                </h3>
+                <p class="cta-desc">
+                  Chat langsung admin Hade di WhatsApp. Konsultasi gratis,
+                  pengiriman dari Sukabumi, garansi 1 bulan untuk semua adapter.
+                </p>
+                <a class="btn btn-wa cta-btn" :href="waLink()" target="_blank" rel="noreferrer">
+                  Chat WhatsApp
+                </a>
               </div>
             </article>
           </div>
@@ -545,9 +513,10 @@ onBeforeUnmount(() => {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: clamp(4rem, 8vh, 6rem) 0 clamp(4rem, 8vh, 6rem);
+  padding: clamp(5rem, 10vh, 8rem) 0;
 }
 
+/* Header */
 .head {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
@@ -555,7 +524,7 @@ onBeforeUnmount(() => {
   align-items: end;
   padding: 0 var(--gutter);
   max-width: var(--container);
-  margin: 0 auto 1.5rem;
+  margin: 0 auto clamp(3rem, 6vh, 5rem);
   width: 100%;
 }
 
@@ -594,35 +563,14 @@ onBeforeUnmount(() => {
   color: var(--c-ink);
 }
 
-.progress {
-  grid-column: 1 / -1;
-  height: 2px;
-  background: var(--hairline);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: 0.75rem;
-}
+.progress,
+.progress-bar { display: none; }
 
-.progress-bar {
-  height: 100%;
-  background: var(--c-ink);
-  transform-origin: left center;
-  transform: scaleX(0);
-  transition: transform 0.1s linear;
-}
-
-.progress {
-  display: none;
-}
-
-.progress-bar {
-  display: none;
-}
-
+/* Rail */
 .rail {
   position: relative;
   width: 100%;
-  padding: 0.5rem var(--gutter) 2rem;
+  padding: 0 var(--gutter);
   max-width: var(--container);
   margin: 0 auto;
   overflow-x: clip;
@@ -631,10 +579,10 @@ onBeforeUnmount(() => {
 
 .rail-arrow {
   position: absolute;
-  top: 50%;
+  top: 36%;
   z-index: 5;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   transform: translateY(-50%);
   border-radius: 999px;
   display: inline-flex;
@@ -643,9 +591,7 @@ onBeforeUnmount(() => {
   background: rgba(255, 255, 255, 0.92);
   color: var(--c-ink);
   border: 1px solid var(--hairline-strong);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 14px 30px -12px rgba(14, 14, 15, 0.35);
+  box-shadow: 0 8px 24px -10px rgba(14, 14, 15, 0.18);
   backdrop-filter: blur(8px);
   transition:
     transform 0.4s var(--ease-out),
@@ -654,8 +600,7 @@ onBeforeUnmount(() => {
     opacity 0.3s var(--ease-out);
 }
 
-.rail-arrow svg { width: 16px; height: 16px; }
-
+.rail-arrow svg { width: 14px; height: 14px; }
 .rail-prev { left: calc(var(--gutter) * 0.25); }
 .rail-next { right: calc(var(--gutter) * 0.25); }
 
@@ -668,121 +613,36 @@ onBeforeUnmount(() => {
 .rail-arrow:active { transform: translateY(-50%) scale(0.94); }
 .rail-arrow:disabled { opacity: 0; pointer-events: none; }
 
-.track {
-  display: block;
-  width: 100%;
-}
+.track { display: block; width: 100%; }
 
 .track-inner {
-  --gap: 1.5rem;
+  --gap: clamp(2rem, 4vw, 3.5rem);
   --per-view: 3;
-  --peek-left: 30px;
-  --peek-right: 20px;
   display: flex;
   gap: var(--gap);
   align-items: stretch;
-  padding-left: var(--peek-left);
-  padding-right: var(--peek-right);
   transform: translate3d(calc(var(--shift, 0px) * -1), 0, 0);
-  transition: transform 0.55s var(--ease-out);
+  transition: transform 0.65s var(--ease-out);
   will-change: transform;
 }
 
-.card {
-  flex: 0 0 calc((100% - var(--peek-left) - var(--peek-right) - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
-  height: auto;
-  min-height: 0;
-  display: flex;
-}
-
-.card-shell {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 6px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
-  border: 1px solid var(--hairline);
-  border-radius: 28px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 22px 60px -28px rgba(14, 14, 15, 0.22);
-}
-
-.card-core {
-  position: relative;
-  height: 100%;
-  background: #fff;
-  border: 1px solid var(--hairline);
-  border-radius: 22px;
-  padding: 1.6rem 1.6rem 1.5rem;
+.item {
+  flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
-  overflow: hidden;
+  gap: 0.9rem;
 }
 
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--fg-subtle);
-}
-
-.best {
-  padding: 0.25rem 0.55rem;
-  background: var(--c-ink);
-  color: var(--c-paper);
-  border-radius: 999px;
-  font-size: 10px;
-}
-
-/* visual block */
+/* Visual — image-first, no card shell */
 .visual {
   position: relative;
-  height: 38%;
-  min-height: 224px;
-  background:
-    linear-gradient(180deg, #fafaf9, #ececea);
-  border: 1px solid var(--hairline);
-  border-radius: 14px;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  background: #ececea;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 2px;
 }
 
-.visual::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, rgba(14, 14, 15, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(14, 14, 15, 0.06) 1px, transparent 1px);
-  background-size: 24px 24px;
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 75%);
-          mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 75%);
-  pointer-events: none;
-}
-
-.family-tag {
-  position: absolute;
-  top: 0.7rem;
-  left: 0.85rem;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--c-ink);
-  background: rgba(255, 255, 255, 0.85);
-  padding: 0.25rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid var(--hairline);
-  z-index: 3;
-  backdrop-filter: blur(6px);
-}
-
-/* Carousel slides */
 .slides {
   position: absolute;
   inset: 0;
@@ -796,13 +656,12 @@ onBeforeUnmount(() => {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: grayscale(0.1) contrast(1.04);
+  filter: contrast(1.02);
   opacity: 0;
   transform: scale(1.04);
   transition:
     opacity 0.7s var(--ease-out),
-    transform 1.6s var(--ease-out),
-    filter 0.6s var(--ease-out);
+    transform 1.6s var(--ease-out);
   will-change: opacity, transform;
   pointer-events: none;
 }
@@ -812,12 +671,11 @@ onBeforeUnmount(() => {
   transform: scale(1.05);
 }
 
-.card:hover .visual-img.is-active {
-  transform: scale(1.09);
-  filter: grayscale(0) contrast(1.06);
+.item:hover .visual-img.is-active {
+  transform: scale(1.08);
 }
 
-/* Carousel nav buttons */
+/* Carousel nav buttons (per-image) */
 .nav-btn {
   position: absolute;
   top: 50%;
@@ -833,7 +691,6 @@ onBeforeUnmount(() => {
   color: var(--c-ink);
   border: 1px solid var(--hairline);
   backdrop-filter: blur(8px);
-  box-shadow: 0 6px 18px -10px rgba(14, 14, 15, 0.4);
   opacity: 0;
   transition:
     opacity 0.4s var(--ease-out),
@@ -841,15 +698,11 @@ onBeforeUnmount(() => {
     transform 0.5s var(--ease-out);
 }
 
-.nav-btn svg {
-  width: 14px;
-  height: 14px;
-}
-
+.nav-btn svg { width: 14px; height: 14px; }
 .nav-prev { left: 0.65rem; }
 .nav-next { right: 0.65rem; }
 
-.card:hover .nav-btn,
+.item:hover .nav-btn,
 .visual:focus-within .nav-btn {
   opacity: 1;
 }
@@ -877,6 +730,13 @@ onBeforeUnmount(() => {
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid var(--hairline);
   backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-out);
+}
+
+.item:hover .dots,
+.visual:focus-within .dots {
+  opacity: 1;
 }
 
 .dot {
@@ -894,37 +754,43 @@ onBeforeUnmount(() => {
   border-radius: 999px;
 }
 
-/* Counter */
-.counter {
-  position: absolute;
-  top: 0.7rem;
-  right: 0.85rem;
-  z-index: 3;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--c-ink);
-  background: rgba(255, 255, 255, 0.85);
-  padding: 0.25rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid var(--hairline);
-  backdrop-filter: blur(6px);
-}
-
-/* body */
-.card-body {
+/* Meta — editorial text block under image */
+.meta {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.45rem;
+  padding: 0 0.15rem;
   flex: 1;
 }
 
-.card-body h3 {
-  margin: 0;
+.meta-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.family { color: var(--fg-subtle); }
+
+.best {
+  padding: 0.2rem 0.5rem;
+  background: var(--c-ink);
+  color: var(--c-paper);
+  border-radius: 999px;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+}
+
+.title {
+  margin: 0.15rem 0 0;
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: 1.4rem;
-  line-height: 1.05;
+  font-size: clamp(1.25rem, 1.5vw, 1.55rem);
+  line-height: 1.1;
   letter-spacing: -0.025em;
   color: var(--c-ink);
 }
@@ -936,62 +802,39 @@ onBeforeUnmount(() => {
   color: var(--fg-subtle);
 }
 
-.card-body ul {
-  list-style: none;
-  margin: 0.4rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-}
-
-.card-body li {
-  position: relative;
-  padding-left: 1.1rem;
-  font-size: 13px;
+.desc {
+  margin: 0.35rem 0 0.85rem;
+  font-size: 13.5px;
+  line-height: 1.65;
   color: var(--fg-muted);
-  line-height: 1.5;
+  max-width: 38ch;
 }
 
-.li-dot {
-  position: absolute;
-  left: 0;
-  top: 0.55em;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--c-ink);
-}
-
-.card-foot {
+/* Foot */
+.meta-foot {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: flex-end;
+  justify-content: space-between;
   gap: 0.85rem;
-  padding-top: 1rem;
+  margin-top: auto;
+  padding-top: 0.7rem;
   border-top: 1px solid var(--hairline);
 }
 
-.foot-price {
+.price-block {
   display: flex;
   flex-direction: column;
-  gap: 0.18rem;
+  gap: 0.25rem;
   flex: 1;
   min-width: 0;
 }
 
-.foot-price .value {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.foot-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.4rem;
-  flex-shrink: 0;
+.price {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-ink);
+  letter-spacing: -0.01em;
 }
 
 .discount {
@@ -999,205 +842,92 @@ onBeforeUnmount(() => {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #128c4a;
-  margin-top: 0.15rem;
 }
 
-.label {
-  display: block;
-  font-size: 9.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--fg-subtle);
-  margin-bottom: 0.25rem;
-}
-
-.value {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--c-ink);
-  letter-spacing: -0.01em;
-}
-
-.buy-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.55rem 0.55rem 0.55rem 1rem;
-  background: var(--c-ink);
-  color: var(--c-paper);
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  transition: all 0.5s var(--ease-out);
-  align-self: flex-end;
-}
-
-/* Per-card WhatsApp primary buy button */
-.buy-btn.wa-buy {
-  position: relative;
-  padding: 0.45rem 0.85rem 0.45rem 0.45rem;
-  gap: 0.55rem;
-  background: linear-gradient(140deg, #1faa55 0%, #128c4a 60%, #0d6e3a 100%);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    0 10px 24px -10px rgba(18, 140, 74, 0.55);
-  overflow: hidden;
-  isolation: isolate;
-  align-self: stretch;
-}
-
-.buy-btn.wa-buy::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
-  transform: translateX(-110%);
-  transition: transform 1.1s var(--ease-out);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.buy-btn.wa-buy:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    0 14px 30px -10px rgba(18, 140, 74, 0.7);
-}
-
-.buy-btn.wa-buy:hover::before {
-  transform: translateX(110%);
-}
-
-.buy-btn .wa-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  position: relative;
-  z-index: 2;
-  flex-shrink: 0;
-}
-
-.buy-btn .wa-icon svg { width: 14px; height: 14px; }
-
-.wa-buy-copy {
+.actions {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  line-height: 1;
-  gap: 0.18rem;
-  position: relative;
-  z-index: 2;
-}
-
-.wa-buy-line {
-  font-weight: 500;
-  font-size: 12.5px;
-}
-
-.wa-buy-sub {
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-/* Subtle Shopee secondary on each card */
-.shopee-buy {
-  display: inline-flex;
-  align-items: center;
   gap: 0.4rem;
-  padding: 0.32rem 0.7rem 0.32rem 0.36rem;
-  border-radius: 999px;
-  background: rgba(238, 77, 45, 0.06);
-  border: 1px solid rgba(238, 77, 45, 0.25);
-  color: #c43d20;
-  font-size: 11px;
+  flex-shrink: 0;
+  align-items: stretch;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 11.5px;
+  font-weight: 500;
   letter-spacing: -0.005em;
-  transition: background 0.4s var(--ease-out), border-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+  border-radius: 2px;
+  border: 1px solid transparent;
+  text-align: center;
+  white-space: nowrap;
+  transition:
+    background 0.3s var(--ease-out),
+    color 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out),
+    transform 0.3s var(--ease-out);
 }
 
-.shopee-buy:hover {
-  background: rgba(238, 77, 45, 0.1);
-  border-color: rgba(238, 77, 45, 0.4);
-  color: #b3361b;
-}
+.btn:active { transform: scale(0.98); }
 
-.shopee-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  background: #ee4d2d;
-  color: #fff;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 10px;
-  line-height: 1;
-}
-
-.buy-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -12px rgba(14, 14, 15, 0.55);
-}
-
-.buy-btn:active {
-  transform: scale(0.97);
-}
-
-.buy-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  transition: all 0.5s var(--ease-out);
-}
-
-.buy-btn:hover .buy-icon {
-  background: rgba(255, 255, 255, 0.24);
-  transform: translate(2px, -2px) scale(1.06);
-}
-
-.buy-icon svg {
-  width: 11px;
-  height: 11px;
-}
-
-/* CTA card */
-.cta-card .card-core.dark {
+.btn-wa {
   background: var(--c-ink);
   color: var(--c-paper);
-  border-color: transparent;
+  border-color: var(--c-ink);
+}
+
+.btn-wa:hover {
+  background: #2a2a2c;
+  border-color: #2a2a2c;
+}
+
+.btn-shopee {
+  background: transparent;
+  color: var(--c-ink);
+  border-color: var(--hairline-strong);
+}
+
+.btn-shopee:hover {
+  border-color: var(--c-ink);
+  background: rgba(14, 14, 15, 0.04);
+}
+
+/* CTA item */
+.cta-item .cta-visual {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--c-ink);
+  color: var(--c-paper);
+  padding: clamp(1.5rem, 2.5vw, 2.25rem);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-radius: 2px;
+  overflow: hidden;
 }
 
-.cta-card .num {
-  color: rgba(255, 255, 255, 0.5);
+.cta-mark {
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 243, 0.5);
 }
 
 .cta-title {
   font-family: var(--font-sans);
   font-weight: 500;
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
   line-height: 1.02;
   letter-spacing: -0.04em;
-  margin: 0.5rem 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
+  color: var(--c-paper);
 }
 
 .cta-title .italic {
@@ -1207,148 +937,40 @@ onBeforeUnmount(() => {
   color: rgba(245, 245, 243, 0.7);
 }
 
-.cta-card p {
-  font-size: 13.5px;
+.cta-desc {
+  font-size: 13px;
   line-height: 1.55;
   color: rgba(245, 245, 243, 0.65);
   margin: 0;
+  max-width: 32ch;
 }
 
-.cta-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
+.cta-btn {
   align-self: flex-start;
-  padding: 0.85rem 1.25rem;
-  border: 1px solid rgba(245, 245, 243, 0.25);
-  border-radius: 999px;
-  font-size: 14px;
-  letter-spacing: -0.01em;
-  transition: all 0.5s var(--ease-out);
-}
-
-.cta-link:hover {
   background: var(--c-paper);
   color: var(--c-ink);
   border-color: var(--c-paper);
+  padding: 0.7rem 1.1rem;
+  font-size: 13px;
 }
 
-.cta-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  align-items: center;
+.cta-btn:hover {
+  background: transparent;
+  color: var(--c-paper);
+  border-color: var(--c-paper);
 }
 
-.cta-link.wa {
-  position: relative;
-  padding: 0.6rem 1rem 0.6rem 0.55rem;
-  gap: 0.55rem;
-  background: linear-gradient(140deg, #25c862 0%, #15a04f 55%, #0d6e3a 100%);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    0 12px 28px -10px rgba(20, 160, 80, 0.6);
-  overflow: hidden;
-  isolation: isolate;
-}
-
-.cta-link.wa::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.25) 50%, transparent 70%);
-  transform: translateX(-110%);
-  transition: transform 1.1s var(--ease-out);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.cta-link.wa:hover {
-  background: linear-gradient(140deg, #25c862 0%, #15a04f 55%, #0d6e3a 100%);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.32);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.34),
-    0 16px 36px -10px rgba(20, 160, 80, 0.75);
-}
-
-.cta-link.wa:hover::before {
-  transform: translateX(110%);
-}
-
-.cta-link.wa .wa-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.2);
-  position: relative;
-  z-index: 2;
-}
-
-.cta-link.wa .wa-icon svg { width: 15px; height: 15px; }
-
-.cta-link.wa > span:not(.wa-icon) { position: relative; z-index: 2; }
-
-.cta-link.shopee-mini {
-  padding: 0.55rem 0.95rem 0.55rem 0.45rem;
-  gap: 0.5rem;
-  background: rgba(238, 77, 45, 0.1);
-  border-color: rgba(238, 77, 45, 0.4);
-  color: #ff8c70;
-  font-size: 12.5px;
-}
-
-.cta-link.shopee-mini:hover {
-  background: rgba(238, 77, 45, 0.18);
-  border-color: rgba(238, 77, 45, 0.55);
-  color: #ff9c80;
-}
-
-.arrow {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.2em;
-  transition: transform 0.5s var(--ease-out);
-}
-
-.cta-link:hover .arrow {
-  transform: translate(2px, -2px);
-}
-
-/* Carousel controls (desktop + mobile) */
+/* Bottom controls */
 .m-controls {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.85rem;
-  margin: 1.75rem auto 0;
+  margin: clamp(2.5rem, 5vh, 3.5rem) auto 0;
   padding: 0 var(--gutter);
   width: 100%;
   max-width: var(--container);
 }
-
-.m-arrow {
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  color: var(--c-ink);
-  border: 1px solid var(--hairline-strong);
-  transition: transform 0.4s var(--ease-out), background 0.4s var(--ease-out), color 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
-}
-
-.m-arrow svg { width: 14px; height: 14px; }
-.m-arrow:hover { background: var(--c-ink); color: var(--c-paper); }
-.m-arrow:active { transform: scale(0.94); }
-.m-arrow:disabled { opacity: 0.35; pointer-events: none; }
 
 .m-dots {
   display: inline-flex;
@@ -1382,62 +1004,25 @@ onBeforeUnmount(() => {
 @media (max-width: 1199px) and (min-width: 760px) {
   .track-inner {
     --per-view: 2;
-    --gap: 1.25rem;
-    --peek-left: 20px;
-    --peek-right: 20px;
-  }
-
-  .card-core {
-    padding: 1.4rem 1.4rem 1.3rem;
-    gap: 1rem;
-  }
-
-  .visual {
-    min-height: 240px;
-  }
-
-  .card-body h3 {
-    font-size: 1.3rem;
-  }
-
-  .card-foot {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-
-  .foot-actions {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .buy-btn.wa-buy {
-    flex: 1;
-    justify-content: flex-start;
+    --gap: 2.25rem;
   }
 }
 
-/* Mobile fallback */
+/* Mobile — single column, full bleed */
 @media (max-width: 900px) {
   .products-frame {
-    padding: 4.5rem 0 3rem;
-  }
-  .head {
-    grid-template-columns: 1fr;
-    margin-bottom: 1.75rem;
+    padding: clamp(3.5rem, 8vh, 5rem) 0;
   }
 
-  /* Switch to single-card slider on mobile */
+  .head {
+    grid-template-columns: 1fr;
+    margin-bottom: 2.5rem;
+  }
+
   .rail {
     overflow: hidden;
     touch-action: pan-y;
     padding: 0;
-  }
-
-  .track {
-    width: 100%;
   }
 
   .track-inner {
@@ -1447,91 +1032,27 @@ onBeforeUnmount(() => {
     width: 100%;
   }
 
-  .card {
+  .item {
     flex: 0 0 100%;
     width: 100%;
-    height: auto;
-    min-height: 0;
-    max-height: none;
     padding: 0 var(--gutter);
   }
 
-  /* Mobile carousel controls */
-  .m-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.85rem;
-    margin: 1.5rem auto 0;
-    padding: 0 var(--gutter);
-    width: 100%;
-    max-width: var(--container);
+  .visual {
+    aspect-ratio: 5 / 4;
   }
 
-  .m-arrow {
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-    color: var(--c-ink);
-    border: 1px solid var(--hairline-strong);
-    transition: transform 0.4s var(--ease-out), background 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
+  .nav-btn,
+  .dots {
+    opacity: 1;
   }
 
-  .m-arrow svg { width: 14px; height: 14px; }
-
-  .m-arrow:hover { background: var(--c-ink); color: var(--c-paper); }
-  .m-arrow:active { transform: scale(0.94); }
-  .m-arrow:disabled { opacity: 0.35; pointer-events: none; }
-
-  .m-dots {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .m-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--c-fog);
-    transition: background 0.4s var(--ease-out), width 0.4s var(--ease-out);
-  }
-
-  .m-dot.is-active {
-    background: var(--c-ink);
-    width: 18px;
-    border-radius: 999px;
-  }
-
-  .m-counter {
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    color: var(--fg-subtle);
-    margin-left: 0.35rem;
-  }
+  .rail-arrow { display: none; }
 }
 
-/* Mobile carousel — refine sizing for small screens */
 @media (max-width: 640px) {
-  .products-frame {
-    padding: 3rem 0 2.5rem;
-  }
-
-  .head {
-    margin-bottom: 1.25rem;
-    gap: 1rem;
-  }
-
-  .head-left .eyebrow {
-    margin-bottom: 0.75rem;
-  }
-
   .head h2 {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     line-height: 1.05;
   }
 
@@ -1540,51 +1061,22 @@ onBeforeUnmount(() => {
     line-height: 1.5;
   }
 
-  .card-shell {
-    border-radius: 18px;
-    padding: 4px;
-  }
-
-  .card-core {
-    border-radius: 14px;
-    padding: 1rem 1rem 1rem;
-    gap: 0.85rem;
-  }
-
-  .card-top {
-    font-size: 9.5px;
-    letter-spacing: 0.16em;
-  }
-
-  .best {
-    font-size: 9px;
-    padding: 0.2rem 0.45rem;
-  }
-
   .visual {
-    height: 220px;
-    border-radius: 10px;
+    aspect-ratio: 5 / 4;
   }
 
-  .family-tag {
-    font-size: 9px;
-    padding: 0.2rem 0.45rem;
-    top: 0.5rem;
-    left: 0.5rem;
+  .title {
+    font-size: 1.25rem;
   }
 
-  .counter {
-    font-size: 9px;
-    padding: 0.2rem 0.45rem;
-    top: 0.5rem;
-    right: 0.5rem;
+  .desc {
+    font-size: 12.5px;
+    line-height: 1.55;
   }
 
   .nav-btn {
-    width: 30px;
-    height: 30px;
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.92);
+    width: 32px;
+    height: 32px;
   }
 
   .nav-btn svg {
@@ -1592,174 +1084,12 @@ onBeforeUnmount(() => {
     height: 12px;
   }
 
-  .nav-prev { left: 0.4rem; }
-  .nav-next { right: 0.4rem; }
-
-  .dots {
-    bottom: 0.5rem;
-    gap: 0.25rem;
-    padding: 0.25rem 0.4rem;
-  }
-
-  .dot {
-    width: 5px;
-    height: 5px;
-  }
-
-  .dot.is-active {
-    width: 12px;
-  }
-
-  .card-body {
-    gap: 0.4rem;
-  }
-
-  .card-body h3 {
-    font-size: 1.1rem;
-    line-height: 1.1;
-  }
-
-  .mount {
-    font-size: 9.5px;
-    letter-spacing: 0.14em;
-  }
-
-  .card-body ul {
-    gap: 0.35rem;
-    margin-top: 0.25rem;
-  }
-
-  .card-body li {
-    font-size: 11.5px;
-    line-height: 1.4;
-    padding-left: 0.9rem;
-  }
-
-  .li-dot {
-    width: 4px;
-    height: 4px;
-    top: 0.5em;
-  }
-
-  .card-foot {
-    padding-top: 0.7rem;
-    align-items: stretch;
-    flex-direction: column;
-    gap: 0.65rem;
-  }
-
-  .foot-actions {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .label {
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    margin-bottom: 0.15rem;
-  }
-
-  .value {
-    font-size: 12px;
-  }
-
-  .discount {
-    font-size: 8.5px;
-  }
-
-  .buy-btn {
-    font-size: 11.5px;
-    padding: 0.45rem 0.5rem 0.45rem 0.8rem;
-    gap: 0.3rem;
-  }
-
-  .buy-btn.wa-buy {
-    flex: 1;
-    justify-content: flex-start;
-    padding: 0.45rem 0.7rem 0.45rem 0.4rem;
-    gap: 0.5rem;
-  }
-
-  .buy-btn .wa-icon {
-    width: 26px;
-    height: 26px;
-  }
-
-  .buy-btn .wa-icon svg { width: 13px; height: 13px; }
-
-  .wa-buy-line { font-size: 11.5px; }
-  .wa-buy-sub { font-size: 8.5px; letter-spacing: 0.14em; }
-
-  .shopee-buy {
-    font-size: 10.5px;
-    padding: 0.28rem 0.6rem 0.28rem 0.32rem;
-  }
-
-  .shopee-mark {
-    width: 14px;
-    height: 14px;
-    font-size: 9px;
-  }
-
-  .buy-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .buy-icon svg {
-    width: 9px;
-    height: 9px;
-  }
-
-  .cta-title {
-    font-size: 1.4rem;
-  }
-
-  .cta-card p {
-    font-size: 12px;
-    line-height: 1.45;
-  }
-
-  .cta-link {
-    font-size: 12.5px;
-    padding: 0.7rem 1rem;
-  }
-
-  .cta-link.wa {
-    padding: 0.55rem 0.95rem 0.55rem 0.45rem;
-  }
-
-  .cta-link.wa .wa-icon { width: 26px; height: 26px; }
-  .cta-link.wa .wa-icon svg { width: 13px; height: 13px; }
-
-  .cta-link.shopee-mini {
-    padding: 0.5rem 0.85rem 0.5rem 0.4rem;
-    font-size: 11.5px;
-  }
-
-  .m-controls {
-    margin-top: 1.1rem;
-    gap: 0.6rem;
-  }
-
-  .m-arrow {
-    width: 36px;
-    height: 36px;
-  }
-
-  .m-arrow svg { width: 12px; height: 12px; }
-
-  .m-counter {
-    font-size: 10px;
-    letter-spacing: 0.14em;
-  }
+  .nav-prev { left: 0.5rem; }
+  .nav-next { right: 0.5rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .track {
-    transition: none;
-  }
+  .track-inner { transition: none; }
+  .visual-img { transition: opacity 0.3s linear; transform: none !important; }
 }
 </style>
