@@ -84,24 +84,6 @@ export function useReveal(rootSelector: string = 'body') {
     }
 
     setTimeout(() => ScrollTrigger.refresh(), 800)
-    setTimeout(() => ScrollTrigger.refresh(), 2000)
-
-    // Safety net: if any [data-reveal] is still at opacity 0 after 3s
-    // (e.g. trigger never fired due to layout issue), force-show it.
-    setTimeout(() => {
-      document.querySelectorAll<HTMLElement>(`${rootSelector} [data-reveal]`).forEach((el) => {
-        const cs = getComputedStyle(el)
-        if (parseFloat(cs.opacity) < 0.05) {
-          gsap.to(el, {
-            y: 0,
-            opacity: 1,
-            filter: 'blur(0px)',
-            duration: 0.6,
-            ease: 'power2.out',
-          })
-        }
-      })
-    }, 3000)
   })
 
   onBeforeUnmount(() => {
