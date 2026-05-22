@@ -443,7 +443,12 @@ onBeforeUnmount(() => {
                       rel="noreferrer"
                       :aria-label="`Pesan ${p.name} via WhatsApp`"
                     >
-                      Pesan via WhatsApp
+                      <span class="wa-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
+                        </svg>
+                      </span>
+                      <span>Pesan via WhatsApp</span>
                     </a>
                     <a
                       class="btn btn-shopee"
@@ -471,7 +476,12 @@ onBeforeUnmount(() => {
                   pengiriman dari Sukabumi, garansi 1 bulan untuk semua adapter.
                 </p>
                 <a class="btn btn-wa cta-btn" :href="waLink()" target="_blank" rel="noreferrer">
-                  Chat WhatsApp
+                  <span class="wa-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
+                    </svg>
+                  </span>
+                  <span>Chat WhatsApp</span>
                 </a>
               </div>
             </article>
@@ -875,15 +885,37 @@ onBeforeUnmount(() => {
 .btn:active { transform: scale(0.98); }
 
 .btn-wa {
-  background: var(--c-ink);
-  color: var(--c-paper);
-  border-color: var(--c-ink);
+  background: linear-gradient(140deg, #1faa55 0%, #128c4a 60%, #0d6e3a 100%);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 10px 24px -14px rgba(18, 140, 74, 0.55);
+  border-radius: 999px;
+  padding: 0.55rem 0.95rem 0.55rem 0.5rem;
 }
 
 .btn-wa:hover {
-  background: #2a2a2c;
-  border-color: #2a2a2c;
+  background: linear-gradient(140deg, #25c862 0%, #1faa55 60%, #128c4a 100%);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 14px 30px -14px rgba(18, 140, 74, 0.65);
+  transform: translateY(-1px);
 }
+
+.btn-wa .wa-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  flex-shrink: 0;
+}
+
+.btn-wa .wa-mark svg { width: 12px; height: 12px; }
 
 .btn-shopee {
   background: transparent;

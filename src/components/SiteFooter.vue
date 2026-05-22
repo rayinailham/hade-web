@@ -25,7 +25,11 @@ const waUrl = waLink()
         <div class="col">
           <h4 class="mono">Pesan langsung</h4>
           <a class="wa-link" :href="waUrl" target="_blank" rel="noreferrer">
-            <span class="wa-dot" aria-hidden="true"></span>
+            <span class="wa-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.05 4.91A10 10 0 0 0 12 2a10 10 0 0 0-8.66 14.97L2 22l5.18-1.36A10 10 0 0 0 12 22a10 10 0 0 0 7.05-17.09zM12 20.13a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.07.81.82-3-.2-.31A8.13 8.13 0 1 1 12 20.13zm4.46-6.09c-.24-.12-1.45-.72-1.67-.8s-.39-.12-.55.12-.63.79-.78.95-.29.18-.53.06a6.66 6.66 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.7c-.14-.24 0-.37.1-.49s.24-.29.36-.43a1.74 1.74 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.4-.55-.41h-.47a.91.91 0 0 0-.66.31 2.74 2.74 0 0 0-.86 2 4.78 4.78 0 0 0 1 2.55 11 11 0 0 0 4.21 3.71c.59.25 1.05.4 1.41.51a3.4 3.4 0 0 0 1.55.1 2.55 2.55 0 0 0 1.66-1.18 2.06 2.06 0 0 0 .15-1.18c-.06-.1-.21-.16-.45-.28z"/>
+              </svg>
+            </span>
             <span class="wa-stack">
               <span>WhatsApp {{ WA_DISPLAY }}</span>
               <span class="wa-perk mono">−{{ DISCOUNT_PERCENT }}% &middot; gratis ongkir</span>
@@ -144,34 +148,44 @@ const waUrl = waLink()
 
 .col .wa-link {
   display: inline-flex;
-  align-items: flex-start;
-  gap: 0.55rem;
-  padding: 0.6rem 0.85rem;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.95rem 0.55rem 0.5rem;
   margin-bottom: 0.25rem;
-  border-radius: 14px;
-  background: rgba(31, 170, 85, 0.12);
-  border: 1px solid rgba(37, 200, 98, 0.35);
-  color: #cbf3dc;
+  border-radius: 999px;
+  background: linear-gradient(140deg, #1faa55 0%, #128c4a 60%, #0d6e3a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
   text-decoration: none;
-  transition: background 0.4s var(--ease-out), border-color 0.4s var(--ease-out);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 12px 28px -16px rgba(18, 140, 74, 0.55);
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
 }
 
 .col .wa-link:hover {
-  background: rgba(31, 170, 85, 0.2);
-  border-color: rgba(37, 200, 98, 0.55);
-  color: #e3fbed;
+  transform: translateY(-1px);
+  background: linear-gradient(140deg, #25c862 0%, #1faa55 60%, #128c4a 100%);
+  color: #fff;
   text-decoration: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 16px 34px -16px rgba(18, 140, 74, 0.7);
 }
 
-.wa-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #25c862;
-  margin-top: 0.55rem;
-  box-shadow: 0 0 0 4px rgba(37, 200, 98, 0.18);
+.wa-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
   flex-shrink: 0;
+  color: #fff;
 }
+
+.wa-mark svg { width: 14px; height: 14px; }
 
 .wa-stack {
   display: flex;
