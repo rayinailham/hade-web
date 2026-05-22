@@ -1,22 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, reactive, nextTick } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { products, type ProductFamily } from '../data/products'
 import { waLink, DISCOUNT_PERCENT } from '../composables/useContact'
+import ProductCard from '../components/ProductCard.vue'
 
 gsap.registerPlugin(ScrollTrigger)
-
-// natural aspect ratio (w/h) per slug — drives justified row layout
-const aspectMap = reactive<Record<string, number>>({})
-
-function onImgLoad(slug: string, e: Event) {
-  const img = e.target as HTMLImageElement
-  if (img.naturalWidth && img.naturalHeight) {
-    aspectMap[slug] = img.naturalWidth / img.naturalHeight
-  }
-}
 
 type Filter = 'Semua' | ProductFamily
 const filters: Filter[] = ['Semua', 'Clamp', 'Direc Sensor', 'Bracket', 'Grip']
@@ -163,40 +153,12 @@ async function setFilter(f: Filter) {
         <!-- Grid -->
         <div class="cat-main">
           <div class="cat-grid">
-            <RouterLink
+            <ProductCard
               v-for="p in visibleProducts"
               :key="p.slug"
-              :to="`/products/${p.slug}`"
+              :product="p"
               class="cat-card"
-              :class="{ 'is-best': p.best }"
-              :style="{ '--r': aspectMap[p.slug] ?? 1.25 }"
-            >
-              <div class="card-visual">
-                <img
-                  :src="p.images[0]"
-                  :alt="p.name"
-                  loading="lazy"
-                  decoding="async"
-                  @load="(e) => onImgLoad(p.slug, e)"
-                />
-                <span v-if="p.best" class="card-tag mono">terlaris</span>
-                <span class="card-arrow" aria-hidden="true">
-                  <svg viewBox="0 0 16 16" fill="none">
-                    <path d="M5 11l6-6M6 5h5v5" stroke="currentColor"
-                      stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
-              </div>
-              <div class="card-meta">
-                <h3 class="card-title">{{ p.name }}</h3>
-                <span class="card-mount mono">{{ p.mount }}</span>
-                <p class="card-tagline">{{ p.tagline }}</p>
-                <div class="card-foot">
-                  <span class="card-price">{{ p.price }}</span>
-                  <span class="card-link mono">detail →</span>
-                </div>
-              </div>
-            </RouterLink>
+            />
           </div>
 
           <p v-if="!visibleProducts.length" class="cat-empty">
@@ -427,172 +389,9 @@ async function setFilter(f: Filter) {
 
 .cat-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(1.2rem, 2.4vw, 2rem) clamp(1rem, 2vw, 1.6rem);
 }
-
-.cat-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  color: var(--c-ink);
-  cursor: pointer;
-  min-width: 0;
-  height: 100%;
-  background: #fff;
-  border: 1px solid rgba(14, 14, 15, 0.12);
-  border-radius: 8px;
-  padding: 0.75rem 0.75rem 0.95rem;
-  transition: border-color 0.3s var(--ease-out), transform 0.4s var(--ease-out);
-}
-
-.cat-card:hover {
-  border-color: rgba(14, 14, 15, 0.25);
-}
-
-.card-visual {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  height: auto;
-  background: var(--c-paper-2);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.card-visual img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.02);
-  transition: transform 1.2s var(--ease-out), filter 0.6s var(--ease-out);
-  filter: contrast(1.02);
-}
-
-.cat-card:hover .card-visual img {
-  transform: scale(1.05);
-}
-
-.card-tag {
-  position: absolute;
-  top: 0.7rem;
-  left: 0.7rem;
-  z-index: 2;
-  padding: 0.28rem 0.55rem;
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  background: var(--c-ink);
-  color: var(--c-paper);
-  border-radius: 999px;
-}
-
-.card-arrow {
-  position: absolute;
-  bottom: 0.7rem;
-  right: 0.7rem;
-  z-index: 2;
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--c-ink);
-  border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
-  backdrop-filter: blur(8px);
-  opacity: 0;
-  transform: translate(8px, 8px);
-  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
-}
-
-.card-arrow svg { width: 12px; height: 12px; }
-
-.cat-card:hover .card-arrow {
-  opacity: 1;
-  transform: translate(0, 0);
-}
-
-.card-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 0 0.15rem;
-  flex: 1;
-}
-
-.card-family {
-  font-size: 10.5px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--fg-subtle);
-}
-
-.card-title {
-  margin: 0.1rem 0 0;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(1.05rem, 1.3vw, 1.35rem);
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-  color: var(--c-ink);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  min-height: calc(2 * 1.15em);
-}
-
-.card-mount {
-  font-size: 9.5px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--fg-subtle);
-}
-
-.card-tagline {
-  margin: 0.3rem 0 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--fg-muted);
-  max-width: 38ch;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.6rem;
-  margin-top: auto;
-  padding-top: 0.7rem;
-  border-top: 1px solid var(--hairline);
-}
-
-.card-price {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--c-ink);
-  letter-spacing: -0.005em;
-}
-
-.card-link {
-  font-size: 9.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  transition: color 0.3s var(--ease-out);
-  white-space: nowrap;
-}
-
-.cat-card:hover .card-link { color: var(--c-ink); }
 
 .cat-empty {
   text-align: center;
@@ -703,6 +502,7 @@ async function setFilter(f: Filter) {
 /* ========== Tablet ========== */
 @media (max-width: 1024px) {
   .cat-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.4rem 1.1rem;
   }
 }

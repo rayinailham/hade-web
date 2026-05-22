@@ -166,55 +166,75 @@ const principles = [
 }
 
 @media (max-width: 900px) {
-  .card { grid-column: span 12; }
+  .card { grid-column: span 6; }
+  .card:last-child { grid-column: span 12; }
   .card.is-shifted { transform: none; }
 }
 
 @media (max-width: 640px) {
   .manifesto {
-    padding: clamp(3.5rem, 8vh, 5rem) 0;
+    padding: clamp(2.75rem, 7vh, 4rem) 0;
   }
 
   .head {
-    margin-bottom: 2.5rem;
-    gap: 1rem;
+    margin-bottom: 1.85rem;
+    gap: 0.7rem;
   }
 
   .title {
-    font-size: 1.55rem;
-    line-height: 1.1;
-    letter-spacing: -0.025em;
-    gap: 0 0.35ch;
+    font-size: 1.25rem;
+    line-height: 1.12;
+    letter-spacing: -0.022em;
+    gap: 0 0.3ch;
   }
 
   .grid {
-    gap: 0.85rem;
-  }
-
-  .card-shell {
-    border-radius: 20px;
-    padding: 4px;
-  }
-
-  .card-core {
-    padding: 1.4rem 1.25rem 1.5rem;
-    border-radius: 16px;
     gap: 0.65rem;
   }
 
+  .card-shell {
+    border-radius: 16px;
+    padding: 3px;
+  }
+
+  .card-core {
+    padding: 1.05rem 1rem 1.15rem;
+    border-radius: 13px;
+    gap: 0.5rem;
+  }
+
   .num {
-    font-size: 10px;
-    letter-spacing: 0.18em;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
   }
 
   .card h3 {
-    font-size: 1.2rem;
+    font-size: 1rem;
+    line-height: 1.1;
     max-width: none;
   }
 
   .card p {
-    font-size: 12.5px;
+    font-size: 11.5px;
     line-height: 1.5;
+  }
+}
+
+@media (max-width: 380px) {
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .card-core {
+    padding: 0.9rem 0.85rem 1rem;
+  }
+
+  .card h3 {
+    font-size: 0.92rem;
+  }
+
+  .card p {
+    font-size: 11px;
   }
 }
 </style>

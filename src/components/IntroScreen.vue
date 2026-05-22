@@ -73,7 +73,8 @@ onMounted(() => {
 
     // focus pulse
     tl.to('.reticle', { scale: 1.18, duration: 0.28, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 0.65)
-    tl.to('.rec-dot', { autoAlpha: 0.25, duration: 0.14, repeat: 3, yoyo: true, ease: 'none' }, 0.7)
+    // gentle dot fade — slow enough to stay below WCAG 2.3.1 flash threshold
+    tl.to('.rec-dot', { autoAlpha: 0.35, duration: 0.45, repeat: 1, yoyo: true, ease: 'sine.inOut' }, 0.7)
 
     // Phase 2 — shutter close (cekrek)
     tl.addLabel('shutter', 1.25)

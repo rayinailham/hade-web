@@ -40,7 +40,7 @@ watch(
 
 const related = computed(() => {
   if (!product.value) return []
-  return products.filter((p) => p.slug !== product.value!.slug).slice(0, 3)
+  return products.filter((p) => p.slug !== product.value!.slug).slice(0, 4)
 })
 
 const root = ref<HTMLElement | null>(null)
@@ -193,10 +193,14 @@ function prevImg() {
                 </span>
               </div>
               <div class="pd-rating">
-                <span class="rating-num">{{ product.rating }}</span>
-                <span class="rating-sub mono">
-                  / 5 · {{ product.sold }}
+                <span class="rating-num">
+                  <svg class="rating-star" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2.6l2.86 6.18 6.74.66-5.08 4.62 1.5 6.66L12 17.3l-6.02 3.42 1.5-6.66L2.4 9.44l6.74-.66L12 2.6z" fill="currentColor"/>
+                  </svg>
+                  <span class="rating-val">{{ product.rating }}</span>
+                  <span class="rating-of">/ 5</span>
                 </span>
+                <span class="rating-sub mono">{{ product.sold }}</span>
               </div>
             </div>
 
@@ -212,6 +216,9 @@ function prevImg() {
             </div>
 
             <div class="pd-actions" data-stagger>
+              <a class="btn btn-shopee" :href="product.link" target="_blank" rel="noreferrer">
+                Lihat di Shopee
+              </a>
               <a
                 class="btn btn-wa"
                 :href="waProductLink(product.name, product.price)"
@@ -224,9 +231,6 @@ function prevImg() {
                   </svg>
                 </span>
                 Pesan via WhatsApp
-              </a>
-              <a class="btn btn-shopee" :href="product.link" target="_blank" rel="noreferrer">
-                Lihat di Shopee
               </a>
             </div>
 
@@ -483,27 +487,28 @@ function prevImg() {
 
 .pd-price-row {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.2rem 0;
+  padding: 1rem 0;
   border-top: 1px solid var(--hairline);
   border-bottom: 1px solid var(--hairline);
   margin-bottom: 1.4rem;
 }
 
-.pd-price { display: flex; flex-direction: column; gap: 0.25rem; }
+.pd-price { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
 
 .price-num {
-  font-size: clamp(18px, 2vw, 22px);
+  font-size: clamp(16px, 1.6vw, 19px);
   font-weight: 500;
   letter-spacing: -0.015em;
   color: var(--c-ink);
+  white-space: nowrap;
 }
 
 .price-sub {
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #128c4a;
 }
@@ -512,21 +517,41 @@ function prevImg() {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.25rem;
+  gap: 0.2rem;
+  flex-shrink: 0;
 }
 
 .rating-num {
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--c-ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rating-of {
+  font-size: 11px;
+  color: var(--fg-subtle);
+  font-weight: 400;
+}
+
+.rating-star {
+  width: 12px;
+  height: 12px;
+  color: #f5b301;
+  flex-shrink: 0;
 }
 
 .rating-sub {
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
+  font-size: 9px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--fg-subtle);
+  white-space: nowrap;
 }
 
 .pd-bullets {
@@ -676,12 +701,111 @@ function prevImg() {
 }
 
 @media (max-width: 640px) {
-  .pd { padding-top: 6.5rem; }
-  .pd-shell { gap: 1.5rem; }
+  .pd {
+    padding-top: 5.25rem;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .pd-shell { gap: 1.1rem; }
   .pd-back { gap: 0.5rem; }
   .pd-crumbs { font-size: 10px; }
   .pd-crumbs .current { max-width: 14ch; }
+  .pd-actions { gap: 0.5rem; }
   .pd-actions .btn { width: 100%; }
+
+  /* Full-bleed hero on mobile — drop card chrome, let gallery hit screen edges */
+  .pd-hero {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    gap: 1.1rem;
+    margin-left: calc(var(--gutter) * -1);
+    margin-right: calc(var(--gutter) * -1);
+  }
+
+  .pd-gallery { gap: 0.55rem; }
+  .pd-main { border-radius: 0; aspect-ratio: 4 / 3; }
+  .pd-arrow { width: 36px; height: 36px; }
+  .pd-prev { left: 0.6rem; }
+  .pd-next { right: 0.6rem; }
+
+  /* Side gutter only for text + thumbs, image stays edge-to-edge */
+  .pd-thumbs {
+    padding: 0 var(--gutter);
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+    gap: 0.4rem;
+  }
+  .pd-info { padding: 0.25rem var(--gutter) 0; }
+
+  .pd-family { margin-bottom: 0.55rem; }
+  .pd-title {
+    font-size: clamp(1.35rem, 5.4vw, 1.7rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .pd-mount { margin-bottom: 0.9rem; }
+  .pd-tag {
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin-bottom: 1.3rem;
+  }
+
+  .pd-price-row { padding: 1rem 0; margin-bottom: 1.1rem; }
+  .price-num { font-size: 17px; }
+  .price-sub { font-size: 9.5px; letter-spacing: 0.14em; }
+  .rating-num { font-size: 15px; }
+  .rating-sub { font-size: 9.5px; letter-spacing: 0.14em; }
+
+  .pd-bullets {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+  }
+  .pd-bullet { font-size: 13px; }
+
+  .pd-actions {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 50;
+    flex-wrap: nowrap;
+    gap: 0;
+    margin: 0;
+    padding: 0 0 env(safe-area-inset-bottom, 0px);
+    background: #fff;
+    border-top: 1px solid var(--hairline-strong);
+    box-shadow: 0 -8px 24px -12px rgba(14, 14, 15, 0.18);
+  }
+  .pd-actions .btn {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    height: 56px;
+    padding: 0 0.9rem;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+  }
+  .pd-actions .btn-wa {
+    flex: 1.4 1 0;
+    background: linear-gradient(140deg, #1faa55 0%, #128c4a 60%, #0d6e3a 100%);
+    color: #fff;
+    padding: 0 0.9rem 0 0.55rem;
+  }
+  .pd-actions .btn-wa:hover { transform: none; }
+  .pd-actions .btn-shopee {
+    background: #fff;
+    color: var(--c-ink);
+  }
+  .pd-actions .btn-shopee:hover { background: rgba(14, 14, 15, 0.04); }
+  .pd-actions .wa-mark { width: 24px; height: 24px; }
+  .pd-actions .wa-mark svg { width: 12px; height: 12px; }
+
+  .pd-foot { display: none; }
+
+  .pd-empty-title { font-size: clamp(1.7rem, 7.5vw, 2.4rem); }
 }
 </style>
 

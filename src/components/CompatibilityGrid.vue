@@ -53,7 +53,7 @@ const rows = [
 
 <style scoped>
 .compat {
-  padding: clamp(6rem, 12vh, 9rem) 0;
+  padding: clamp(6rem, 12vh, 9rem) 0 clamp(2rem, 4vh, 3rem);
   background: var(--bg);
 }
 
@@ -188,6 +188,10 @@ const rows = [
     align-items: flex-start;
   }
 
+  .row:last-child {
+    grid-column: span 2;
+  }
+
   .row:not(.row-head):hover {
     background: rgba(255, 255, 255, 0.8);
     padding-left: 1rem;
@@ -199,60 +203,77 @@ const rows = [
 
 @media (max-width: 640px) {
   .compat {
-    padding: clamp(3.5rem, 8vh, 5rem) 0;
+    padding: clamp(2.75rem, 7vh, 4rem) 0;
   }
 
   .head {
-    margin-bottom: 2rem;
-    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+    gap: 0.65rem;
   }
 
   .head h2 {
-    font-size: 1.55rem;
-    line-height: 1.05;
+    font-size: 1.25rem;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
   }
 
   .head p {
-    font-size: 12.5px;
+    font-size: 11.5px;
     line-height: 1.5;
   }
 
   .table {
-    gap: 0.55rem;
+    gap: 0.5rem;
+    grid-template-columns: 1fr 1fr;
   }
 
   .row {
-    padding: 0.85rem 0.85rem;
-    gap: 0.4rem;
-    border-radius: 12px;
+    padding: 0.7rem 0.7rem;
+    gap: 0.32rem;
+    border-radius: 10px;
   }
 
   .cell-lens {
-    font-size: 12.5px;
-    gap: 0.5rem;
-    letter-spacing: -0.015em;
+    font-size: 11px;
+    gap: 0.4rem;
+    letter-spacing: -0.01em;
   }
 
   .badge {
-    width: 22px;
-    height: 22px;
-    font-size: 10px;
+    width: 18px;
+    height: 18px;
+    font-size: 8.5px;
   }
 
   .mount {
-    font-size: 10px;
+    font-size: 8.5px;
     letter-spacing: 0.04em;
   }
 
   .prod {
-    font-size: 11px;
-    line-height: 1.35;
+    font-size: 9.5px;
+    line-height: 1.3;
   }
 
   .tag {
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    padding: 0.2rem 0.45rem;
+    font-size: 7.5px;
+    letter-spacing: 0.1em;
+    padding: 0.15rem 0.38rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .table {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .head h2 {
+    font-size: 1.1rem;
+  }
+
+  .head p {
+    font-size: 11px;
   }
 }
 </style>

@@ -55,7 +55,7 @@ function prevCard() {
 
 function updateCardsPerView() {
   const w = typeof window !== 'undefined' ? window.innerWidth : 1200
-  const next = w >= 1200 ? 2.5 : w >= 760 ? 1.67 : 1
+  const next = w >= 1200 ? 2.5 : w >= 760 ? 1.67 : w >= 380 ? 2.2 : 2.1
   if (next !== cardsPerView.value) cardsPerView.value = next
   cardIdx.value = clampCardIdx(cardIdx.value)
 }
@@ -866,7 +866,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Mobile â€” single column, full bleed */
+/* Mobile â€” 2-up with peek */
 @media (max-width: 900px) {
   .products-frame {
     padding: clamp(3.5rem, 8vh, 5rem) 0;
@@ -880,20 +880,20 @@ onBeforeUnmount(() => {
   .rail {
     overflow: hidden;
     touch-action: pan-y;
-    padding: 0;
+    padding: 0 var(--gutter);
   }
 
   .track-inner {
-    --per-view: 1;
-    --gap: 0;
+    --per-view: 2.2;
+    --gap: 0.85rem;
     padding: 0;
     width: 100%;
   }
 
   .item {
-    flex: 0 0 100%;
-    width: 100%;
-    padding: 0 var(--gutter);
+    flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+    width: auto;
+    padding: 0;
   }
 
   .visual {
@@ -908,42 +908,182 @@ onBeforeUnmount(() => {
   .rail-arrow { display: none; }
 }
 
+/* Tiny phones â€” keep 2-up with peek */
+@media (max-width: 379px) {
+  .track-inner {
+    --per-view: 2.1;
+    --gap: 0.6rem;
+  }
+}
+
 @media (max-width: 640px) {
+  .products-frame {
+    padding: clamp(2.75rem, 7vh, 4rem) 0;
+  }
+
+  .head {
+    margin-bottom: 1.85rem;
+    gap: 0.7rem;
+  }
+
+  .head-left .eyebrow { margin-bottom: 0.5rem; }
+
   .head h2 {
-    font-size: 1.7rem;
+    font-size: 1.35rem;
     line-height: 1.05;
+    letter-spacing: -0.03em;
   }
 
   .head-right {
-    font-size: 12.5px;
+    font-size: 11.5px;
     line-height: 1.5;
+  }
+
+  .rail-top {
+    margin-bottom: 0.5rem;
+  }
+
+  .view-all {
+    font-size: 10px;
+    letter-spacing: 0.12em;
   }
 
   .visual {
     aspect-ratio: 5 / 4;
   }
 
+  .meta {
+    gap: 0.32rem;
+  }
+
+  .meta-top {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+  }
+
+  .best {
+    font-size: 8.5px;
+    padding: 0.15rem 0.4rem;
+    letter-spacing: 0.13em;
+  }
+
   .title {
-    font-size: 1.25rem;
+    font-size: 1.05rem;
+    line-height: 1.1;
+  }
+
+  .mount {
+    font-size: 9px;
+    letter-spacing: 0.14em;
   }
 
   .desc {
-    font-size: 12.5px;
-    line-height: 1.55;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0.2rem 0 0.55rem;
   }
 
+  .item-arrow {
+    width: 30px;
+    height: 30px;
+    bottom: 0.55rem;
+    right: 0.55rem;
+  }
+
+  .item-arrow svg { width: 12px; height: 12px; }
+
   .nav-btn {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
   }
 
   .nav-btn svg {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
   }
 
-  .nav-prev { left: 0.5rem; }
-  .nav-next { right: 0.5rem; }
+  .nav-prev { left: 0.45rem; }
+  .nav-next { right: 0.45rem; }
+
+  .cta-item .cta-visual {
+    aspect-ratio: auto;
+    min-height: 0;
+    padding: 0.85rem;
+    gap: 0.55rem;
+    border-radius: 4px;
+  }
+
+  .cta-mark {
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+  }
+
+  .cta-title {
+    font-size: 0.95rem;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+
+  .cta-desc {
+    font-size: 9.5px;
+    line-height: 1.4;
+    margin-top: 0.25rem;
+  }
+
+  .cta-btn {
+    padding: 0.4rem 0.65rem;
+    font-size: 10px;
+    gap: 0.3rem;
+    align-self: stretch;
+    margin-top: 0.4rem;
+  }
+
+  .cta-btn .wa-mark {
+    width: 16px;
+    height: 16px;
+  }
+
+  .cta-btn .wa-mark svg {
+    width: 9px;
+    height: 9px;
+  }
+
+  .m-controls {
+    gap: 0.55rem;
+    margin-top: 1.5rem;
+  }
+
+  .m-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .m-dot.is-active {
+    width: 14px;
+  }
+
+  .m-counter {
+    font-size: 9.5px;
+    letter-spacing: 0.13em;
+  }
+}
+
+@media (max-width: 380px) {
+  .head h2 {
+    font-size: 1.2rem;
+  }
+
+  .title {
+    font-size: 0.98rem;
+  }
+
+  .desc {
+    font-size: 10.5px;
+  }
+
+  .cta-title {
+    font-size: 1.1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

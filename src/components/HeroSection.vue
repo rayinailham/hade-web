@@ -159,6 +159,18 @@ onBeforeUnmount(() => {
 })
 
 const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
+
+function scrollToProducts(e: MouseEvent) {
+  e.preventDefault()
+  const el = document.querySelector('#products') as HTMLElement | null
+  if (!el) return
+  const lenis = (window as unknown as { lenis?: { scrollTo: (t: HTMLElement, o?: object) => void } }).lenis
+  if (lenis) {
+    lenis.scrollTo(el, { offset: -24, duration: 1.4 })
+  } else {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
 </script>
 
 <template>
@@ -208,7 +220,7 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
               </svg>
             </span>
           </a>
-          <a class="btn-ghost" href="#products">
+          <a class="btn-ghost" href="#products" @click="scrollToProducts">
             <span>Pelajari produk</span>
             <span class="dot"></span>
           </a>
@@ -1010,58 +1022,64 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 @media (max-width: 640px) {
   .hero {
     min-height: auto;
-    padding: clamp(5rem, 11vh, 6.5rem) 0 2.25rem;
+    padding: clamp(4.5rem, 10vh, 5.5rem) 0 1.75rem;
   }
 
   /* Soften textures on mobile so headline holds focus */
   .grid-tex {
-    background-size: 44px 44px;
-    -webkit-mask-image: radial-gradient(ellipse 110% 60% at 50% 35%, #000 25%, transparent 75%);
-            mask-image: radial-gradient(ellipse 110% 60% at 50% 35%, #000 25%, transparent 75%);
+    background-size: 38px 38px;
+    -webkit-mask-image: radial-gradient(ellipse 110% 55% at 50% 32%, #000 22%, transparent 72%);
+            mask-image: radial-gradient(ellipse 110% 55% at 50% 32%, #000 22%, transparent 72%);
   }
 
   .halftone {
-    width: 80%;
-    height: 60%;
-    bottom: -10%;
-    opacity: 0.22;
-    background-size: 9px 9px;
+    width: 78%;
+    height: 55%;
+    bottom: -8%;
+    opacity: 0.2;
+    background-size: 8px 8px;
   }
 
-  .grain { opacity: 0.04; }
+  .grain { opacity: 0.035; }
 
   .hero-grid {
-    gap: 1.4rem;
+    gap: 1.05rem;
   }
 
   .eyebrow {
     margin-bottom: 0;
-    padding: 0.32rem 0.7rem;
-    font-size: 10px;
+    padding: 0.26rem 0.6rem;
+    font-size: 9px;
     letter-spacing: 0.2em;
+    gap: 0.4rem;
+  }
+
+  .eyebrow::before {
+    width: 5px;
+    height: 5px;
   }
 
   .headline {
-    font-size: clamp(2.4rem, 11.5vw, 3.4rem);
-    line-height: 0.96;
-    letter-spacing: -0.045em;
+    font-size: clamp(1.85rem, 8.6vw, 2.45rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
     margin-bottom: 0;
   }
 
   .headline .line {
-    gap: 0 0.32ch;
+    gap: 0 0.3ch;
   }
 
   .lede {
-    font-size: 15px;
-    line-height: 1.55;
+    font-size: 13px;
+    line-height: 1.5;
     margin-bottom: 0;
     color: var(--fg-muted);
-    max-width: 38ch;
+    max-width: 36ch;
   }
 
   .actions {
-    gap: 0.55rem;
+    gap: 0.5rem;
     margin-bottom: 0;
     flex-direction: column;
     align-items: stretch;
@@ -1070,80 +1088,81 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
   .btn-primary.wa-cta {
     width: 100%;
     justify-content: flex-start;
-    padding: 0.7rem 0.75rem 0.7rem 0.7rem;
-    gap: 0.7rem;
-    border-radius: 18px;
+    padding: 0.55rem 0.6rem 0.55rem 0.55rem;
+    gap: 0.6rem;
+    border-radius: 14px;
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.28),
-      0 18px 40px -16px rgba(18, 140, 74, 0.55);
+      0 14px 32px -14px rgba(18, 140, 74, 0.5);
   }
 
   .wa-icon {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
   }
 
-  .wa-icon svg { width: 17px; height: 17px; }
+  .wa-icon svg { width: 14px; height: 14px; }
 
-  .wa-line { font-size: 14px; font-weight: 500; }
-  .wa-sub  { font-size: 9.5px; letter-spacing: 0.16em; }
+  .wa-line { font-size: 12.5px; font-weight: 500; }
+  .wa-sub  { font-size: 8.5px; letter-spacing: 0.14em; }
 
   .wa-cta .btn-icon {
     margin-left: auto;
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
   }
 
   .btn-ghost {
     width: 100%;
     justify-content: center;
-    padding: 0.78rem 1.1rem;
-    font-size: 13px;
-    border-radius: 18px;
+    padding: 0.65rem 1rem;
+    font-size: 11.5px;
+    border-radius: 14px;
     background: rgba(255, 255, 255, 0.55);
   }
 
   .alt-row {
     margin-bottom: 0;
-    gap: 0.55rem;
+    gap: 0.45rem;
     justify-content: flex-start;
   }
 
   .alt-label {
-    font-size: 9.5px;
-    letter-spacing: 0.18em;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
   }
 
   .btn-shopee {
-    font-size: 11.5px;
-    padding: 0.38rem 0.8rem 0.38rem 0.4rem;
+    font-size: 10.5px;
+    padding: 0.3rem 0.65rem 0.3rem 0.32rem;
+    gap: 0.35rem;
   }
 
   .shopee-mark {
-    width: 17px;
-    height: 17px;
-    font-size: 10.5px;
+    width: 15px;
+    height: 15px;
+    font-size: 9.5px;
   }
 
   .btn-icon {
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
   }
 
   .btn-icon svg {
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
   }
 
   .meta-line {
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
-    padding-top: 1.1rem;
-    margin-top: 0.25rem;
+    padding-top: 0.85rem;
+    margin-top: 0.15rem;
   }
 
   .meta-line > div {
-    padding-right: 0.6rem;
+    padding-right: 0.45rem;
   }
 
   .meta-line > div:last-child {
@@ -1152,34 +1171,34 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
   }
 
   .meta-line dt {
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    margin-bottom: 0.35rem;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.25rem;
   }
 
   .meta-line dd {
-    font-size: 12.5px;
+    font-size: 11px;
   }
 
   .device {
-    width: min(280px, 78%);
+    width: min(220px, 64%);
     aspect-ratio: 3 / 4;
-    filter: drop-shadow(0 24px 36px rgba(14, 14, 15, 0.18));
+    filter: drop-shadow(0 18px 28px rgba(14, 14, 15, 0.16));
   }
 
   .device-shell {
-    border-radius: 28px;
-    padding: 8px;
+    border-radius: 22px;
+    padding: 6px;
   }
 
   .device-core {
-    border-radius: 22px;
+    border-radius: 18px;
   }
 
   .caption {
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    bottom: -1.5rem;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    bottom: -1.25rem;
   }
 
   .scroll-cue {
@@ -1189,28 +1208,37 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 
 @media (max-width: 380px) {
   .hero {
-    padding-top: 4.5rem;
+    padding-top: 4rem;
   }
 
   .headline {
-    font-size: clamp(2.1rem, 12vw, 2.6rem);
+    font-size: clamp(1.65rem, 9vw, 2rem);
+    letter-spacing: -0.035em;
   }
 
   .lede {
-    font-size: 14px;
+    font-size: 12px;
+    line-height: 1.45;
   }
 
   .device {
-    width: min(240px, 80%);
+    width: min(180px, 60%);
+  }
+
+  .meta-line {
+    padding-top: 0.7rem;
   }
 
   .meta-line dt {
-    font-size: 8.5px;
-    letter-spacing: 0.1em;
+    font-size: 7.5px;
+    letter-spacing: 0.08em;
   }
 
   .meta-line dd {
-    font-size: 11.5px;
+    font-size: 10px;
   }
+
+  .wa-line { font-size: 11.5px; }
+  .wa-sub  { font-size: 8px; }
 }
 </style>

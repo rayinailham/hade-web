@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLenis } from './composables/useLenis'
 import { useReveal } from './composables/useReveal'
 
@@ -13,24 +13,17 @@ import SiteFooter from './components/SiteFooter.vue'
 useLenis()
 useReveal()
 
-const router = useRouter()
-const route = useRoute()
 const transitioning = ref(false)
 
-// Track browser back/forward — skip fade for these
-const scrollMap = new Map<string, number>()
-let isPopNav = false
-
 if (typeof window !== 'undefined') {
-  window.addEventListener('popstate', () => {
-    isPopNav = true
-  })
+  // Disable browser's native scroll restoration. We always land at the top
+  // of the new page (forward AND back/forward), driven by the veil flow in
+  // onLeave/onEnter below. Without this, browser would auto-jump scrollY
+  // on popstate before our hooks run.
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual'
+  }
 }
-
-router.beforeEach((_to, from) => {
-  // Save scroll for current page before leaving
-  if (from.fullPath) scrollMap.set(from.fullPath, window.scrollY)
-})
 
 function scrollTo(y: number, smooth = false) {
   const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis
@@ -43,29 +36,23 @@ function scrollTo(y: number, smooth = false) {
 }
 
 function onBeforeEnter(el: Element) {
-  if (isPopNav) {
-    gsap.set(el, { opacity: 1 })
-    return
-  }
   // Page mounts hidden behind the veil
   gsap.set(el, { opacity: 0 })
 }
 
 function onEnter(el: Element, done: () => void) {
-  if (isPopNav) {
-    isPopNav = false
-    gsap.set(el, { opacity: 1 })
-    // Smooth-scroll restore to saved position
-    scrollTo(scrollMap.get(route.fullPath) ?? 0, true)
-    done()
-    return
-  }
+  // Veil is fully covering. Snap scroll to top BEFORE revealing the new
+  // page so user always lands at the top — for forward nav AND for
+  // browser back/forward.
+  scrollTo(0, false)
+  // Refresh ScrollTrigger so any cached-page reveals recompute against
+  // the new scroll position (keep-alive views keep their triggers).
+  ScrollTrigger.refresh()
 
-  // Page is now mounted (and at top — scroll was animated behind the veil)
   gsap.set(el, { opacity: 1 })
 
   // Brief settle so first paint + entrance anims begin behind the veil,
-  // then drop the veil to reveal a fully-painted page.
+  // then drop the veil to reveal a fully-painted page at the top.
   gsap.delayedCall(0.15, () => {
     transitioning.value = false
     done()
@@ -73,19 +60,13 @@ function onEnter(el: Element, done: () => void) {
 }
 
 function onLeave(_el: Element, done: () => void) {
-  if (isPopNav) {
-    done()
-    return
-  }
   // 1) Raise the veil
   transitioning.value = true
 
-  // 2) Once the veil has fully covered, animate scroll to top behind it
-  gsap.delayedCall(0.25, () => {
-    scrollTo(0, true)
-    // 3) Wait for the smooth scroll to complete before swapping pages
-    gsap.delayedCall(0.7, done)
-  })
+  // 2) Once the veil has fully covered, hand off to Vue so the page swap
+  //    happens behind it. Scroll-to-top is performed in onEnter, after
+  //    the new view is mounted but still hidden under the veil.
+  gsap.delayedCall(0.3, done)
 }
 </script>
 

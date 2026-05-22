@@ -278,70 +278,104 @@ onBeforeUnmount(() => ctx?.revert())
 
 @media (max-width: 640px) {
   .proof {
-    padding: clamp(3.5rem, 8vh, 5rem) 0 clamp(2.5rem, 5vh, 3.5rem);
+    padding: clamp(2.75rem, 7vh, 4rem) 0 clamp(2rem, 5vh, 3rem);
   }
 
   .head {
-    margin-bottom: 2rem;
-    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+    gap: 0.65rem;
   }
 
   .head h2 {
-    font-size: 1.55rem;
-    line-height: 1.05;
+    font-size: 1.25rem;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    gap: 0 0.32ch;
   }
 
   .marquee::before, .marquee::after {
-    width: 8vw;
+    width: 6vw;
+  }
+
+  .marquee {
+    margin-bottom: 1rem;
   }
 
   .marquee-row {
+    gap: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .stat {
+    padding: 0.55rem 0.85rem;
+    gap: 0.45rem;
+  }
+
+  .stat-value {
+    font-size: 0.92rem;
+    letter-spacing: -0.025em;
+  }
+
+  .stat-label {
+    font-size: 9.5px;
+  }
+
+  .marquee-reviews .marquee-row {
     gap: 0.65rem;
     padding-right: 0.65rem;
   }
 
-  .stat {
-    padding: 0.7rem 1rem;
-    gap: 0.55rem;
-  }
-
-  .stat-value {
-    font-size: 1.05rem;
-  }
-
-  .stat-label {
-    font-size: 10.5px;
-  }
-
-  .marquee-reviews .marquee-row {
-    gap: 0.85rem;
-    padding-right: 0.85rem;
-  }
-
   .review {
-    flex: 0 0 260px;
-    padding: 1.1rem 1.15rem;
-    border-radius: 14px;
-    gap: 0.75rem;
+    flex: 0 0 220px;
+    padding: 0.85rem 0.95rem;
+    border-radius: 12px;
+    gap: 0.6rem;
   }
 
   .quote {
-    font-size: 0.92rem;
+    font-size: 0.82rem;
     line-height: 1.35;
   }
 
   .review footer {
-    padding-top: 0.65rem;
-    gap: 0.15rem;
+    padding-top: 0.5rem;
+    gap: 0.1rem;
   }
 
   .who {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .role {
-    font-size: 9.5px;
-    letter-spacing: 0.13em;
+    font-size: 8.5px;
+    letter-spacing: 0.11em;
+  }
+}
+
+@media (max-width: 380px) {
+  .head h2 {
+    font-size: 1.1rem;
+  }
+
+  .stat {
+    padding: 0.45rem 0.7rem;
+  }
+
+  .stat-value {
+    font-size: 0.85rem;
+  }
+
+  .stat-label {
+    font-size: 9px;
+  }
+
+  .review {
+    flex: 0 0 200px;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .quote {
+    font-size: 0.78rem;
   }
 }
 </style>

@@ -227,16 +227,9 @@ onBeforeUnmount(() => {
   cursor: grabbing;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .custom-scrollbar {
-    right: 8px;
-    top: 8px;
-    bottom: 8px;
-    width: 4px;
-  }
-  .custom-scrollbar:hover,
-  .custom-scrollbar.is-active {
-    width: 6px;
+    display: none !important;
   }
 }
 

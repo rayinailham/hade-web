@@ -145,7 +145,7 @@ function embedSrc(v: Video) {
 
 <style scoped>
 .videos {
-  padding: clamp(5rem, 10vh, 7rem) 0;
+  padding: clamp(2rem, 4vh, 3rem) 0 clamp(5rem, 10vh, 7rem);
   background: var(--bg);
   border-top: 1px solid var(--hairline);
 }
@@ -188,7 +188,7 @@ function embedSrc(v: Video) {
 /* ===== Grid ===== */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.75rem 1.25rem;
 }
 
@@ -196,6 +196,7 @@ function embedSrc(v: Video) {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  min-width: 0;
 }
 
 .player {
@@ -367,87 +368,112 @@ function embedSrc(v: Video) {
 
 @media (max-width: 640px) {
   .videos {
-    padding: clamp(3rem, 7vh, 4.5rem) 0;
+    padding: clamp(2.5rem, 6vh, 3.75rem) 0;
   }
 
   .head {
-    margin-bottom: 2rem;
-    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    gap: 0.55rem;
   }
 
   .head h2 {
-    font-size: 1.4rem;
-    line-height: 1.1;
+    font-size: 1.15rem;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
   }
 
   .head p {
-    font-size: 12.5px;
+    font-size: 11.5px;
     line-height: 1.5;
   }
 
   .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem 0.75rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .card:last-child {
+    grid-column: auto;
   }
 
   .card {
-    gap: 0.55rem;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.75rem;
   }
 
   .player {
-    border-radius: 9px;
-  }
-
-  .play {
-    width: 36px;
-    height: 36px;
-  }
-
-  .play svg {
-    width: 13px;
-    height: 13px;
-  }
-
-  .num {
-    font-size: 9.5px;
-    letter-spacing: 0.18em;
+    flex: 0 0 42%;
+    align-self: flex-start;
   }
 
   .card-meta {
-    gap: 0.3rem;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .player {
+    border-radius: 8px;
+  }
+
+  .play {
+    width: 30px;
+    height: 30px;
+  }
+
+  .play svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .num {
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+  }
+
+  .card-meta {
+    gap: 0.25rem;
   }
 
   .card-meta h3 {
-    font-size: 0.78rem;
-    line-height: 1.25;
-    letter-spacing: -0.012em;
+    font-size: 11.5px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
   }
 
   .row {
-    font-size: 10px;
-    gap: 0.3rem;
+    font-size: 9.5px;
+    gap: 0.28rem;
+    letter-spacing: 0.02em;
   }
 
   .topic {
-    font-size: 10.5px;
+    font-size: 9.5px;
+    letter-spacing: -0.005em;
   }
 
   .footnote {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 0.85rem;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    gap: 0.4rem;
   }
 }
 
 @media (max-width: 380px) {
   .head h2 {
-    font-size: 1.25rem;
+    font-size: 1.05rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .card-meta h3 {
-    font-size: 0.72rem;
+    font-size: 11px;
   }
 }
 </style>

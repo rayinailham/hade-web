@@ -460,21 +460,59 @@ onBeforeUnmount(() => {
 
 @media (max-width: 640px) {
   .cta {
-    padding: clamp(4rem, 9vh, 6rem) 0 clamp(5rem, 12vh, 8rem);
+    padding: clamp(3rem, 7vh, 4.5rem) 0 clamp(3.5rem, 9vh, 5.5rem);
   }
   .head {
-    font-size: clamp(2.2rem, 11vw, 3.4rem);
+    font-size: clamp(1.7rem, 9vw, 2.4rem);
     line-height: 0.98;
-    margin-bottom: 1.1rem;
+    margin-bottom: 0.85rem;
+    letter-spacing: -0.04em;
   }
-  .eyebrow-dark { margin-bottom: 1.4rem; }
-  .kicker { margin-bottom: 1.6rem; font-size: 0.92rem; }
-  .ctas { gap: 0.6rem; margin-bottom: 1.6rem; }
-  .btn { font-size: 13.5px; padding: 0.75rem 0.85rem 0.75rem 1.2rem; }
-  .btn-arrow { width: 26px; height: 26px; }
-  .perk { font-size: 9.5px; padding: 0.32rem 0.6rem; letter-spacing: 0.13em; }
-  .side-card { padding: 1.1rem 1.1rem 1rem; border-radius: 16px; }
-  .side-msg { font-size: 0.92rem; }
-  .megatype { font-size: 32vw; }
+  .eyebrow-dark {
+    margin-bottom: 1rem;
+    padding: 0.26rem 0.6rem;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+  }
+  .kicker {
+    margin-bottom: 1.25rem;
+    font-size: 12px;
+    line-height: 1.5;
+    max-width: 42ch;
+  }
+  .ctas { gap: 0.5rem; margin-bottom: 1.25rem; flex-direction: column; align-items: stretch; }
+  .btn {
+    font-size: 12.5px;
+    padding: 0.6rem 0.7rem 0.6rem 0.5rem;
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 14px;
+  }
+  .btn.ghost {
+    padding: 0.65rem 0.95rem;
+    justify-content: center;
+  }
+  .btn-arrow { width: 22px; height: 22px; margin-left: auto; }
+  .btn-arrow svg { width: 11px; height: 11px; }
+  .btn.primary { padding: 0.55rem 0.55rem 0.55rem 0.45rem; }
+  .btn.primary .wa-mark { width: 26px; height: 26px; }
+  .btn.primary .wa-mark svg { width: 13px; height: 13px; }
+
+  .perks { gap: 0.35rem; }
+  .perk { font-size: 8.5px; padding: 0.25rem 0.5rem; letter-spacing: 0.11em; }
+
+  .cta-grid { gap: 1.6rem; }
+
+  .side-card { padding: 0.95rem 0.95rem 0.85rem; border-radius: 14px; gap: 0.65rem; }
+  .side-title { font-size: 9px; letter-spacing: 0.18em; }
+  .side-handle { font-size: 12px; }
+  .side-msg { font-size: 0.82rem; line-height: 1.4; }
+  .side-meta { font-size: 8.5px; letter-spacing: 0.14em; padding-top: 0.6rem; }
+}
+
+@media (max-width: 380px) {
+  .head { font-size: 1.55rem; }
+  .kicker { font-size: 11.5px; }
+  .perk { font-size: 8px; padding: 0.2rem 0.45rem; }
 }
 </style>

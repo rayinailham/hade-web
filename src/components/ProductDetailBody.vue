@@ -2,6 +2,7 @@
 import { RouterLink } from 'vue-router'
 import type { Product } from '../data/products'
 import { waLink, DISCOUNT_PERCENT } from '../composables/useContact'
+import ProductCard from './ProductCard.vue'
 
 defineProps<{
   product: Product
@@ -53,21 +54,12 @@ defineProps<{
           </RouterLink>
         </header>
         <div class="pdb-rel-grid">
-          <RouterLink
+          <ProductCard
             v-for="r in related"
             :key="r.slug"
-            :to="`/products/${r.slug}`"
-            class="pdb-rel-card"
-          >
-            <div class="rel-visual">
-              <img :src="r.images[0]" :alt="r.name" loading="lazy" decoding="async" />
-            </div>
-            <div class="rel-meta">
-              <span class="rel-family mono">{{ r.family }}</span>
-              <h3 class="rel-title">{{ r.name }}</h3>
-              <span class="rel-link mono">lihat detail →</span>
-            </div>
-          </RouterLink>
+            :product="r"
+            compact
+          />
         </div>
       </section>
 
@@ -231,14 +223,14 @@ defineProps<{
   word-break: break-word;
 }
 
-/* Related */
+/* Related — chrome-free editorial layout */
 .pdb-related {
-  padding: clamp(1.5rem, 3vw, 2rem);
-  margin: 0 0 clamp(1rem, 2vh, 1.5rem);
-  background: #fff;
-  border: 1px solid rgba(14, 14, 15, 0.2);
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(14, 14, 15, 0.04), 0 4px 12px -6px rgba(14, 14, 15, 0.06);
+  padding: 0;
+  margin: clamp(2.5rem, 5vh, 3.5rem) 0 clamp(1rem, 2vh, 1.5rem);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .pdb-rel-head {
@@ -246,95 +238,49 @@ defineProps<{
   align-items: flex-end;
   justify-content: space-between;
   gap: 1.5rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: clamp(1.5rem, 3vh, 2.25rem);
+  padding-bottom: clamp(1rem, 2vh, 1.5rem);
+  border-bottom: 1px solid var(--hairline);
   flex-wrap: wrap;
 }
 
 .pdb-rel-head-text { display: flex; flex-direction: column; }
 
 .pdb-rel-viewall {
+  position: relative;
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--fg-muted);
-  padding: 0.5rem 0.85rem;
-  border: 1px solid rgba(14, 14, 15, 0.2);
-  border-radius: 999px;
+  padding: 0.4rem 0;
   white-space: nowrap;
-  transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+  transition: color 0.3s var(--ease-out);
+}
+
+.pdb-rel-viewall::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0.35);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease-out);
 }
 
 .pdb-rel-viewall:hover {
   color: var(--c-ink);
-  border-color: var(--c-ink);
-  background: rgba(14, 14, 15, 0.03);
 }
+
+.pdb-rel-viewall:hover::after { transform: scaleX(1); }
 
 .pdb-rel-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(1.4rem, 2.4vw, 2.2rem);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.2rem, 2.4vw, 2rem) clamp(1rem, 2vw, 1.6rem);
 }
-
-.pdb-rel-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  color: var(--c-ink);
-}
-
-.rel-visual {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  background: var(--c-paper-2);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.rel-visual img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 1.1s var(--ease-out);
-  transform: scale(1.02);
-}
-
-.pdb-rel-card:hover .rel-visual img { transform: scale(1.07); }
-
-.rel-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  padding: 0 0.1rem;
-}
-
-.rel-family {
-  font-size: 10.5px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--fg-subtle);
-}
-
-.rel-title {
-  margin: 0.1rem 0 0;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 1.25rem;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-}
-
-.rel-link {
-  margin-top: 0.4rem;
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  transition: color 0.3s var(--ease-out);
-}
-
-.pdb-rel-card:hover .rel-link { color: var(--c-ink); }
 
 /* Final CTA */
 .pdb-cta { padding-top: clamp(3rem, 6vh, 4.5rem); }
@@ -426,23 +372,77 @@ defineProps<{
     position: static;
     margin-top: 1rem;
   }
-  .pdb-rel-grid { grid-template-columns: repeat(2, 1fr); }
+  .pdb-rel-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.4rem 1.1rem;
+  }
 }
 
 @media (max-width: 640px) {
-  .pdb-rel-grid { grid-template-columns: 1fr; }
+  .pdb-detail {
+    padding: 1.1rem;
+    gap: 1.5rem;
+  }
+  .pdb-section-title {
+    font-size: clamp(1.25rem, 5vw, 1.55rem);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+  .pdb-section-body {
+    font-size: 13.5px;
+    line-height: 1.65;
+    margin-bottom: 1.75rem;
+  }
+  .pdb-section-mark { font-size: 9.5px; margin-bottom: 0.75rem; }
+
+  .pdb-rel-head {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.85rem;
+    gap: 0.85rem;
+  }
+  .pdb-rel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem 0.75rem;
+  }
+  .cat-card {
+    padding: 0;
+    gap: 0.6rem;
+  }
+  .card-title { font-size: 14px; }
+  .card-mount { font-size: 9px; }
+  .card-tagline { font-size: 11px; -webkit-line-clamp: 3; }
+  .card-price { font-size: 11.5px; }
+  .card-link { font-size: 9px; }
+  .card-foot { padding-top: 0.5rem; gap: 0.3rem; }
+  .card-tag {
+    top: 0.45rem;
+    left: 0.45rem;
+    padding: 0.22rem 0.45rem;
+    font-size: 8.5px;
+  }
+  .card-arrow { display: none; }
   .pdb-inbox-list {
     grid-template-columns: 1fr;
     gap: 0.45rem;
   }
+  .pdb-inbox-list li { font-size: 12px; }
+
+  .pdb-specs { padding: 1rem; }
   .pdb-spec-list {
-    grid-template-columns: 1fr;
-    gap: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 0.85rem;
   }
   .pdb-spec-row {
-    border-bottom: 1px solid var(--hairline) !important;
+    padding: 0.5rem 0;
+    font-size: 11.5px;
   }
-  .pdb-spec-row:last-child { border-bottom: 0 !important; }
+  .pdb-spec-row dt { font-size: 9px; letter-spacing: 0.14em; }
+  .pdb-spec-row dd { font-size: 11.5px; }
+  .pdb-spec-row:nth-last-child(-n+2) { border-bottom: 0; }
+  .pdb-spec-row:last-child { border-bottom: 0; }
+
   .pdb-cta-card { border-radius: 8px; }
+  .pdb-cta-title { font-size: clamp(1.4rem, 5.6vw, 1.8rem); }
+  .pdb-cta-desc { font-size: 13px; }
 }
 </style>
