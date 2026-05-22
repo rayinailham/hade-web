@@ -63,6 +63,45 @@ export function useReveal(rootSelector: string = 'body') {
         void i
       })
     })
+
+    // Schedule refreshes AFTER triggers are created. Production cold-start
+    // can shift layout (font swap, lazy images) after onMounted runs, leaving
+    // trigger positions stale. We refresh on:
+    //   1. next paint (immediate post-mount layout)
+    //   2. fonts ready (font swap settled)
+    //   3. window load (all sync resources)
+    //   4. delayed timer (covers anything else)
+    requestAnimationFrame(() => ScrollTrigger.refresh())
+
+    if ('fonts' in document) {
+      document.fonts.ready.then(() => ScrollTrigger.refresh()).catch(() => {})
+    }
+
+    if (document.readyState === 'complete') {
+      ScrollTrigger.refresh()
+    } else {
+      window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true })
+    }
+
+    setTimeout(() => ScrollTrigger.refresh(), 800)
+    setTimeout(() => ScrollTrigger.refresh(), 2000)
+
+    // Safety net: if any [data-reveal] is still at opacity 0 after 3s
+    // (e.g. trigger never fired due to layout issue), force-show it.
+    setTimeout(() => {
+      document.querySelectorAll<HTMLElement>(`${rootSelector} [data-reveal]`).forEach((el) => {
+        const cs = getComputedStyle(el)
+        if (parseFloat(cs.opacity) < 0.05) {
+          gsap.to(el, {
+            y: 0,
+            opacity: 1,
+            filter: 'blur(0px)',
+            duration: 0.6,
+            ease: 'power2.out',
+          })
+        }
+      })
+    }, 3000)
   })
 
   onBeforeUnmount(() => {
