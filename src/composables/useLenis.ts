@@ -26,6 +26,9 @@ export function useLenis() {
 
     lenisInstance.on('scroll', ScrollTrigger.update)
 
+    // Expose for non-Vue callers (e.g. nav anchor scroll)
+    ;(window as unknown as { lenis?: Lenis }).lenis = lenisInstance
+
     const tick = (time: number) => {
       lenisInstance?.raf(time * 1000)
     }
@@ -40,6 +43,7 @@ export function useLenis() {
       gsap.ticker.remove(tick)
       lenisInstance?.destroy()
       lenisInstance = null
+      delete (window as unknown as { lenis?: Lenis }).lenis
     })
   })
 

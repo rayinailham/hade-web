@@ -427,8 +427,8 @@ onBeforeUnmount(() => ctx?.revert())
                 <div class="card-core dark">
                   <span class="num mono">END</span>
                   <h3 class="cta-title">
-                    <span>Mau diskon</span>
-                    <span class="italic">{{ DISCOUNT_PERCENT }}% + gratis ongkir?</span>
+                    <span>Mau diskon {{ DISCOUNT_PERCENT }}%</span>
+                    <span class="italic">+ gratis ongkir?</span>
                   </h3>
                   <p>
                     Chat langsung admin Hade di WhatsApp. Konsultasi gratis,
@@ -654,8 +654,8 @@ onBeforeUnmount(() => ctx?.revert())
 /* visual block */
 .visual {
   position: relative;
-  height: 48%;
-  min-height: 280px;
+  height: 38%;
+  min-height: 224px;
   background:
     linear-gradient(180deg, #fafaf9, #ececea);
   border: 1px solid var(--hairline);

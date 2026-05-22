@@ -2,6 +2,7 @@
 import { useLenis } from './composables/useLenis'
 import { useReveal } from './composables/useReveal'
 
+import SiteNav from './components/SiteNav.vue'
 import HeroSection from './components/HeroSection.vue'
 import ManifestoSection from './components/ManifestoSection.vue'
 import ProductsScroller from './components/ProductsScroller.vue'
@@ -15,6 +16,7 @@ useReveal()
 </script>
 
 <template>
+  <SiteNav />
   <main>
     <HeroSection />
     <ManifestoSection />

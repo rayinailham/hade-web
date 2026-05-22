@@ -186,6 +186,7 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 
       <div class="right">
         <div class="device">
+          <!-- OLD: pure CSS/HTML device (kept as fallback — re-enable if needed)
           <div class="device-shell">
             <div class="device-core">
               <div class="lens-stack">
@@ -211,6 +212,95 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
               </div>
             </div>
           </div>
+          -->
+
+          <svg
+            class="device-svg"
+            viewBox="0 0 300 400"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="dvShell" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.6)" />
+                <stop offset="100%" stop-color="rgba(245,245,243,0.4)" />
+              </linearGradient>
+              <linearGradient id="dvCore" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#f5f5f3" />
+                <stop offset="100%" stop-color="#ffffff" />
+              </linearGradient>
+              <linearGradient id="dvScreen" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1a1a1c" />
+                <stop offset="70%" stop-color="#0a0a0c" />
+                <stop offset="100%" stop-color="#1c1b1e" />
+              </linearGradient>
+              <radialGradient id="dvLensA" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#2a292c" />
+                <stop offset="100%" stop-color="#0e0e0f" />
+              </radialGradient>
+              <radialGradient id="dvLensB" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#1a1a1c" />
+                <stop offset="100%" stop-color="#050506" />
+              </radialGradient>
+              <radialGradient id="dvLensM" cx="30%" cy="25%" r="75%">
+                <stop offset="0%" stop-color="#2c2b2e" />
+                <stop offset="100%" stop-color="#08080a" />
+              </radialGradient>
+              <radialGradient id="dvLensF" cx="28%" cy="22%" r="75%">
+                <stop offset="0%" stop-color="#4d4c50" />
+                <stop offset="100%" stop-color="#0a0a0c" />
+              </radialGradient>
+              <radialGradient id="dvAp" cx="50%" cy="50%" r="50%">
+                <stop offset="30%" stop-color="#050506" />
+                <stop offset="100%" stop-color="#1c1b1e" />
+              </radialGradient>
+              <filter id="dvShadowLens" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="7" />
+                <feOffset dx="0" dy="14" />
+                <feComponentTransfer><feFuncA type="linear" slope="0.55" /></feComponentTransfer>
+                <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+              <filter id="dvShadowPhone" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+                <feOffset dx="0" dy="12" />
+                <feComponentTransfer><feFuncA type="linear" slope="0.4" /></feComponentTransfer>
+                <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+            </defs>
+
+            <rect x="0.5" y="0.5" width="299" height="399" rx="36" ry="36" fill="url(#dvShell)" stroke="#e5e4e0" stroke-width="1" />
+            <rect x="10.5" y="10.5" width="279" height="379" rx="28" ry="28" fill="url(#dvCore)" stroke="#eeeeec" stroke-width="1" />
+
+            <g filter="url(#dvShadowPhone)">
+              <rect x="75" y="151" width="150" height="217" rx="24" ry="24" fill="#0e0e0f" />
+            </g>
+            <rect x="81" y="157" width="138" height="205" rx="18" ry="18" fill="url(#dvScreen)" />
+
+            <rect x="103" y="190" width="94" height="139" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3 3" />
+            <line x1="103" y1="259.5" x2="197" y2="259.5" stroke="rgba(255,255,255,0.18)" stroke-width="1" />
+            <line x1="150" y1="190" x2="150" y2="329" stroke="rgba(255,255,255,0.18)" stroke-width="1" />
+            <circle cx="150" cy="259.5" r="7" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1" />
+
+            <text x="89" y="356" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="rgba(255,255,255,0.65)" letter-spacing="1">f/1.8 · 1/250 · ISO 400</text>
+            <text x="211" y="174" text-anchor="end" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="#dddddd" letter-spacing="1.7">REC ●</text>
+
+            <g filter="url(#dvShadowLens)">
+              <circle cx="150" cy="144" r="96" fill="url(#dvLensA)" stroke="#000" stroke-width="1" />
+              <circle cx="150" cy="144" r="84" fill="url(#dvLensB)" />
+              <circle cx="150" cy="144" r="66" fill="url(#dvLensM)" />
+              <circle cx="150" cy="144" r="42" fill="url(#dvLensF)" />
+              <circle cx="150" cy="144" r="29" fill="url(#dvAp)" />
+              <g stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-linecap="round">
+                <line x1="150" y1="144" x2="165" y2="144" />
+                <line x1="150" y1="144" x2="165" y2="144" transform="rotate(60 150 144)" />
+                <line x1="150" y1="144" x2="165" y2="144" transform="rotate(120 150 144)" />
+                <line x1="150" y1="144" x2="165" y2="144" transform="rotate(180 150 144)" />
+                <line x1="150" y1="144" x2="165" y2="144" transform="rotate(240 150 144)" />
+                <line x1="150" y1="144" x2="165" y2="144" transform="rotate(300 150 144)" />
+              </g>
+            </g>
+          </svg>
 
           <span class="caption mono">hade · clamp adapter v.2026</span>
         </div>
@@ -309,8 +399,8 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
 .headline {
   font-family: var(--font-sans);
   font-weight: 500;
-  font-size: clamp(2.6rem, 7.4vw, 6rem);
-  line-height: 0.92;
+  font-size: clamp(2.2rem, 6.2vw, 5rem);
+  line-height: 0.94;
   letter-spacing: -0.045em;
   margin: 0 0 1.5rem;
   color: var(--c-ink);
@@ -838,8 +928,8 @@ const headlineWords = ['Lensa', 'profesional.', 'Smartphone', 'kamu.']
   }
 
   .headline {
-    font-size: 2.2rem;
-    line-height: 0.95;
+    font-size: 1.85rem;
+    line-height: 0.98;
     letter-spacing: -0.04em;
     margin-bottom: 1rem;
   }
