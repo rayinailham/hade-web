@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { gsap } from 'gsap'
 import { useLenis } from './composables/useLenis'
 import { useReveal } from './composables/useReveal'
+import { lastNavWasViewTransition } from './composables/useViewTransition'
 
 import IntroScreen from './components/IntroScreen.vue'
 import SiteNav from './components/SiteNav.vue'
@@ -15,16 +16,26 @@ useReveal()
 const transitioning = ref(false)
 
 function onBeforeEnter(el: Element) {
+  // When the View Transitions API is driving the swap we let the browser
+  // handle the cross-fade + shared-element morph. Vue's transition still
+  // fires (mode="out-in") so we just no-op and bail out below.
+  if (lastNavWasViewTransition()) return
   gsap.set(el, { opacity: 0, y: 24, filter: 'blur(8px)' })
 }
 
 function onEnter(el: Element, done: () => void) {
-  transitioning.value = true
-  // Reset Lenis to top before painting next route
+  // Reset Lenis to top before painting next route — runs in both VT and
+  // GSAP fallback paths.
   const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis
   if (lenis) lenis.scrollTo(0, { immediate: true, duration: 0 })
   else window.scrollTo({ top: 0, behavior: 'auto' })
 
+  if (lastNavWasViewTransition()) {
+    done()
+    return
+  }
+
+  transitioning.value = true
   gsap.to(el, {
     opacity: 1,
     y: 0,
@@ -39,6 +50,10 @@ function onEnter(el: Element, done: () => void) {
 }
 
 function onLeave(el: Element, done: () => void) {
+  if (lastNavWasViewTransition()) {
+    done()
+    return
+  }
   gsap.to(el, {
     opacity: 0,
     y: -16,

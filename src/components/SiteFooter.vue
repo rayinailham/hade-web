@@ -5,7 +5,7 @@ const waUrl = waLink()
 </script>
 
 <template>
-  <footer class="foot">
+  <footer class="foot vt-chrome">
     <div class="container">
       <div class="grid">
         <div class="brand" data-reveal>

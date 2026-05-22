@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { products, type ProductFamily } from '../data/products'
 import { waLink, DISCOUNT_PERCENT } from '../composables/useContact'
+import { navigateToProduct } from '../composables/useProductTransition'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const router = useRouter()
+
+function goToProduct(e: MouseEvent, slug: string) {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+  e.preventDefault()
+  const card = e.currentTarget as HTMLElement | null
+  const img = card?.querySelector<HTMLElement>('.card-visual img')
+  navigateToProduct(router, slug, `/products/${slug}`, img)
+}
 
 type Filter = 'Semua' | ProductFamily
 const filters: Filter[] = ['Semua', 'Clamp', 'Direc Sensor', 'Bracket', 'Grip']
@@ -137,6 +148,7 @@ function setFilter(f: Filter) {
             :to="`/products/${p.slug}`"
             class="cat-card"
             :class="{ 'is-best': p.best, 'is-feature': i === 0 }"
+            @click="(e: MouseEvent) => goToProduct(e, p.slug)"
           >
             <div class="card-visual">
               <img
@@ -409,14 +421,15 @@ function setFilter(f: Filter) {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: clamp(0.6rem, 1.4vw, 1.1rem);
   transform: scale(1.02);
   transition: transform 1.2s var(--ease-out), filter 0.6s var(--ease-out);
   filter: contrast(1.02);
 }
 
 .cat-card:hover .card-visual img {
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 .card-tag {

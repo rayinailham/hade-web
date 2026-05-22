@@ -237,3 +237,71 @@ html.lenis body {
     filter: none;
   }
 }
+
+/* ============================================
+   View Transitions API
+   - Default cross-fade is replaced with a
+     blur-blend that matches the GSAP fallback.
+   - Shared elements (.vt-shared-product) morph
+     between catalog card image and detail hero.
+   ============================================ */
+
+@supports (view-transition-name: none) {
+  :root {
+    view-transition-name: root;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.55s;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  ::view-transition-old(root) {
+    animation-name: hade-fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: hade-fade-in;
+  }
+
+  @keyframes hade-fade-out {
+    from { opacity: 1; filter: blur(0); transform: translateY(0); }
+    to   { opacity: 0; filter: blur(6px); transform: translateY(-8px); }
+  }
+
+  @keyframes hade-fade-in {
+    from { opacity: 0; filter: blur(8px); transform: translateY(12px); }
+    to   { opacity: 1; filter: blur(0); transform: translateY(0); }
+  }
+
+  /* Shared element morph — runs longer & with a softer curve so the
+     product image glides into the detail hero. */
+  ::view-transition-group(.vt-product),
+  ::view-transition-old(.vt-product),
+  ::view-transition-new(.vt-product) {
+    animation-duration: 0.85s;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  /* Sticky chrome that we DON'T want to crossfade (nav/footer/scrollbar). */
+  .vt-chrome {
+    view-transition-name: vt-chrome;
+  }
+
+  ::view-transition-old(vt-chrome),
+  ::view-transition-new(vt-chrome) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(.vt-product),
+  ::view-transition-old(.vt-product),
+  ::view-transition-new(.vt-product) {
+    animation-duration: 0.001ms !important;
+  }
+}

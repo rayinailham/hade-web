@@ -5,6 +5,8 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { findProduct, products } from '../data/products'
 import { waProductLink, DISCOUNT_PERCENT } from '../composables/useContact'
+import { productVTName } from '../composables/useProductTransition'
+import { lastNavWasViewTransition } from '../composables/useViewTransition'
 import ProductDetailBody from '../components/ProductDetailBody.vue'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -120,6 +122,7 @@ function prevImg() {
                 :key="img"
                 class="pd-main-img"
                 :class="{ 'is-active': i === activeImage }"
+                :style="i === 0 ? { viewTransitionName: productVTName(product.slug) } : undefined"
                 :src="img"
                 :alt="product.name"
                 loading="eager"
@@ -325,6 +328,10 @@ function prevImg() {
   grid-template-columns: 1.15fr 1fr;
   gap: clamp(2rem, 5vw, 4rem);
   align-items: start;
+  background: #fff;
+  border: 1px solid var(--c-ink);
+  border-radius: 8px;
+  padding: clamp(1.25rem, 3vw, 2rem);
 }
 
 /* Gallery */
