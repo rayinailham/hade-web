@@ -104,8 +104,15 @@ defineProps<{
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: clamp(2rem, 5vw, 4rem);
-  padding-bottom: clamp(3rem, 7vh, 5rem);
-  border-bottom: 1px solid var(--hairline);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: clamp(3rem, 7vh, 5rem);
+  background: #fff;
+  border: 1px solid rgba(14, 14, 15, 0.5);
+  border-radius: 8px;
+}
+
+.pdb-desc {
+  padding: 0.25rem 0;
 }
 
 .pdb-section-mark {
@@ -178,10 +185,9 @@ defineProps<{
   top: 140px;
   align-self: flex-start;
   padding: 1.6rem;
-  border: 1px solid var(--hairline-strong);
+  border: 1px solid rgba(14, 14, 15, 0.5);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(12px);
+  background: #fff;
 }
 
 .pdb-spec-list {
@@ -219,8 +225,11 @@ defineProps<{
 
 /* Related */
 .pdb-related {
-  padding: clamp(3.5rem, 7vh, 5rem) 0 clamp(3rem, 6vh, 4.5rem);
-  border-bottom: 1px solid var(--hairline);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  margin: clamp(3rem, 6vh, 4.5rem) 0 clamp(3rem, 6vh, 4.5rem);
+  background: #fff;
+  border: 1px solid rgba(14, 14, 15, 0.5);
+  border-radius: 8px;
 }
 
 .pdb-rel-head { margin-bottom: 2.5rem; }

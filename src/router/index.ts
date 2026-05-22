@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const HomeView = () => import('../views/HomeView.vue')
 const ProductsView = () => import('../views/ProductsView.vue')
@@ -18,10 +18,10 @@ export const router = createRouter({
     },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView },
   ],
-  // Skip native scroll restoration. Lenis + custom transition handle it.
-  scrollBehavior(to: RouteLocationNormalized, from: RouteLocationNormalized) {
-    // Same route + only hash changes → let SiteNav handle Lenis scroll
-    if (to.path === from.path && to.hash) return false
-    return { top: 0 }
+  // We never want vue-router to call window.scrollTo() — Lenis owns scroll
+  // and would fight any native jump. Scroll is handled inside the view-
+  // transition callback (useViewTransition.ts) and SiteNav's hash logic.
+  scrollBehavior() {
+    return false
   },
 })

@@ -329,7 +329,7 @@ function prevImg() {
   gap: clamp(2rem, 5vw, 4rem);
   align-items: start;
   background: #fff;
-  border: 1px solid var(--c-ink);
+  border: 1px solid rgba(14, 14, 15, 0.5);
   border-radius: 8px;
   padding: clamp(1.25rem, 3vw, 2rem);
 }
