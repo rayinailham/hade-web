@@ -590,11 +590,11 @@ onBeforeUnmount(() => {
 
 .visual-img.is-active {
   opacity: 1;
-  transform: scale(1.06);
+  transform: scale(1.065);
 }
 
 .item:hover .visual-img.is-active {
-  transform: scale(1.09);
+  transform: scale(1.10);
 }
 
 /* Carousel nav buttons (per-image) */
