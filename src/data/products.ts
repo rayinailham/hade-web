@@ -146,7 +146,7 @@ export const products: Product[] = [
     mount: 'Canon · Nikon',
     price: 'Rp 325.000 – 495.000',
     rating: '4.5',
-    sold: '16 terjual',
+    sold: '17 terjual',
     bullets: [
       'Gambar tidak terbalik (pakai app kamera bawaan)',
       'Sensor langsung ke lensa, minim chromatic aberration',
