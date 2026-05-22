@@ -159,7 +159,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="trackRef"
-    class="custom-scrollbar vt-chrome"
+    class="custom-scrollbar vt-scrollbar"
     :class="{ 'is-visible': visible }"
     :style="{ '--track-inset': `${TRACK_INSET}px` }"
     @pointerdown="onTrackPointerDown"

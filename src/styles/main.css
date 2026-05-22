@@ -284,13 +284,18 @@ html.lenis body {
     animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
   }
 
-  /* Sticky chrome that we DON'T want to crossfade (nav/footer/scrollbar). */
-  .vt-chrome {
-    view-transition-name: vt-chrome;
-  }
+  /* Sticky chrome that we DON'T want to crossfade (nav/footer/scrollbar).
+     Each element needs a UNIQUE view-transition-name. */
+  .vt-nav      { view-transition-name: vt-nav; }
+  .vt-footer   { view-transition-name: vt-footer; }
+  .vt-scrollbar { view-transition-name: vt-scrollbar; }
 
-  ::view-transition-old(vt-chrome),
-  ::view-transition-new(vt-chrome) {
+  ::view-transition-old(vt-nav),
+  ::view-transition-new(vt-nav),
+  ::view-transition-old(vt-footer),
+  ::view-transition-new(vt-footer),
+  ::view-transition-old(vt-scrollbar),
+  ::view-transition-new(vt-scrollbar) {
     animation: none;
     mix-blend-mode: normal;
   }

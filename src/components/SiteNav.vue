@@ -98,7 +98,7 @@ function goHome(e: MouseEvent) {
 <template>
   <header
     ref="navRoot"
-    class="site-nav vt-chrome"
+    class="site-nav vt-nav"
     :class="{ 'is-condensed': condensed, 'is-open': open }"
     aria-label="Navigasi utama"
   >

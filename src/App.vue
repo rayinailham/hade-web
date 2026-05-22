@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { gsap } from 'gsap'
 import { useLenis } from './composables/useLenis'
 import { useReveal } from './composables/useReveal'
-import { lastNavWasViewTransition } from './composables/useViewTransition'
+import { supportsViewTransitions } from './composables/useViewTransition'
 
 import IntroScreen from './components/IntroScreen.vue'
 import SiteNav from './components/SiteNav.vue'
@@ -13,29 +13,24 @@ import SiteFooter from './components/SiteFooter.vue'
 useLenis()
 useReveal()
 
+// Decide ONCE at app boot which transition path to use. Doing this per
+// navigation creates a race between Vue's <transition> tearing down the
+// outgoing element and the browser's view-transition snapshot reusing it
+// (parentNode becomes null and Vue throws).
+const useVT = supportsViewTransitions()
+
 const transitioning = ref(false)
 
 function onBeforeEnter(el: Element) {
-  // When the View Transitions API is driving the swap we let the browser
-  // handle the cross-fade + shared-element morph. Vue's transition still
-  // fires (mode="out-in") so we just no-op and bail out below.
-  if (lastNavWasViewTransition()) return
   gsap.set(el, { opacity: 0, y: 24, filter: 'blur(8px)' })
 }
 
 function onEnter(el: Element, done: () => void) {
-  // Reset Lenis to top before painting next route — runs in both VT and
-  // GSAP fallback paths.
+  transitioning.value = true
   const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis
   if (lenis) lenis.scrollTo(0, { immediate: true, duration: 0 })
   else window.scrollTo({ top: 0, behavior: 'auto' })
 
-  if (lastNavWasViewTransition()) {
-    done()
-    return
-  }
-
-  transitioning.value = true
   gsap.to(el, {
     opacity: 1,
     y: 0,
@@ -50,10 +45,6 @@ function onEnter(el: Element, done: () => void) {
 }
 
 function onLeave(el: Element, done: () => void) {
-  if (lastNavWasViewTransition()) {
-    done()
-    return
-  }
   gsap.to(el, {
     opacity: 0,
     y: -16,
@@ -68,7 +59,14 @@ function onLeave(el: Element, done: () => void) {
 <template>
   <IntroScreen />
   <SiteNav />
-  <RouterView v-slot="{ Component, route }">
+
+  <!-- VT-capable browsers: let document.startViewTransition() drive the
+       swap. We render the routed component directly so Vue does not
+       race the browser snapshot. -->
+  <RouterView v-if="useVT" />
+
+  <!-- Fallback path: Vue <transition> + GSAP timeline does the cross-fade. -->
+  <RouterView v-else v-slot="{ Component, route }">
     <transition
       mode="out-in"
       :css="false"
@@ -79,6 +77,7 @@ function onLeave(el: Element, done: () => void) {
       <component :is="Component" :key="route.fullPath" />
     </transition>
   </RouterView>
+
   <SiteFooter />
   <CustomScrollbar />
 

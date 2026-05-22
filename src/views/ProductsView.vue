@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, reactive } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -10,6 +10,16 @@ import { navigateToProduct } from '../composables/useProductTransition'
 gsap.registerPlugin(ScrollTrigger)
 
 const router = useRouter()
+
+// natural aspect ratio (w/h) per slug — drives justified row layout
+const aspectMap = reactive<Record<string, number>>({})
+
+function onImgLoad(slug: string, e: Event) {
+  const img = e.target as HTMLImageElement
+  if (img.naturalWidth && img.naturalHeight) {
+    aspectMap[slug] = img.naturalWidth / img.naturalHeight
+  }
+}
 
 function goToProduct(e: MouseEvent, slug: string) {
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
@@ -143,11 +153,12 @@ function setFilter(f: Filter) {
       <div class="container">
         <div class="cat-grid">
           <RouterLink
-            v-for="(p, i) in visibleProducts"
+            v-for="p in visibleProducts"
             :key="p.slug"
             :to="`/products/${p.slug}`"
             class="cat-card"
-            :class="{ 'is-best': p.best, 'is-feature': i === 0 }"
+            :class="{ 'is-best': p.best }"
+            :style="{ '--r': aspectMap[p.slug] ?? 1.25 }"
             @click="(e: MouseEvent) => goToProduct(e, p.slug)"
           >
             <div class="card-visual">
@@ -156,6 +167,7 @@ function setFilter(f: Filter) {
                 :alt="p.name"
                 loading="lazy"
                 decoding="async"
+                @load="(e) => onImgLoad(p.slug, e)"
               />
               <span v-if="p.best" class="card-tag mono">terlaris</span>
               <span class="card-arrow" aria-hidden="true">
@@ -385,12 +397,16 @@ function setFilter(f: Filter) {
 }
 
 .cat-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: clamp(1.4rem, 2.6vw, 2.4rem) clamp(1.2rem, 2.4vw, 2.2rem);
+  --row-h: clamp(220px, 26vw, 320px);
 }
 
 .cat-card {
+  /* width grows from natural aspect ratio (--r = w/h) at row height */
+  flex: var(--r, 1.25) 1 calc(var(--row-h) * var(--r, 1.25));
+  min-width: min(280px, 100%);
   display: flex;
   flex-direction: column;
   gap: 0.95rem;
@@ -398,22 +414,13 @@ function setFilter(f: Filter) {
   cursor: pointer;
 }
 
-.cat-card.is-feature {
-  grid-column: span 2;
-  grid-row: span 1;
-}
-
 .card-visual {
   position: relative;
   width: 100%;
-  aspect-ratio: 5 / 4;
+  height: var(--row-h);
   background: var(--c-paper-2);
   border-radius: 4px;
   overflow: hidden;
-}
-
-.cat-card.is-feature .card-visual {
-  aspect-ratio: 16 / 9;
 }
 
 .card-visual img {
@@ -649,13 +656,7 @@ function setFilter(f: Filter) {
 /* ========== Tablet ========== */
 @media (max-width: 1024px) {
   .cat-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .cat-card.is-feature {
-    grid-column: span 2;
-  }
-  .cat-card.is-feature .card-visual {
-    aspect-ratio: 16 / 9;
+    --row-h: clamp(200px, 32vw, 280px);
   }
 }
 
@@ -664,10 +665,13 @@ function setFilter(f: Filter) {
   .catalog { padding-top: 6.5rem; }
   .cat-filters { top: 76px; }
   .cat-grid {
-    grid-template-columns: 1fr;
+    --row-h: clamp(220px, 56vw, 320px);
+    gap: 1.4rem;
   }
-  .cat-card.is-feature { grid-column: span 1; }
-  .cat-card.is-feature .card-visual { aspect-ratio: 5 / 4; }
+  .cat-card {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
   .cat-meta { gap: 1rem; }
   .meta-divider { display: none; }
   .cta-card { border-radius: 8px; }
