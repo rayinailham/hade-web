@@ -38,9 +38,46 @@ export function useLenis() {
     // Refresh after fonts/layout ready
     setTimeout(() => ScrollTrigger.refresh(), 200)
 
+    // Re-refresh on font + window load + image load — production cold-start
+    // doesn't have fonts/images cached, so the initial 200ms refresh sees
+    // stale layout heights. Without this, scroll-triggered reveals stay at
+    // opacity 0 because their start positions were computed before fonts
+    // and lazy images settled.
+    const refresh = () => ScrollTrigger.refresh()
+
+    if (typeof document !== 'undefined' && 'fonts' in document) {
+      document.fonts.ready.then(refresh).catch(() => {})
+    }
+
+    if (document.readyState === 'complete') {
+      refresh()
+    } else {
+      window.addEventListener('load', refresh, { once: true })
+    }
+
+    // Refresh once more after every image finishes (covers lazy-loaded
+    // product cards). Throttled via rAF so multiple loads in same frame
+    // collapse into one refresh.
+    let imgRefreshScheduled = false
+    const onImgLoad = () => {
+      if (imgRefreshScheduled) return
+      imgRefreshScheduled = true
+      requestAnimationFrame(() => {
+        imgRefreshScheduled = false
+        ScrollTrigger.refresh()
+      })
+    }
+    document.querySelectorAll('img').forEach((img) => {
+      if (!(img as HTMLImageElement).complete) {
+        img.addEventListener('load', onImgLoad, { once: true })
+        img.addEventListener('error', onImgLoad, { once: true })
+      }
+    })
+
     onBeforeUnmount(() => {
       cancelAnimationFrame(raf)
       gsap.ticker.remove(tick)
+      window.removeEventListener('load', refresh)
       lenisInstance?.destroy()
       lenisInstance = null
       delete (window as unknown as { lenis?: Lenis }).lenis
