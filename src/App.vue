@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLenis } from './composables/useLenis'
@@ -12,6 +13,11 @@ import SiteFooter from './components/SiteFooter.vue'
 
 useLenis()
 useReveal()
+
+const route = useRoute()
+// Intro only mounts on the landing page. IntroScreen itself handles
+// the "play once per session" gate via sessionStorage.
+const showIntro = computed(() => route.name === 'home')
 
 const transitioning = ref(false)
 
@@ -71,7 +77,7 @@ function onLeave(_el: Element, done: () => void) {
 </script>
 
 <template>
-  <IntroScreen />
+  <IntroScreen v-if="showIntro" />
   <SiteNav />
 
   <RouterView v-slot="{ Component, route }">
