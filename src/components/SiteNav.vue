@@ -182,10 +182,10 @@ function go(href: string, e: MouseEvent) {
   max-width: 880px;
   gap: 0.5rem;
   padding: 0.45rem 0.45rem 0.45rem 1rem;
-  background: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.72);
   border-color: var(--hairline-strong);
-  -webkit-backdrop-filter: blur(28px) saturate(1.6);
-          backdrop-filter: blur(28px) saturate(1.6);
+  -webkit-backdrop-filter: blur(40px) saturate(1.7);
+          backdrop-filter: blur(40px) saturate(1.7);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.7),
     0 1px 0 rgba(14, 14, 15, 0.04),
@@ -379,9 +379,9 @@ function go(href: string, e: MouseEvent) {
   gap: 5px;
   border-radius: 999px;
   border: 1px solid var(--hairline-strong);
-  background: rgba(255, 255, 255, 0.5);
-  -webkit-backdrop-filter: blur(18px);
-          backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(26px);
+          backdrop-filter: blur(26px);
 }
 
 .nav-burger span {
