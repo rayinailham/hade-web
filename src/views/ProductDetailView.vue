@@ -262,23 +262,10 @@ onBeforeUnmount(() => {
       <div class="container pd-shell">
         <!-- Breadcrumb / back -->
         <nav class="pd-back" aria-label="Breadcrumb">
-          <div class="pd-back-row">
-            <RouterLink to="/products" class="pd-back-link">
-              <span class="back-arrow" aria-hidden="true">←</span>
-              <span>kembali ke katalog</span>
-            </RouterLink>
-            <a
-              class="pd-shopee-top"
-              :href="product.link"
-              target="_blank"
-              rel="noreferrer"
-              :aria-label="`Lihat ${product.name} di Shopee`"
-              @click="openShopeeProduct(product.link, $event)"
-            >
-              <span class="shopee-mark" aria-hidden="true">S</span>
-              <span>Shopee</span>
-            </a>
-          </div>
+          <RouterLink to="/products" class="pd-back-link">
+            <span class="back-arrow" aria-hidden="true">←</span>
+            <span>kembali ke katalog</span>
+          </RouterLink>
           <span class="pd-crumbs mono">
             <RouterLink to="/">hade</RouterLink>
             <span class="sep">/</span>
@@ -549,48 +536,6 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-}
-
-.pd-back-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.pd-shopee-top {
-  display: none;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-  padding: 0.4rem 0.85rem 0.4rem 0.45rem;
-  border-radius: 999px;
-  border: 1px solid #ee4d2d;
-  background: #ee4d2d;
-  text-decoration: none;
-  transition: background 0.3s var(--ease-out), border-color 0.3s var(--ease-out),
-    transform 0.3s var(--ease-out);
-}
-
-.pd-shopee-top:hover {
-  background: #d8431f;
-  border-color: #d8431f;
-}
-
-.pd-shopee-top .shopee-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
 }
 
 .pd-back-link {
@@ -1147,12 +1092,6 @@ onBeforeUnmount(() => {
   }
   .pd-shell { gap: 1.1rem; }
   .pd-back { gap: 0.5rem; }
-  .pd-back-row {
-    width: 100%;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-  .pd-shopee-top { display: inline-flex; }
   .pd-crumbs { font-size: 10px; }
   .pd-crumbs .current { max-width: 14ch; }
   .pd-actions { gap: 0.5rem; }
