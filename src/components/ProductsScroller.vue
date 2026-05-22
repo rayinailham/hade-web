@@ -1,180 +1,17 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { waLink, waProductLink, SHOPEE_STORE, DISCOUNT_PERCENT } from '../composables/useContact'
+import { products as catalogProducts } from '../data/products'
 
 gsap.registerPlugin(ScrollTrigger)
 
-interface Product {
-  index: string
-  family: 'Clamp' | 'Direc Sensor' | 'Bracket' | 'Grip'
-  name: string
-  mount: string
-  price: string
-  rating: string
-  sold: string
-  best?: boolean
-  bullets: string[]
-  link: string
-  images: string[]
-}
+// Reuse the shared catalog so /, /products, and /products/:slug stay in sync.
+const products = catalogProducts
 
-const IMG_BASE = (folder: string, files: string[]) =>
-  files.map((f) => `/${encodeURI(folder)}/${encodeURI(f)}`)
-
-const products: Product[] = [
-  {
-    index: '01',
-    family: 'Clamp',
-    name: 'Clamp Adapter DSLR 2026',
-    mount: 'Canon EF · Nikon F',
-    price: 'Rp 895.000 – 1.060.000',
-    rating: '4.7',
-    sold: '12 terjual',
-    bullets: ['Plug & play, tanpa bongkar lensa HP', 'Hasil full layar tanpa vignette', 'Paket sudah termasuk Grip Bluetooth V4.1'],
-    link: 'https://shopee.co.id/Hade-Clamp-Adapter-Lensa-DSLR-Canon-Nikon-to-Handphone-versi-2026-Hade-Creative-Production-i.43595306.26620033169?extraParams=%7B%22display_model_id%22%3A177014270531%2C%22model_selection_logic%22%3A3%7D',
-    images: IMG_BASE(
-      'Hade Clamp Adapter Lensa DSLR CanonNikon to Handphone versi 2026 Hade Creative Production',
-      [
-        'id-11134207-822wp-mmz0luinyy2q9d.webp',
-        'id-11134207-822wi-mmz0luidxy4id0.webp',
-        'id-11134207-822wi-mmz0luiprk759f.webp',
-        'id-11134207-822wk-mmz0luiafj0le8.webp',
-        'id-11134207-822wk-mmz0luio0cn683.webp',
-        'id-11134207-822wn-mmz0luipvrwhe4.webp',
-      ],
-    ),
-  },
-  {
-    index: '02',
-    family: 'Clamp',
-    name: 'Clamp Adapter Mirrorless 2026',
-    mount: 'Sony E-Mount · MFT',
-    price: 'Rp 598.000 – 760.000',
-    rating: '4.7',
-    sold: '50 terjual',
-    bullets: ['Cocok 7Artisans, Meike, Samyang', 'Mendukung lensa DSLR via adapter', 'Universal – semua merk HP'],
-    link: 'https://shopee.co.id/Hade-Clamp-Adapter-Lensa-Mirrorless-to-Handphone-versi-2026-Hade-Creative-Production-i.43595306.10357387631?extraParams=%7B%22display_model_id%22%3A139370555716%2C%22model_selection_logic%22%3A3%7D',
-    images: IMG_BASE(
-      'Hade Clamp Adapter Lensa Mirrorless to Handphone versi 2026 Hade Creative Production',
-      [
-        'id-11134207-822wh-mnk7uwzxzm6g5e.webp',
-        'id-11134207-822wh-mnk7ux03khdte7.webp',
-        'id-11134207-822wj-mnk7ux03swsj04.webp',
-        'id-11134207-822wl-mnk7ux03lvy96b.webp',
-      ],
-    ),
-  },
-  {
-    index: '03',
-    family: 'Direc Sensor',
-    name: 'Direc Sensor DSLR – FFD',
-    mount: 'Canon · Nikon',
-    price: 'Rp 325.000 – 495.000',
-    rating: '4.5',
-    sold: '16 terjual',
-    bullets: ['Gambar tidak terbalik', 'FFD setting untuk fokus presisi', 'Hotshoe + collar tripod'],
-    link: 'https://shopee.co.id/Hade-Clamp-Adaptor-Direc-Sensor-DSLR-Canon-Nikon-to-Handphone-dilengkapi-dengan-pengaturan-jarak-Sensor-ke-Mounting-(FFD-Seting)-Hade-Creative-Production-i.43595306.42407425312?extraParams=%7B%22display_model_id%22%3A340106906839%2C%22model_selection_logic%22%3A3%7D',
-    images: IMG_BASE(
-      'Hade Clamp Adaptor Direc Sensor DSLR CanonNikon to Handphone dilengkapi dengan pengaturan jarak Sensor ke Mounting (FFD Seting)',
-      [
-        'id-11134207-8224s-mgqtgz8z0zrd7f.webp',
-        'id-11134207-8224s-mhhjxy4opa8029.webp',
-        'id-11134207-8224t-mgqtgz8z3sw960.webp',
-        'id-11134207-82250-mgqtgz8z2ebte4.webp',
-        'id-11134207-82251-mgqtgz8yvdhl56.webp',
-      ],
-    ),
-  },
-  {
-    index: '04',
-    family: 'Direc Sensor',
-    name: 'Direc Sensor Sony E-mount',
-    mount: 'Sony E',
-    price: 'Rp 185.000 – 450.000',
-    rating: '4.9',
-    sold: '22 terjual',
-    bullets: ['Sensor langsung ke lensa', 'Minim chromatic aberration', 'Filamen atau aluminium'],
-    link: 'https://shopee.co.id/Hade-Clamp-Adaptor-Direc-Sensor-Lensa-Sony-E-mount-to-Handphone-dilengkapi-dengan-pengaturan-jarak-Sensor-ke-Mounting-(FFD-Seting)-Hade-Creative-Production-i.43595306.55800543344?extraParams=%7B%22display_model_id%22%3A118769876586%2C%22model_selection_logic%22%3A3%7D',
-    images: IMG_BASE(
-      'Hade Clamp Adaptor Direc Sensor Lensa Sony E-mount to Handphone dilengkapi dengan pengaturan jarak Sensor ke Mounting (FFD Seting)',
-      [
-        'id-11134207-82250-mggly2zgkwzz44.webp',
-        'id-11134207-8224t-mggly2zgjifj39.webp',
-        'id-11134207-8224x-mggly30l766n8c.webp',
-        'id-11134207-8224x-mghulx5pnjm4c0.webp',
-        'id-11134207-82251-mggly2zr1d6yb8.webp',
-      ],
-    ),
-  },
-  {
-    index: '05',
-    family: 'Direc Sensor',
-    name: 'Direc Sensor MFT',
-    mount: 'Micro Four Thirds',
-    price: 'Rp 185.000 – 450.000',
-    rating: '5.0',
-    sold: '1 terjual',
-    bullets: ['Hasil full layar tanpa distorsi', 'Fleksibel semua tipe HP', 'FFD setting'],
-    link: 'https://shopee.co.id/Hade-Clamp-Adaptor-Direc-Sensor-Lensa-MFT-to-Handphone-dilengkapi-dengan-pengaturan-jarak-Sensor-ke-Mounting-(FFD-Seting)-Hade-Creative-Production-i.43595306.57806541850?extraParams=%7B%22display_model_id%22%3A244172744797%2C%22model_selection_logic%22%3A3%7D',
-    images: IMG_BASE(
-      'Hade Clamp Adaptor Direc Sensor Lensa MFT to Handphone dilengkapi dengan pengaturan jarak Sensor ke Mounting (FFD Seting)',
-      [
-        'id-11134207-822wi-mmaiuhd7hw5f0a@resize_w900_nl.webp',
-        'id-11134207-822wk-mmaiuhd7ghkzbc.webp',
-        'id-11134207-822wl-mma0sn4heiv98d.webp',
-        'id-11134207-822wq-mmaiuhd7japv73.webp',
-        'id-11134207-822ws-mmaiuhd124g1a7.webp',
-      ],
-    ),
-  },
-  {
-    index: '06',
-    family: 'Bracket',
-    name: 'Bracket Rigging System 2026',
-    mount: 'Universal Tele 18x – 60x',
-    price: 'Rp 180.000 – 545.000',
-    rating: '4.8',
-    sold: '107 terjual',
-    best: true,
-    bullets: ['Solusi lensa tele yang melorot', 'Mounting tripod 1/4 inch', 'L-bracket portrait & landscape'],
-    link: 'https://shopee.co.id/Hade-Bracket-Lensa-Tele-Handphone-(18X-22X-36X-60X)-Rigging-System-2026-Cocok-untuk-Apexel-TaffSPORT-Pickogen-Soha-DLL.-Hade-Creative-Production-i.43595306.21362770833?extraParams=%7B%22display_model_id%22%3A29771564472%2C%22model_selection_logic%22%3A3%7D',
-    images: IMG_BASE(
-      'Hade Bracket Lensa Tele Handphone (18X, 22X, 36X & 60X) Rigging System 2026 Cocok untuk Apexel, TaffSPORT, Pickogen, Soha DLL',
-      [
-        'id-11134207-822wl-mma0sn4ge03z68.webp',
-        'id-11134207-822wh-mnhndq6a8glg3a.webp',
-        'id-11134207-822wi-mnhndq6a721048.webp',
-        'id-11134207-822wn-mma0sn4h1vr9fa.webp',
-        'id-11134207-822wo-mma0sn4h3abp80.webp',
-      ],
-    ),
-  },
-  {
-    index: '07',
-    family: 'Grip',
-    name: 'Phone Grip + Bluetooth Shooter',
-    mount: 'Universal',
-    price: 'Rp 180.000',
-    rating: '4.9',
-    sold: '25 terjual',
-    bullets: ['Bluetooth V4.1 remote shutter', 'Ergonomis seperti DSLR', 'Order < jam 14:00 kirim hari yang sama'],
-    link: 'https://shopee.co.id/Hade-Phone-Grip-hade-dengan-Bluetooth-Shooter-Hade-Creative-Production-i.43595306.20921822019?extraParams=%7B%22display_model_id%22%3A185568023369%2C%22model_selection_logic%22%3A3%7D',
-    images: IMG_BASE(
-      'Hade Phone Grip hade dengan Bluetooth Shooter Hade Creative Production',
-      [
-        'id-11134207-8224q-mhij3ck9z5l139.webp',
-        'id-11134207-8224q-mhij3ckjkpaa5a.webp',
-        'id-11134207-8224r-mhij3ckjhw5c94.webp',
-        'id-11134207-8224t-mhij3ckzynt2cd.webp',
-        'id-11134207-8224y-mhij3ckj2fwg5f.webp',
-      ],
-    ),
-  },
-]
-
-// Carousel state – single shared idx for desktop (3 visible) + mobile (1 visible)
+// Carousel state â€“ single shared idx for desktop (3 visible) + mobile (1 visible)
 const totalCards = products.length + 1 // includes CTA card
 const cardIdx = ref(0)
 const cardsPerView = ref(1)
@@ -217,7 +54,7 @@ function updateCardsPerView() {
   cardIdx.value = clampCardIdx(cardIdx.value)
 }
 
-// Touch swipe detection – only triggers horizontal swap when gesture is
+// Touch swipe detection â€“ only triggers horizontal swap when gesture is
 // clearly horizontal, so vertical page scroll stays smooth on mobile.
 const SWIPE_THRESHOLD = 48
 const ANGLE_BIAS = 1.2 // |dx| must exceed |dy| * bias to count as horizontal
@@ -239,7 +76,7 @@ function onTouchEnd(e: TouchEvent) {
   const dx = t.clientX - touchStartX
   const dy = t.clientY - touchStartY
   if (Math.abs(dx) < SWIPE_THRESHOLD) return
-  if (Math.abs(dx) < Math.abs(dy) * ANGLE_BIAS) return // vertical intent – ignore
+  if (Math.abs(dx) < Math.abs(dy) * ANGLE_BIAS) return // vertical intent â€“ ignore
   if (dx < 0) nextCard()
   else prevCard()
 }
@@ -298,7 +135,7 @@ onBeforeUnmount(() => {
       <header class="head">
         <div class="head-left">
           <span class="eyebrow" data-reveal>
-            <span class="mono">katalog · 7 produk</span>
+            <span class="mono">katalog Â· 7 produk</span>
           </span>
           <h2 data-reveal data-reveal-stagger="0.08" data-reveal-children="span">
             <span>Bertujuh,</span>
@@ -306,7 +143,7 @@ onBeforeUnmount(() => {
           </h2>
         </div>
         <p class="head-right" data-reveal data-reveal-delay="0.1">
-          Dua lini utama: <strong>Clamp Adapter</strong> untuk pengguna baru –
+          Dua lini utama: <strong>Clamp Adapter</strong> untuk pengguna baru â€“
           plug & play, tanpa bongkar HP. Dan <strong>Direc Sensor</strong>
           untuk yang menginginkan hasil paling bersih.
         </p>
@@ -347,10 +184,11 @@ onBeforeUnmount(() => {
           class="track"
         >
           <div ref="trackInner" class="track-inner">
-            <article
+            <RouterLink
               v-for="(p, pi) in products"
               :key="p.index"
-              class="item"
+              :to="`/products/${p.slug}`"
+              class="item item-link"
               :class="{ 'is-best': p.best }"
             >
               <div class="visual">
@@ -361,6 +199,12 @@ onBeforeUnmount(() => {
                   loading="lazy"
                   decoding="async"
                 />
+                <span class="item-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path d="M5 11l6-6M6 5h5v5" stroke="currentColor"
+                      stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
               </div>
 
               <div class="meta">
@@ -374,7 +218,7 @@ onBeforeUnmount(() => {
 
                 <p class="desc">{{ p.bullets.join(' · ') }}</p>
               </div>
-            </article>
+            </RouterLink>
 
             <article class="item cta-item">
               <div class="cta-visual">
@@ -555,7 +399,39 @@ onBeforeUnmount(() => {
   gap: 0.9rem;
 }
 
-/* Visual — image-first, no card shell */
+.item-link {
+  color: var(--c-ink);
+  cursor: pointer;
+}
+
+.item-arrow {
+  position: absolute;
+  bottom: 0.85rem;
+  right: 0.85rem;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--c-ink);
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translate(8px, 8px);
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+
+.item-arrow svg { width: 14px; height: 14px; }
+
+.item-link:hover .item-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Visual â€” image-first, no card shell */
 .visual {
   position: relative;
   width: 100%;
@@ -676,7 +552,7 @@ onBeforeUnmount(() => {
   border-radius: 999px;
 }
 
-/* Meta — editorial text block under image */
+/* Meta â€” editorial text block under image */
 .meta {
   display: flex;
   flex-direction: column;
@@ -944,7 +820,7 @@ onBeforeUnmount(() => {
   margin-left: 0.35rem;
 }
 
-/* Tablet — 2-up */
+/* Tablet â€” 2-up */
 @media (max-width: 1199px) and (min-width: 760px) {
   .track-inner {
     --per-view: 2;
@@ -952,7 +828,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Mobile — single column, full bleed */
+/* Mobile â€” single column, full bleed */
 @media (max-width: 900px) {
   .products-frame {
     padding: clamp(3.5rem, 8vh, 5rem) 0;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { waLink } from '../composables/useContact'
@@ -7,6 +8,8 @@ import { waLink } from '../composables/useContact'
 gsap.registerPlugin(ScrollTrigger)
 
 const waUrl = waLink()
+const router = useRouter()
+const route = useRoute()
 
 const navRoot = ref<HTMLElement | null>(null)
 const shell = ref<HTMLElement | null>(null)
@@ -57,6 +60,20 @@ onBeforeUnmount(() => {
 function go(href: string, e: MouseEvent) {
   e.preventDefault()
   open.value = false
+
+  // Cross-route: if not on home, push to home with hash, then scroll after mount
+  if (route.path !== '/') {
+    router.push({ path: '/', hash: href }).then(() => {
+      // wait for transition + RAF, then scroll
+      setTimeout(() => scrollToHash(href), 700)
+    })
+    return
+  }
+
+  scrollToHash(href)
+}
+
+function scrollToHash(href: string) {
   const el = document.querySelector(href) as HTMLElement | null
   if (!el) return
   const lenis = (window as unknown as { lenis?: { scrollTo: (t: HTMLElement, o?: object) => void } }).lenis
@@ -64,6 +81,16 @@ function go(href: string, e: MouseEvent) {
     lenis.scrollTo(el, { offset: -24, duration: 1.4 })
   } else {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
+function goHome(e: MouseEvent) {
+  e.preventDefault()
+  open.value = false
+  if (route.path !== '/') {
+    router.push('/')
+  } else {
+    scrollToHash('#top')
   }
 }
 </script>
@@ -76,7 +103,7 @@ function go(href: string, e: MouseEvent) {
     aria-label="Navigasi utama"
   >
     <div ref="shell" class="nav-shell">
-      <a class="brand" href="#top" @click="(e) => go('#top', e)" aria-label="hade — beranda">
+      <a class="brand" href="/" @click="goHome" aria-label="hade — beranda">
         <span class="brand-mark" aria-hidden="true">
           <img src="/hade-logo.jpg" alt="" width="28" height="28" decoding="async" />
         </span>
