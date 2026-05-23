@@ -80,7 +80,7 @@ export const products: Product[] = [
     ],
     link: 'https://shopee.co.id/Hade-Clamp-Adapter-Lensa-DSLR-Canon-Nikon-to-Handphone-versi-2026-Hade-Creative-Production-i.43595306.26620033169?extraParams=%7B%22display_model_id%22%3A177014270531%2C%22model_selection_logic%22%3A3%7D',
     images: IMG(
-      'Hade Clamp Adapter Lensa DSLR CanonNikon to Handphone versi 2026 Hade Creative Production',
+      'clamp-adapter-dslr-2026',
       [
         'id-11134207-822wp-mmz0luinyy2q9d.webp',
         'id-11134207-822wi-mmz0luidxy4id0.webp',
@@ -128,7 +128,7 @@ export const products: Product[] = [
     ],
     link: 'https://shopee.co.id/Hade-Clamp-Adapter-Lensa-Mirrorless-to-Handphone-versi-2026-Hade-Creative-Production-i.43595306.10357387631?extraParams=%7B%22display_model_id%22%3A139370555716%2C%22model_selection_logic%22%3A3%7D',
     images: IMG(
-      'Hade Clamp Adapter Lensa Mirrorless to Handphone versi 2026 Hade Creative Production',
+      'clamp-adapter-mirrorless-2026',
       [
         'id-11134207-822wh-mnk7uwzxzm6g5e.webp',
         'id-11134207-822wh-mnk7ux03khdte7.webp',
@@ -175,7 +175,7 @@ export const products: Product[] = [
     ],
     link: 'https://shopee.co.id/Hade-Clamp-Adaptor-Direc-Sensor-DSLR-Canon-Nikon-to-Handphone-dilengkapi-dengan-pengaturan-jarak-Sensor-ke-Mounting-(FFD-Seting)-Hade-Creative-Production-i.43595306.42407425312?extraParams=%7B%22display_model_id%22%3A340106906839%2C%22model_selection_logic%22%3A3%7D',
     images: IMG(
-      'Hade Clamp Adaptor Direc Sensor DSLR CanonNikon to Handphone dilengkapi dengan pengaturan jarak Sensor ke Mounting (FFD Seting)',
+      'direc-sensor-dslr-ffd',
       [
         'id-11134207-8224s-mgqtgz8z0zrd7f.webp',
         'id-11134207-8224s-mhhjxy4opa8029.webp',
@@ -222,7 +222,7 @@ export const products: Product[] = [
     ],
     link: 'https://shopee.co.id/Hade-Clamp-Adaptor-Direc-Sensor-Lensa-Sony-E-mount-to-Handphone-dilengkapi-dengan-pengaturan-jarak-Sensor-ke-Mounting-(FFD-Seting)-Hade-Creative-Production-i.43595306.55800543344?extraParams=%7B%22display_model_id%22%3A118769876586%2C%22model_selection_logic%22%3A3%7D',
     images: IMG(
-      'Hade Clamp Adaptor Direc Sensor Lensa Sony E-mount to Handphone dilengkapi dengan pengaturan jarak Sensor ke Mounting (FFD Seting)',
+      'direc-sensor-sony-emount',
       [
         'id-11134207-82250-mggly2zgkwzz44.webp',
         'id-11134207-8224t-mggly2zgjifj39.webp',
@@ -269,7 +269,7 @@ export const products: Product[] = [
     ],
     link: 'https://shopee.co.id/Hade-Clamp-Adaptor-Direc-Sensor-Lensa-MFT-to-Handphone-dilengkapi-dengan-pengaturan-jarak-Sensor-ke-Mounting-(FFD-Seting)-Hade-Creative-Production-i.43595306.57806541850?extraParams=%7B%22display_model_id%22%3A244172744797%2C%22model_selection_logic%22%3A3%7D',
     images: IMG(
-      'Hade Clamp Adaptor Direc Sensor Lensa MFT to Handphone dilengkapi dengan pengaturan jarak Sensor ke Mounting (FFD Seting)',
+      'direc-sensor-mft',
       [
         'id-11134207-822wi-mmaiuhd7hw5f0a@resize_w900_nl.webp',
         'id-11134207-822wk-mmaiuhd7ghkzbc.webp',
@@ -359,7 +359,7 @@ export const products: Product[] = [
     ],
     link: 'https://shopee.co.id/Hade-Phone-Grip-hade-dengan-Bluetooth-Shooter-Hade-Creative-Production-i.43595306.20921822019?extraParams=%7B%22display_model_id%22%3A185568023369%2C%22model_selection_logic%22%3A3%7D',
     images: IMG(
-      'Hade Phone Grip hade dengan Bluetooth Shooter Hade Creative Production',
+      'phone-grip-bluetooth-shooter',
       [
         'id-11134207-8224q-mhij3ck9z5l139.webp',
         'id-11134207-8224q-mhij3ckjkpaa5a.webp',

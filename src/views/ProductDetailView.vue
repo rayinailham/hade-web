@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { findProduct, products } from '../data/products'
 import { waProductLink, openShopeeProduct, DISCOUNT_PERCENT } from '../composables/useContact'
+import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, abs, parsePriceRange, parseSold } from '../composables/useSeo'
 import ProductDetailBody from '../components/ProductDetailBody.vue'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -28,6 +30,99 @@ watch(
 )
 
 const product = computed(() => findProduct(currentSlug.value))
+
+// SEO: per-product reactive head
+useHead({
+  title: () => {
+    if (!product.value) return `Produk tidak ditemukan — ${SITE_NAME}`
+    return `${product.value.name} — ${product.value.mount} | ${SITE_NAME}`
+  },
+  meta: () => {
+    if (!product.value) {
+      return [
+        { name: 'robots', content: 'noindex, follow' },
+        { name: 'description', content: 'Produk yang dimaksud sudah tidak tersedia di katalog Hade Creative.' },
+      ]
+    }
+    const p = product.value
+    const url = `${SITE_URL}/products/${p.slug}`
+    const img = p.images[0] ? abs(p.images[0]) : DEFAULT_OG_IMAGE
+    const desc = `${p.tagline} ${p.description}`.slice(0, 300)
+    return [
+      { name: 'description', content: desc },
+      { name: 'robots', content: 'index, follow, max-image-preview:large' },
+      { property: 'og:type', content: 'product' },
+      { property: 'og:title', content: `${p.name} — ${p.mount}` },
+      { property: 'og:description', content: p.tagline },
+      { property: 'og:url', content: url },
+      { property: 'og:image', content: img },
+      { property: 'product:price:amount', content: String(parsePriceRange(p.price).low) },
+      { property: 'product:price:currency', content: 'IDR' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: `${p.name} — ${p.mount}` },
+      { name: 'twitter:description', content: p.tagline },
+      { name: 'twitter:image', content: img },
+    ]
+  },
+  link: () => {
+    if (!product.value) return []
+    return [{ rel: 'canonical', href: `${SITE_URL}/products/${product.value.slug}` }]
+  },
+  script: () => {
+    if (!product.value) return []
+    const p = product.value
+    const url = `${SITE_URL}/products/${p.slug}`
+    const { low, high } = parsePriceRange(p.price)
+    const reviewCount = parseSold(p.sold)
+    const ratingNum = Number.parseFloat(p.rating) || 0
+    const productLd: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: p.name,
+      url,
+      image: p.images.map((src) => abs(src)),
+      description: p.description,
+      sku: p.slug,
+      mpn: p.slug,
+      category: p.family,
+      brand: { '@type': 'Brand', name: 'Hade Creative' },
+      manufacturer: { '@type': 'Organization', name: 'Hade Creative Production' },
+      offers: {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'IDR',
+        lowPrice: low,
+        highPrice: high,
+        offerCount: 1,
+        availability: 'https://schema.org/InStock',
+        url: p.link,
+        seller: { '@type': 'Organization', name: 'Hade Creative Production' },
+      },
+    }
+    if (ratingNum > 0 && reviewCount > 0) {
+      productLd.aggregateRating = {
+        '@type': 'AggregateRating',
+        ratingValue: ratingNum.toFixed(1),
+        ratingCount: reviewCount,
+        reviewCount,
+        bestRating: '5',
+        worstRating: '1',
+      }
+    }
+    const breadcrumb = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Beranda', item: `${SITE_URL}/` },
+        { '@type': 'ListItem', position: 2, name: 'Katalog', item: `${SITE_URL}/products` },
+        { '@type': 'ListItem', position: 3, name: p.name, item: url },
+      ],
+    }
+    return [
+      { type: 'application/ld+json', innerHTML: JSON.stringify(productLd) },
+      { type: 'application/ld+json', innerHTML: JSON.stringify(breadcrumb) },
+    ]
+  },
+})
 
 const activeImage = ref(0)
 
@@ -295,8 +390,11 @@ onBeforeUnmount(() => {
                 :class="{ 'is-active': i === activeImage }"
                 :style="{ transform: `translate3d(calc(${(i - activeImage) * 100}% + var(--drag-x, 0px)), 0, 0)` }"
                 :src="img"
-                :alt="product.name"
-                loading="eager"
+                :alt="`${product.name} — foto ${i + 1}`"
+                :loading="i === 0 ? 'eager' : 'lazy'"
+                :fetchpriority="i === 0 ? 'high' : 'auto'"
+                width="1200"
+                height="900"
                 decoding="async"
                 draggable="false"
               />
@@ -407,7 +505,7 @@ onBeforeUnmount(() => {
                 class="btn btn-shopee"
                 :href="product.link"
                 target="_blank"
-                rel="noreferrer"
+                rel="sponsored noopener noreferrer"
                 @click="openShopeeProduct(product.link, $event)"
               >
                 Lihat di Shopee

@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useHead } from '@unhead/vue'
+import { SITE_NAME } from '../composables/useSeo'
 
 const router = useRouter()
+
+useHead({
+  title: `Halaman tidak ditemukan — ${SITE_NAME}`,
+  meta: [
+    { name: 'robots', content: 'noindex, follow' },
+    { name: 'description', content: 'Halaman yang kamu cari tidak ditemukan di situs Hade Creative.' },
+  ],
+})
 </script>
 
 <template>

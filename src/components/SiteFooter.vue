@@ -10,7 +10,7 @@ const waUrl = waLink()
       <div class="grid">
         <div class="brand" data-reveal>
           <div class="brand-row">
-            <img src="/hade-logo.jpg" alt="hade creative" />
+            <img src="/hade-logo.jpg" alt="Logo Hade Creative" width="36" height="36" decoding="async" />
             <span class="brand-text">
               <strong>hade</strong>
               <em>creative</em>
@@ -35,7 +35,7 @@ const waUrl = waLink()
               <span class="wa-perk mono">−{{ DISCOUNT_PERCENT }}% &middot; gratis ongkir</span>
             </span>
           </a>
-          <a :href="SHOPEE_STORE" target="_blank" rel="noreferrer">Lihat di Shopee</a>
+          <a :href="SHOPEE_STORE" target="_blank" rel="sponsored noopener noreferrer">Lihat di Shopee</a>
           <a href="#products">Katalog</a>
           <a href="#compatibility">Kompatibilitas</a>
         </div>

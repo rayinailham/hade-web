@@ -207,10 +207,12 @@ onBeforeUnmount(() => {
                 <img
                   class="visual-img is-active"
                   :src="p.images[0]"
-                  :alt="p.name"
+                  :alt="`${p.name} — ${p.mount}`"
                   :data-vt-slug="p.slug"
                   loading="lazy"
                   decoding="async"
+                  width="800"
+                  height="800"
                 />
                 <span class="item-arrow" aria-hidden="true">
                   <svg viewBox="0 0 16 16" fill="none">

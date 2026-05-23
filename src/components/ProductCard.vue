@@ -18,9 +18,11 @@ defineProps<{
     <div class="card-visual">
       <img
         :src="product.images[0]"
-        :alt="product.name"
+        :alt="`${product.name} — ${product.mount}`"
         loading="lazy"
         decoding="async"
+        width="600"
+        height="600"
       />
       <span v-if="product.best" class="card-tag mono">terlaris</span>
       <span class="card-arrow" aria-hidden="true">

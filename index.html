@@ -5,11 +5,51 @@
     <link rel="icon" type="image/jpeg" href="/hade-logo.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fafaf9" />
-    <meta name="description" content="hade creative — adapter lensa DSLR & mirrorless ke smartphone. Hasil setara DSLR, dari HP yang sudah kamu punya." />
+
+    <!-- Disable browser scroll-restoration BEFORE any paint, so refresh
+         never flashes the previous scroll position (e.g. footer) before
+         IntroScreen / route veil takes over. -->
+    <script>
+      try {
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        window.scrollTo(0, 0);
+      } catch (e) {}
+    </script>
+
+    <!-- Primary meta -->
+    <title>Hade Creative &mdash; Adapter Lensa DSLR &amp; Mirrorless ke HP | Sukabumi sejak 2017</title>
+    <meta name="description" content="Hade Creative bikin adapter clamp, direc sensor, bracket rigging, dan grip Bluetooth untuk pasang lensa DSLR/mirrorless ke smartphone. Hasil setara DSLR dari HP yang sudah kamu punya. Diskon 10% via WhatsApp + gratis ongkir." />
+    <meta name="author" content="Hade Creative Production" />
+    <meta name="application-name" content="Hade Creative" />
+    <meta name="generator" content="Vue 3 + Vite" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="googlebot" content="index, follow" />
+
+    <!-- Canonical (per-route override via @unhead/vue) -->
+    <link rel="canonical" href="https://hade-web.vercel.app/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Hade Creative" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:title" content="Hade Creative &mdash; Adapter Lensa DSLR &amp; Mirrorless ke HP" />
+    <meta property="og:description" content="Adapter clamp, direc sensor, bracket rigging, dan grip Bluetooth. Pasang lensa DSLR/mirrorless ke smartphone. Diskon 10% via WhatsApp + gratis ongkir." />
+    <meta property="og:url" content="https://hade-web.vercel.app/" />
+    <meta property="og:image" content="https://hade-web.vercel.app/hade-logo.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Hade Creative &mdash; adapter lensa DSLR ke HP" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Hade Creative &mdash; Adapter Lensa DSLR &amp; Mirrorless ke HP" />
+    <meta name="twitter:description" content="Adapter clamp, direc sensor, bracket rigging, dan grip Bluetooth. Pasang lensa DSLR/mirrorless ke smartphone." />
+    <meta name="twitter:image" content="https://hade-web.vercel.app/hade-logo.jpg" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&display=swap" rel="stylesheet" />
-    <title>hade creative — DSLR-grade photography from your phone</title>
   </head>
   <body>
     <div id="app"></div>

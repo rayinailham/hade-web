@@ -159,7 +159,7 @@ onBeforeUnmount(() => {
             </span>
           </a>
 
-          <a class="btn ghost" :href="SHOPEE_STORE" target="_blank" rel="noreferrer">
+          <a class="btn ghost" :href="SHOPEE_STORE" target="_blank" rel="sponsored noopener noreferrer">
             <span class="btn-label">Lihat di Shopee</span>
             <span class="btn-arrow ghost-arrow" aria-hidden="true">
               <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5">

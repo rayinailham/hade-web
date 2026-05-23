@@ -106,9 +106,11 @@ function embedSrc(v: Video) {
             >
               <img
                 :src="thumb(v.id)"
-                :alt="v.title"
+                :alt="`Video YouTube: ${v.title}`"
                 loading="lazy"
                 decoding="async"
+                width="480"
+                height="360"
               />
               <span class="overlay" aria-hidden="true"></span>
               <span class="play" aria-hidden="true">

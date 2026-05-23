@@ -1,12 +1,83 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useHead } from '@unhead/vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { products, type ProductFamily } from '../data/products'
 import { waLink, DISCOUNT_PERCENT } from '../composables/useContact'
+import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, abs, parsePriceRange } from '../composables/useSeo'
 import ProductCard from '../components/ProductCard.vue'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const pageUrl = `${SITE_URL}/products`
+const pageTitle = `Katalog Produk — Adapter Lensa HP, Direc Sensor, Bracket Tele | ${SITE_NAME}`
+const pageDescription = `Tujuh adapter lensa untuk smartphone: clamp DSLR/mirrorless, direc sensor Canon/Nikon/Sony/MFT, bracket rigging tele 18x–60x, dan grip Bluetooth. Diskon ${DISCOUNT_PERCENT}% via WA + gratis ongkir.`
+
+useHead({
+  title: pageTitle,
+  meta: [
+    { name: 'description', content: pageDescription },
+    { property: 'og:title', content: pageTitle },
+    { property: 'og:description', content: pageDescription },
+    { property: 'og:url', content: pageUrl },
+    { property: 'og:image', content: DEFAULT_OG_IMAGE },
+    { property: 'og:type', content: 'website' },
+    { name: 'twitter:title', content: pageTitle },
+    { name: 'twitter:description', content: pageDescription },
+    { name: 'twitter:image', content: DEFAULT_OG_IMAGE },
+  ],
+  link: [{ rel: 'canonical', href: pageUrl }],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: pageTitle,
+        url: pageUrl,
+        description: pageDescription,
+        inLanguage: 'id-ID',
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+        breadcrumb: {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Beranda', item: `${SITE_URL}/` },
+            { '@type': 'ListItem', position: 2, name: 'Katalog', item: pageUrl },
+          ],
+        },
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: products.length,
+          itemListElement: products.map((p, i) => {
+            const { low, high } = parsePriceRange(p.price)
+            return {
+              '@type': 'ListItem',
+              position: i + 1,
+              item: {
+                '@type': 'Product',
+                name: p.name,
+                url: `${SITE_URL}/products/${p.slug}`,
+                image: p.images[0] ? abs(p.images[0]) : DEFAULT_OG_IMAGE,
+                description: p.tagline,
+                brand: { '@type': 'Brand', name: 'Hade Creative' },
+                category: p.family,
+                offers: {
+                  '@type': 'AggregateOffer',
+                  priceCurrency: 'IDR',
+                  lowPrice: low,
+                  highPrice: high,
+                  availability: 'https://schema.org/InStock',
+                  url: `${SITE_URL}/products/${p.slug}`,
+                },
+              },
+            }
+          }),
+        },
+      }),
+    },
+  ],
+})
 
 type Filter = 'Semua' | ProductFamily
 const filters: Filter[] = ['Semua', 'Clamp', 'Direc Sensor', 'Bracket', 'Grip']

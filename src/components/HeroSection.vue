@@ -228,7 +228,7 @@ function scrollToProducts(e: MouseEvent) {
 
         <div class="alt-row">
           <span class="alt-label mono">atau cek harga di</span>
-          <a class="btn-shopee" :href="SHOPEE_STORE" target="_blank" rel="noreferrer">
+          <a class="btn-shopee" :href="SHOPEE_STORE" target="_blank" rel="sponsored noopener noreferrer">
             <span class="shopee-mark" aria-hidden="true">S</span>
             <span>Shopee</span>
           </a>
