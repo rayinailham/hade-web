@@ -3,8 +3,6 @@ import { onMounted, onBeforeUnmount } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 let lenisInstance: Lenis | null = null
 
 export function getLenis(): Lenis | null {
@@ -15,6 +13,9 @@ export function useLenis() {
   let raf = 0
 
   onMounted(() => {
+    if (typeof window === 'undefined') return
+    gsap.registerPlugin(ScrollTrigger)
+
     lenisInstance = new Lenis({
       duration: 1.15,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

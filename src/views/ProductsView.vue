@@ -8,7 +8,7 @@ import { waLink, DISCOUNT_PERCENT } from '../composables/useContact'
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, abs, parsePriceRange, priceVariantCount } from '../composables/useSeo'
 import ProductCard from '../components/ProductCard.vue'
 
-gsap.registerPlugin(ScrollTrigger)
+if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const pageUrl = `${SITE_URL}/products`
 const pageTitle = `Katalog Adapter Lensa HP — ${SITE_NAME}`

@@ -18,6 +18,74 @@ const title = `Adapter Lensa DSLR & Mirrorless ke HP — ${SITE_NAME}`
 const description =
   'Adapter clamp, direc sensor, bracket tele, dan grip Bluetooth. Pasang lensa DSLR/mirrorless ke HP. Diskon 10% via WA + gratis ongkir. Sukabumi sejak 2017.'
 
+// VideoObject entries — must mirror the list in components/VideoGallery.vue.
+// Date strings are derived from the human-readable dates in the gallery.
+type VideoEntry = {
+  id: string
+  title: string
+  description: string
+  uploadDate: string // ISO 8601
+}
+
+const videoEntries: VideoEntry[] = [
+  {
+    id: 'x6oWdRX9-0E',
+    title: 'Gambar Lensa HP bening dengan rigging hade creative',
+    description:
+      'Demo bracket rigging Hade untuk phonegraphy — hasil tajam tanpa lensa melorot.',
+    uploadDate: '2022-10-16',
+  },
+  {
+    id: '0XyxW63AFoQ',
+    title: 'Kamera HP ala DSLR dengan Clamp Plus dan Grip',
+    description:
+      'Clamp Plus + Grip Bluetooth — set-up portable yang terasa seperti DSLR di tangan.',
+    uploadDate: '2021-07-29',
+  },
+  {
+    id: 'AdHZz3mDqTU',
+    title: 'Adapter Pro untuk memasangkan lensa DSLR di HP',
+    description:
+      'Adapter Pro Full Glass Hade — pasang lensa DSLR di HP tanpa bongkar lensa utama.',
+    uploadDate: '2021-05-08',
+  },
+  {
+    id: 'Cej0ZCRjWJ8',
+    title: 'Ini HP apa DSLR? — hade lensa PRO Adapter',
+    description:
+      'Tes lensa tele dengan PRO Adapter Hade. Hasil HP susah dibedakan dari kamera DSLR.',
+    uploadDate: '2019-04-06',
+  },
+  {
+    id: 'QFzif4rlOas',
+    title: 'Lensa PRO Adapter — hade official',
+    description:
+      'Pengenalan resmi Lensa PRO Adapter Hade Creative — original sejak 2017.',
+    uploadDate: '2019-03-26',
+  },
+]
+
+const videoObjectGraph = videoEntries.map((v) => ({
+  '@type': 'VideoObject',
+  name: v.title,
+  description: v.description,
+  thumbnailUrl: [
+    `https://i.ytimg.com/vi/${v.id}/maxresdefault.jpg`,
+    `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+  ],
+  uploadDate: v.uploadDate,
+  contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
+  embedUrl: `https://www.youtube-nocookie.com/embed/${v.id}`,
+  publisher: {
+    '@type': 'Organization',
+    name: 'Hade Creative Production',
+    logo: {
+      '@type': 'ImageObject',
+      url: DEFAULT_OG_IMAGE,
+    },
+  },
+}))
+
 useHead({
   title,
   meta: [
@@ -75,6 +143,7 @@ useHead({
             inLanguage: 'id-ID',
             publisher: { '@id': `${SITE_URL}/#organization` },
           },
+          ...videoObjectGraph,
         ],
       }),
     },

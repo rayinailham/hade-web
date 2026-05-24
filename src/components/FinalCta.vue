@@ -9,7 +9,7 @@ import {
   SHOPEE_STORE,
 } from '../composables/useContact'
 
-gsap.registerPlugin(ScrollTrigger)
+if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const root = ref<HTMLElement | null>(null)
 const primaryBtn = ref<HTMLElement | null>(null)

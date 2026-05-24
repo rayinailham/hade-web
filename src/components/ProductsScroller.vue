@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { waLink, waProductLink, SHOPEE_STORE, DISCOUNT_PERCENT } from '../composables/useContact'
 import { products as catalogProducts } from '../data/products'
 
-gsap.registerPlugin(ScrollTrigger)
+if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 // Reuse the shared catalog so /, /products, and /products/:slug stay in sync.
 const products = catalogProducts

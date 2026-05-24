@@ -5,23 +5,25 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:sitemap && vue-tsc -b && vite build",
+    "build": "npm run build:sitemap && vue-tsc -b && vite-ssg build",
     "build:sitemap": "tsx scripts/build-sitemap.ts",
     "preview": "vite preview",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@unhead/vue": "^3.1.0",
+    "@unhead/vue": "^2.1.15",
     "gsap": "^3.13.0",
     "lenis": "^1.1.20",
     "vue": "^3.5.13",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@unhead/ssr": "^3.1.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "tsx": "^4.22.3",
     "typescript": "~5.6.3",
     "vite": "^6.0.5",
+    "vite-ssg": "^28.3.0",
     "vue-tsc": "^2.2.0"
   }
 }

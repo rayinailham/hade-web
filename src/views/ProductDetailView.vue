@@ -9,7 +9,7 @@ import { waProductLink, openShopeeProduct, DISCOUNT_PERCENT } from '../composabl
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, abs, parsePriceRange, parseSold, priceVariantCount, priceValidUntil } from '../composables/useSeo'
 import ProductDetailBody from '../components/ProductDetailBody.vue'
 
-gsap.registerPlugin(ScrollTrigger)
+if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const route = useRoute()
 

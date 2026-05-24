@@ -5,7 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { waLink } from '../composables/useContact'
 
-gsap.registerPlugin(ScrollTrigger)
+if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const waUrl = waLink()
 const router = useRouter()

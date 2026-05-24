@@ -42,7 +42,40 @@ onMounted(() => {
 
   lockScroll()
 
-  ctx = gsap.context(() => {
+  // Pre-hide every animated element synchronously so the intro starts
+  // pitch black. Without this, elements paint at their final state during
+  // the brief window between mount and the idle callback below firing —
+  // the user briefly sees the camera blades + logo + brand mark before
+  // the timeline kicks in to "build" them.
+  const ANIM_TARGETS =
+    '.bracket, .vf-meta, .cross-h, .cross-v, .reticle, .blade, .logo-svg, .logo-rect, .brand-mark, .brand-tag'
+  if (root.value) {
+    gsap.set(root.value.querySelectorAll(ANIM_TARGETS), { autoAlpha: 0 })
+  }
+
+  // Defer the heavy GSAP timeline build until the browser is idle so it
+  // doesn't compete with the hero LCP paint. Falls back to a short timeout
+  // on browsers without requestIdleCallback (Safari).
+  type IdleWindow = Window & {
+    requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
+  }
+  const idle = (window as IdleWindow).requestIdleCallback
+  const schedule = (cb: () => void) => {
+    if (idle) idle(cb, { timeout: 200 })
+    else window.setTimeout(cb, 80)
+  }
+
+  schedule(() => {
+    // If the component was unmounted while waiting (fast nav), bail.
+    if (!root.value) return
+
+    ctx = gsap.context(() => {
+    // Restore visibility BEFORE building the timeline so .from() reads
+    // autoAlpha:1 as the destination. The .from() immediateRender will
+    // overwrite opacity back to 0 synchronously in the same JS turn, so
+    // no paint occurs between these two sets.
+    gsap.set(ANIM_TARGETS, { autoAlpha: 1 })
+
     const tl = gsap.timeline({
       onComplete: () => {
         sessionStorage.setItem(SKIP_KEY, '1')
@@ -135,7 +168,8 @@ onMounted(() => {
     tl.call(fireDone, [], 'exit')
     tl.to('.intro-content', { y: -28, autoAlpha: 0, duration: 0.55, ease: 'power3.in' }, 'exit')
     tl.to(root.value, { yPercent: -100, duration: 0.95, ease: 'expo.inOut' }, 'exit+=0.18')
-  }, root.value!)
+    }, root.value!)
+  })
 })
 
 onBeforeUnmount(() => {

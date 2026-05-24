@@ -4,7 +4,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { waLink, SHOPEE_STORE, DISCOUNT_PERCENT } from '../composables/useContact'
 
-gsap.registerPlugin(ScrollTrigger)
+if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const waUrl = waLink()
 

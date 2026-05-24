@@ -50,6 +50,14 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preload the two latin woff2 files used by the H1 headline (Geist 500
+         for "Lensa profesional." and Fraunces 300 for the italic "Smartphone
+         kamu."). Without this, late font load causes a visible flash on the
+         hero word-by-word reveal. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://fonts.gstatic.com/s/geist/v5/gyByhwUxId8gMEwcGFU.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://fonts.gstatic.com/s/fraunces/v38/6NU78FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxC9TeA.woff2" />
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&display=swap" rel="stylesheet" />
   </head>
   <body>

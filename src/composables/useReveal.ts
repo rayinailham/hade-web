@@ -2,8 +2,6 @@ import { onMounted, onBeforeUnmount } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 /**
  * Auto-reveal any element marked with [data-reveal] inside a root.
  * Uses transform/opacity/filter only (GPU-safe).
@@ -13,6 +11,9 @@ export function useReveal(rootSelector: string = 'body') {
   let ctx: gsap.Context | null = null
 
   onMounted(() => {
+    if (typeof window === 'undefined') return
+    gsap.registerPlugin(ScrollTrigger)
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.querySelectorAll<HTMLElement>(`${rootSelector} [data-reveal]`).forEach((el) => {
         el.style.opacity = '1'
