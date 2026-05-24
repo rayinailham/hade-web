@@ -6,7 +6,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { findProduct, products } from '../data/products'
 import { waProductLink, openShopeeProduct, DISCOUNT_PERCENT } from '../composables/useContact'
-import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, abs, parsePriceRange, parseSold } from '../composables/useSeo'
+import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, abs, parsePriceRange, parseSold, priceVariantCount, priceValidUntil } from '../composables/useSeo'
 import ProductDetailBody from '../components/ProductDetailBody.vue'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -92,11 +92,17 @@ useHead({
         priceCurrency: 'IDR',
         lowPrice: low,
         highPrice: high,
-        offerCount: 1,
+        offerCount: priceVariantCount(p.price),
+        priceValidUntil: priceValidUntil(),
         availability: 'https://schema.org/InStock',
         url: p.link,
         seller: { '@type': 'Organization', name: 'Hade Creative Production' },
       },
+    }
+    // Skip offers entirely when price string failed to parse — Google rejects
+    // Product cards with a 0 lowPrice.
+    if (!low) {
+      delete (productLd as { offers?: unknown }).offers
     }
     if (ratingNum > 0 && reviewCount > 0) {
       productLd.aggregateRating = {
@@ -117,9 +123,49 @@ useHead({
         { '@type': 'ListItem', position: 3, name: p.name, item: url },
       ],
     }
+    // FAQPage schema — common pre-purchase questions every product answers.
+    const faq = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Apakah HP saya kompatibel?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: `${p.mount}. ${p.bullets.join(' ')} Detail kompatibilitas lengkap di tabel spesifikasi.`,
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Berapa harga dan ada diskon?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: `Harga ${p.price}. Diskon 10% berlaku saat pesan via WhatsApp + gratis ongkir.`,
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Berapa lama pengiriman?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: p.shipNote ?? 'Order sebelum jam 14:00 dikirim hari yang sama dari Sukabumi.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Apakah ada garansi?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Sebagian besar produk Hade Creative bergaransi 1 bulan ganti baru. Cek tabel spesifikasi untuk produk ini.',
+          },
+        },
+      ],
+    }
     return [
       { type: 'application/ld+json', innerHTML: JSON.stringify(productLd) },
       { type: 'application/ld+json', innerHTML: JSON.stringify(breadcrumb) },
+      { type: 'application/ld+json', innerHTML: JSON.stringify(faq) },
     ]
   },
 })

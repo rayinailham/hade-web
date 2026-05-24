@@ -1,48 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://hade-web.vercel.app/</loc>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-05-24</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://hade-web.vercel.app/products</loc>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-05-24</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://hade-web.vercel.app/products/clamp-adapter-dslr-2026</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-24</lastmod>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://hade-web.vercel.app/clamp-adapter-dslr-2026/clamp-adapter-dslr-2026-hero-canon.webp</image:loc>
+      <image:title>Clamp Adapter DSLR 2026 — Canon EF · Nikon F</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://hade-web.vercel.app/products/clamp-adapter-mirrorless-2026</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-24</lastmod>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://hade-web.vercel.app/clamp-adapter-mirrorless-2026/clamp-adapter-mirrorless-2026-hero.webp</image:loc>
+      <image:title>Clamp Adapter Mirrorless 2026 — Sony E-Mount · MFT</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://hade-web.vercel.app/products/direc-sensor-dslr-ffd</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-24</lastmod>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://hade-web.vercel.app/direc-sensor-dslr-ffd/direc-sensor-dslr-ffd-hero-canon-kit.webp</image:loc>
+      <image:title>Direc Sensor DSLR – FFD — Canon · Nikon</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://hade-web.vercel.app/products/direc-sensor-sony-emount</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-24</lastmod>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://hade-web.vercel.app/direc-sensor-sony-emount/direc-sensor-sony-emount-hero-with-grip.webp</image:loc>
+      <image:title>Direc Sensor Sony E-mount — Sony E</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://hade-web.vercel.app/products/direc-sensor-mft</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-24</lastmod>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://hade-web.vercel.app/direc-sensor-mft/direc-sensor-mft-hero-mount-cap.webp</image:loc>
+      <image:title>Direc Sensor MFT — Micro Four Thirds</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://hade-web.vercel.app/products/bracket-rigging-system-2026</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-24</lastmod>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://hade-web.vercel.app/bracket-rigging-system-2026/bracket-rigging-system-2026-overview.webp</image:loc>
+      <image:title>Bracket Rigging System 2026 — Universal Tele 18x – 60x</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://hade-web.vercel.app/products/phone-grip-bluetooth-shooter</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-24</lastmod>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://hade-web.vercel.app/phone-grip-bluetooth-shooter/phone-grip-bluetooth-shooter-hero-side.webp</image:loc>
+      <image:title>Phone Grip + Bluetooth Shooter — Universal</image:title>
+    </image:image>
   </url>
 </urlset>

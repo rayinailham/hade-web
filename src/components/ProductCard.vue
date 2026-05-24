@@ -1,12 +1,20 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { Product } from '../data/products'
 
-defineProps<{
+const props = defineProps<{
   product: Product
   /** drop card padding on mobile (used in dense related grids) */
   compact?: boolean
+  /** card position in the grid (0-based). First 4 cards eager-load
+   *  to help LCP on the catalog page. */
+  index?: number
 }>()
+
+const isAboveFold = computed(() => (props.index ?? 99) < 4)
+const loadingMode = computed<'eager' | 'lazy'>(() => (isAboveFold.value ? 'eager' : 'lazy'))
+const fetchPriority = computed<'high' | 'auto'>(() => ((props.index ?? 99) < 2 ? 'high' : 'auto'))
 </script>
 
 <template>
@@ -19,7 +27,8 @@ defineProps<{
       <img
         :src="product.images[0]"
         :alt="`${product.name} — ${product.mount}`"
-        loading="lazy"
+        :loading="loadingMode"
+        :fetchpriority="fetchPriority"
         decoding="async"
         width="600"
         height="600"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import { waLink, WA_DISPLAY, DISCOUNT_PERCENT, SHOPEE_STORE } from '../composables/useContact'
 const year = new Date().getFullYear()
 const waUrl = waLink()
@@ -36,14 +37,14 @@ const waUrl = waLink()
             </span>
           </a>
           <a :href="SHOPEE_STORE" target="_blank" rel="sponsored noopener noreferrer">Lihat di Shopee</a>
-          <a href="#products">Katalog</a>
-          <a href="#compatibility">Kompatibilitas</a>
+          <RouterLink to="/#products">Katalog</RouterLink>
+          <RouterLink to="/#compatibility">Kompatibilitas</RouterLink>
         </div>
 
         <div class="col" data-reveal data-reveal-delay="0.1">
           <h4 class="mono">Konten</h4>
           <a href="https://www.youtube.com/channel/UCyL2_W6d7BYtlf6pP2sHrvQ" target="_blank" rel="noreferrer">YouTube channel</a>
-          <a href="#manifesto">Filosofi</a>
+          <RouterLink to="/#manifesto">Filosofi</RouterLink>
         </div>
 
         <div class="col" data-reveal data-reveal-delay="0.15">

@@ -1,9 +1,14 @@
 {
   "rewrites": [
-    {
-      "source": "/((?!assets/|.*\\..*).*)",
-      "destination": "/index.html"
-    }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/products", "destination": "/index.html" },
+    { "source": "/products/clamp-adapter-dslr-2026", "destination": "/index.html" },
+    { "source": "/products/clamp-adapter-mirrorless-2026", "destination": "/index.html" },
+    { "source": "/products/direc-sensor-dslr-ffd", "destination": "/index.html" },
+    { "source": "/products/direc-sensor-sony-emount", "destination": "/index.html" },
+    { "source": "/products/direc-sensor-mft", "destination": "/index.html" },
+    { "source": "/products/bracket-rigging-system-2026", "destination": "/index.html" },
+    { "source": "/products/phone-grip-bluetooth-shooter", "destination": "/index.html" }
   ],
   "headers": [
     {

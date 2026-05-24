@@ -14,9 +14,9 @@ import FinalCta from '../components/FinalCta.vue'
 // mount. App-level useReveal still handles the static SiteFooter.
 useReveal('.home-view')
 
-const title = `${SITE_NAME} — Adapter Lensa DSLR & Mirrorless ke HP | Sukabumi sejak 2017`
+const title = `Adapter Lensa DSLR & Mirrorless ke HP — ${SITE_NAME}`
 const description =
-  'Hade Creative bikin adapter clamp, direc sensor, bracket rigging, dan grip Bluetooth untuk pasang lensa DSLR/mirrorless ke smartphone. Hasil setara DSLR dari HP yang sudah kamu punya. Diskon 10% via WhatsApp + gratis ongkir. Dirakit di Kab. Sukabumi sejak 2017.'
+  'Adapter clamp, direc sensor, bracket tele, dan grip Bluetooth. Pasang lensa DSLR/mirrorless ke HP. Diskon 10% via WA + gratis ongkir. Sukabumi sejak 2017.'
 
 useHead({
   title,
@@ -56,6 +56,8 @@ useHead({
             sameAs: [
               'https://shopee.co.id/hadecreative',
               'https://www.youtube.com/channel/UCyL2_W6d7BYtlf6pP2sHrvQ',
+              'https://www.tiktok.com/@hadecreative',
+              'https://www.instagram.com/hadecreative',
             ],
             contactPoint: {
               '@type': 'ContactPoint',

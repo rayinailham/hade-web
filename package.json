@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "npm run build:sitemap && vue-tsc -b && vite build",
+    "build:sitemap": "tsx scripts/build-sitemap.ts",
     "preview": "vite preview",
     "type-check": "vue-tsc --noEmit"
   },
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
+    "tsx": "^4.22.3",
     "typescript": "~5.6.3",
     "vite": "^6.0.5",
     "vue-tsc": "^2.2.0"

@@ -5,14 +5,14 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { products, type ProductFamily } from '../data/products'
 import { waLink, DISCOUNT_PERCENT } from '../composables/useContact'
-import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, abs, parsePriceRange } from '../composables/useSeo'
+import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, abs, parsePriceRange, priceVariantCount } from '../composables/useSeo'
 import ProductCard from '../components/ProductCard.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const pageUrl = `${SITE_URL}/products`
-const pageTitle = `Katalog Produk — Adapter Lensa HP, Direc Sensor, Bracket Tele | ${SITE_NAME}`
-const pageDescription = `Tujuh adapter lensa untuk smartphone: clamp DSLR/mirrorless, direc sensor Canon/Nikon/Sony/MFT, bracket rigging tele 18x–60x, dan grip Bluetooth. Diskon ${DISCOUNT_PERCENT}% via WA + gratis ongkir.`
+const pageTitle = `Katalog Adapter Lensa HP — ${SITE_NAME}`
+const pageDescription = `7 adapter lensa untuk HP: clamp DSLR/mirrorless, direc sensor Canon/Nikon/Sony/MFT, bracket tele 18x–60x, grip Bluetooth. Diskon ${DISCOUNT_PERCENT}% via WA.`
 
 useHead({
   title: pageTitle,
@@ -67,6 +67,7 @@ useHead({
                   priceCurrency: 'IDR',
                   lowPrice: low,
                   highPrice: high,
+                  offerCount: priceVariantCount(p.price),
                   availability: 'https://schema.org/InStock',
                   url: `${SITE_URL}/products/${p.slug}`,
                 },
@@ -225,9 +226,10 @@ async function setFilter(f: Filter) {
         <div class="cat-main">
           <div class="cat-grid">
             <ProductCard
-              v-for="p in visibleProducts"
+              v-for="(p, i) in visibleProducts"
               :key="p.slug"
               :product="p"
+              :index="i"
               class="cat-card"
             />
           </div>
