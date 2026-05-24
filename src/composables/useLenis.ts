@@ -16,6 +16,27 @@ export function useLenis() {
     if (typeof window === 'undefined') return
     gsap.registerPlugin(ScrollTrigger)
 
+    // Skip Lenis on mobile/touch devices — native scroll is already smooth,
+    // and the JS overhead (RAF tick + scroll event) is the single biggest
+    // mobile perf hit. Saves ~15KB exec + frees main thread on each scroll.
+    const isMobile = window.matchMedia('(max-width: 768px), (pointer: coarse)').matches
+    if (isMobile) {
+      // Still wire ScrollTrigger to native scroll events so reveals work.
+      const refreshNative = () => ScrollTrigger.refresh()
+      if ('fonts' in document) {
+        document.fonts.ready.then(refreshNative).catch(() => {})
+      }
+      if (document.readyState === 'complete') {
+        refreshNative()
+      } else {
+        window.addEventListener('load', refreshNative, { once: true })
+      }
+      onBeforeUnmount(() => {
+        window.removeEventListener('load', refreshNative)
+      })
+      return
+    }
+
     lenisInstance = new Lenis({
       duration: 1.15,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

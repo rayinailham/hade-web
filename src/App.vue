@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, defineAsyncComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -8,8 +8,16 @@ import { useReveal } from './composables/useReveal'
 
 import IntroScreen from './components/IntroScreen.vue'
 import SiteNav from './components/SiteNav.vue'
-import CustomScrollbar from './components/CustomScrollbar.vue'
 import SiteFooter from './components/SiteFooter.vue'
+
+// CustomScrollbar is desktop-only — lazy-load it so mobile bundles never
+// pay for ResizeObserver / pointer handlers / drag logic that's display:none'd.
+const CustomScrollbar = defineAsyncComponent(
+  () => import('./components/CustomScrollbar.vue'),
+)
+
+const isDesktop = typeof window !== 'undefined'
+  && !window.matchMedia('(max-width: 768px), (pointer: coarse)').matches
 
 useLenis()
 useReveal()
@@ -95,7 +103,7 @@ function onLeave(_el: Element, done: () => void) {
   </RouterView>
 
   <SiteFooter />
-  <CustomScrollbar />
+  <CustomScrollbar v-if="isDesktop" />
 
   <!-- Route veil — quick paper-coloured wipe under the transitioning page -->
   <div class="route-veil" :class="{ 'is-active': transitioning }" aria-hidden="true"></div>

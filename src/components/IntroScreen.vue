@@ -33,7 +33,11 @@ onMounted(() => {
   }
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (reduce) {
+  // Skip intro entirely on mobile — heavy GSAP timeline costs ~200ms TBT
+  // during the LCP window. On a slow 4G mobile this drops Lighthouse perf
+  // from ~70 to ~90+. Desktop keeps the cinematic intro.
+  const isMobile = window.matchMedia('(max-width: 768px), (pointer: coarse)').matches
+  if (reduce || isMobile) {
     sessionStorage.setItem(SKIP_KEY, '1')
     visible.value = false
     fireDone()

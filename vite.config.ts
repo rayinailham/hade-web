@@ -26,5 +26,24 @@ export default defineConfig({
   server: {
     port: 5173,
   },
+  build: {
+    target: 'es2020',
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        // Split heavy deps into their own chunks so the main bundle stays small.
+        // Mobile especially benefits — gsap+lenis are ~80KB combined and only
+        // needed after first paint.
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+          if (id.includes('gsap')) return 'gsap'
+          if (id.includes('lenis')) return 'lenis'
+          if (id.includes('vue-router')) return 'vue-router'
+          if (id.includes('@vue') || id.includes('/vue/')) return 'vue'
+          if (id.includes('@unhead')) return 'unhead'
+        },
+      },
+    },
+  },
   ssgOptions,
 })

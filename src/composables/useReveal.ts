@@ -24,6 +24,7 @@ export function useReveal(rootSelector: string = 'body') {
     }
 
     ctx = gsap.context(() => {
+      const isMobile = window.matchMedia('(max-width: 768px), (pointer: coarse)').matches
       const els = gsap.utils.toArray<HTMLElement>(`${rootSelector} [data-reveal]`)
       els.forEach((el, i) => {
         const delay = parseFloat(el.dataset.revealDelay ?? '0')
@@ -40,24 +41,41 @@ export function useReveal(rootSelector: string = 'body') {
           el.style.filter = 'none'
         }
 
-        const tl = gsap.fromTo(
-          target,
-          { y: 36, opacity: 0, filter: 'blur(10px)' },
-          {
-            y: 0,
-            opacity: 1,
-            filter: 'blur(0px)',
-            duration: 1.1,
-            ease: 'power3.out',
-            delay,
-            stagger: stagger ? parseFloat(stagger) : 0,
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 88%',
-              toggleActions: 'play none none none',
-            },
-          },
-        )
+        // Drop blur filter on mobile — composite cost is high and tanks
+        // paint perf. Translate + opacity is plenty.
+        const fromVars = isMobile
+          ? { y: 18, opacity: 0 }
+          : { y: 36, opacity: 0, filter: 'blur(10px)' }
+        const toVars = isMobile
+          ? {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power3.out',
+              delay,
+              stagger: stagger ? parseFloat(stagger) : 0,
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 88%',
+                toggleActions: 'play none none none',
+              },
+            }
+          : {
+              y: 0,
+              opacity: 1,
+              filter: 'blur(0px)',
+              duration: 1.1,
+              ease: 'power3.out',
+              delay,
+              stagger: stagger ? parseFloat(stagger) : 0,
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 88%',
+                toggleActions: 'play none none none',
+              },
+            }
+
+        const tl = gsap.fromTo(target, fromVars, toVars)
         const st = (tl.scrollTrigger as ScrollTrigger | undefined)
         if (st) triggers.push(st)
         // suppress unused i

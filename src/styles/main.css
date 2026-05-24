@@ -213,8 +213,27 @@ html.lenis body {
 [data-reveal] {
   opacity: 0;
   transform: translateY(28px);
-  filter: blur(8px);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
+}
+
+/* Mobile: drop blur from reveal targets — blur is GPU-expensive on mobile
+   and tanks Lighthouse paint timing. Translate+opacity is enough. */
+@media (max-width: 768px) {
+  [data-reveal] {
+    transform: translateY(16px);
+    will-change: auto;
+  }
+
+  /* backdrop-filter is the single biggest mobile compositor cost in this
+     codebase (25+ usages). Strip it globally on mobile and replace the
+     translucent backgrounds with slightly more opaque solids. SiteNav keeps
+     its own override since it relies on the blur for legibility. */
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }
 
 [data-split] {
