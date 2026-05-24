@@ -8,6 +8,31 @@ let ctx: gsap.Context | null = null
 
 const SKIP_KEY = 'hade-intro-played'
 const DONE_EVENT = 'hade:intro-done'
+const TTL_MS = 3 * 24 * 60 * 60 * 1000 // 3 days
+
+const hasValidSkip = (): boolean => {
+  try {
+    const raw = localStorage.getItem(SKIP_KEY)
+    if (!raw) return false
+    const ts = Number(raw)
+    if (!Number.isFinite(ts)) return false
+    if (Date.now() - ts > TTL_MS) {
+      localStorage.removeItem(SKIP_KEY)
+      return false
+    }
+    return true
+  } catch {
+    return false
+  }
+}
+
+const markSkip = () => {
+  try {
+    localStorage.setItem(SKIP_KEY, String(Date.now()))
+  } catch {
+    // storage blocked — fail silent, intro just plays again next visit
+  }
+}
 
 const lockScroll = () => {
   document.documentElement.style.overflow = 'hidden'
@@ -26,7 +51,7 @@ const fireDone = () => {
 onMounted(() => {
   if (typeof window === 'undefined') return
 
-  if (sessionStorage.getItem(SKIP_KEY) === '1') {
+  if (hasValidSkip()) {
     visible.value = false
     fireDone()
     return
@@ -38,7 +63,7 @@ onMounted(() => {
   // from ~70 to ~90+. Desktop keeps the cinematic intro.
   const isMobile = window.matchMedia('(max-width: 768px), (pointer: coarse)').matches
   if (reduce || isMobile) {
-    sessionStorage.setItem(SKIP_KEY, '1')
+    markSkip()
     visible.value = false
     fireDone()
     return
@@ -82,7 +107,7 @@ onMounted(() => {
 
     const tl = gsap.timeline({
       onComplete: () => {
-        sessionStorage.setItem(SKIP_KEY, '1')
+        markSkip()
         unlockScroll()
         visible.value = false
       },
